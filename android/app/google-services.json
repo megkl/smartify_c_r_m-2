@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "519615782292",
+    "project_id": "smartifycrmapp",
+    "storage_bucket": "smartifycrmapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519615782292:android:d115f8d2e4eb0cc6008381",
+        "android_client_info": {
+          "package_name": "com.smartify.crmapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "519615782292-fgds9shbntom16i56uko00bm6b15l4bu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.smartify.crmapp",
+            "certificate_hash": "ae7687c3059dab281ac527918e59a7cba3a32c9e"
+          }
+        },
+        {
+          "client_id": "519615782292-o59g2cbf7u0r3mcij5qkvbu0sulq4prm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOK2ZkZaEU5q4sRSZx0XXCTsabx-_fK_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "519615782292-o59g2cbf7u0r3mcij5qkvbu0sulq4prm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

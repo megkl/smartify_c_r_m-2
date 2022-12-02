@@ -10,18 +10,21 @@ class ContactDatabaseHelper {
 
   factory ContactDatabaseHelper() => _instance;
 
-  final String tableContact = 'contactTable';
+  final String tableContactModel = 'contactTable';
+  
   final String columnId = 'id';
   final String columnFullName = 'fullName';
   final String columnJobTitle = 'jobTitle';
+  final String columnCompanyName = 'companyName';
   final String columnPhoneNumbers = 'phoneNumbers';
   final String columnEmails = 'emails';
   final String columnWebsite = 'website';
-  final String columnAddress = 'address';
   final String columnOtherInformation = 'otherInfo';
-  final String columnLocation = 'location';
-  final String columnGroup = 'group';
+  final String columnLocation = 'locationDetails';
+  final String columnGroup = 'contactGroup';
   final String columnUserId = 'userId';
+   final String? columnCreatedAt = 'createdAt';
+   final String? columnUpdatedAt = 'updatedAt';
 
   static Database? _db;
 
@@ -40,7 +43,7 @@ class ContactDatabaseHelper {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'contacts.db');
 
-    await deleteDatabase(path); // just for testing
+    //await deleteDatabase(path); // just for testing
 
     var db = await openDatabase(path, version: 1, onCreate: _onCreate);
     return db;
@@ -48,55 +51,63 @@ class ContactDatabaseHelper {
 
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $tableContact($columnId INTEGER PRIMARY KEY, $columnFullName TEXT,$columnUserId TEXT, $columnJobTitle TEXT, $columnPhoneNumbers TEXT, $columnEmails TEXT, $columnWebsite TEXT, $columnAddress TEXT, $columnOtherInformation TEXT, $columnLocation TEXT)');
+        'CREATE TABLE $tableContactModel($columnId INTEGER PRIMARY KEY, $columnFullName TEXT,$columnUserId TEXT, $columnJobTitle TEXT,$columnCompanyName, TEXT, $columnPhoneNumbers TEXT, $columnEmails TEXT, $columnWebsite TEXT,  $columnOtherInformation TEXT, $columnLocation TEXT,$columnGroup TEXT,$columnCreatedAt TEXT,$columnUpdatedAt TEXT)');
         
   }
 
-  Future<int> saveContact(Contact contact) async {
+  Future<ContactModel> saveContact(ContactModel contact) async {
+   //var contactValues = {"userId":contact.userId,"fullName":contact.fullName,"jobTitle":contact.jobTitle};
     var dbClient = await db;
-    var result = await dbClient.insert(tableContact, contact.toMap());
+     contact.id = await dbClient.insert(tableContactModel, contact.toMap());
 
-    return result;
+    return contact;
   }
 
-  Future<List> getAllContacts() async {
-    var dbClient = await db;
+  Future<List> getAllContact() async {
+     var dbClient = await db;
     var result = await dbClient
-        .query(tableContact, columns: [columnId, columnUserId, columnFullName, columnAddress, columnPhoneNumbers,columnEmails,columnGroup,columnJobTitle,columnLocation,columnOtherInformation,columnWebsite]);
+        .query(tableContactModel);
 
+   List<ContactModel> contacts = [];
+
+    // result.forEach((currentContact) {
+    //   ContactModel contact = ContactModel.fromMap(currentContact);
+
+    //  contacts.add(contact);
+    // });
     return result.toList();
   }
 
    getCount() async {
     var dbClient = await db;
     return Sqflite.firstIntValue(
-        await dbClient.rawQuery('SELECT COUNT(*) FROM $tableContact'));
+        await dbClient.rawQuery('SELECT COUNT(*) FROM $tableContactModel'));
   }
 
-  Future<Contact?> getContact(int id) async {
+  Future<ContactModel?> getContact(int id) async {
     var dbClient = await db;
-    List<Map> result = await dbClient.query(tableContact,
-        columns: [columnId,columnUserId, columnFullName, columnAddress, columnPhoneNumbers,columnEmails,columnGroup,columnJobTitle,columnLocation,columnOtherInformation,columnWebsite],
+    List<Map> result = await dbClient.query(tableContactModel,
+        columns: [columnId,columnUserId, columnFullName, columnPhoneNumbers,columnEmails,columnGroup,columnJobTitle,columnLocation,columnOtherInformation,columnWebsite],
         where: '$columnId = ?',
         whereArgs: [id]);
 
-    if (result.length > 0) {
-      return new Contact.fromMap(result.first);
-    }
+    // if (result.length > 0) {
+    //   return new ContactModel.fromJson(result);
+    // }
 
     return null;
   }
 
-  Future<int> deleteContact(int id) async {
+  Future<int> deleteContactModel(int id) async {
     var dbClient = await db;
     return await dbClient
-        .delete(tableContact, where: '$columnId = ?', whereArgs: [id]);
+        .delete(tableContactModel, where: '$columnId = ?', whereArgs: [id]);
   }
 
-  Future<int> updateContact(Contact contact) async {
+  Future<int> updateContactModel(ContactModel contact) async {
     var dbClient = await db;
-    return await dbClient.update(tableContact, contact.toMap(),
-        where: "$columnId = ?", whereArgs: [contact.identifier]);
+    return await dbClient.update(tableContactModel, contact.toMap(),
+        where: "$columnId = ?", whereArgs: [contact.id]);
   }
 
   Future close() async {

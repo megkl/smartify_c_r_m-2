@@ -107,7 +107,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'Home',
               path: 'home',
               builder: (context, params) => params.isEmpty
-                  ? NavBarPage(initialPage: 'Home')
+                  //? NavBarPage(initialPage: 'Home')
+                  ? HomeScreen()
                   : HomeScreen(),
             ),
             FFRoute(
@@ -158,6 +159,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               path: 'projectDetails',
               builder: (context, params) => ProjectDetailsWidget(),
             ),
+            
             FFRoute(
               name: 'searchPage',
               path: 'searchPage',

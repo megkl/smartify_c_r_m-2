@@ -3,6 +3,7 @@
 //     final companyModel = companyModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 CompanyModel companyModelFromJson(String str) => CompanyModel.fromJson(json.decode(str));
 
@@ -23,7 +24,7 @@ class CompanyModel {
 
     String? companyName;
     String? contactName;
-    String? photoUrl;
+    Uint8List? photoUrl;
     String? companyEmailNumber;
     String? companyPhoneNumber;
     String? country;

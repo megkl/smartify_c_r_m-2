@@ -1,227 +1,78 @@
 import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:quiver/core.dart';
-class Contact {
-  Contact({
-    this.displayName,
-    this.givenName,
-    this.middleName,
-    this.prefix,
-    this.suffix,
-    this.familyName,
-    this.company,
-    this.jobTitle,
-    this.emails,
-    this.phones,
-    this.postalAddresses,
-    this.avatar,
-    this.birthday,
-    this.androidAccountType,
-    this.androidAccountTypeRaw,
-    this.androidAccountName,
-    this.group,
-    this.otherInfo,
-    this.website,
-    this.identifier,
-    this.userId
-  });
+// To parse this JSON data, do
+//
+//     final contactModel = contactModelFromJson(jsonString);
 
-  String? identifier,
-      displayName,
-      givenName,
-      middleName,
-      prefix,
-      suffix,
-      familyName,
-      company,
-      otherInfo,
-      group,
-      website,
-      userId,
-      jobTitle;
-  String? androidAccountTypeRaw, androidAccountName;
-  AndroidAccountType? androidAccountType;
-  List<Item>? emails = [];
-  List<Item>? phones = [];
-  List<PostalAddress>? postalAddresses = [];
-  Uint8List? avatar;
-  DateTime? birthday;
+import 'dart:convert';
 
-  String initials() {
-    return ((this.givenName?.isNotEmpty == true ? this.givenName![0] : "") +
-            (this.familyName?.isNotEmpty == true ? this.familyName![0] : ""))
-        .toUpperCase();
-  }
+//ContactModel contactModelFromJson(String str) => ContactModel.fromJson(json.decode(str));
 
-  Contact.fromMap(Map m) {
-    identifier = m["identifier"];
-    displayName = m["displayName"];
-    givenName = m["givenName"];
-    middleName = m["middleName"];
-    familyName = m["familyName"];
-    prefix = m["prefix"];
-    suffix = m["suffix"];
-    company = m["company"];
-    jobTitle = m["jobTitle"];
-    website = m["website"];
-    userId = m["userId"];
-    group = m["group"];
-    otherInfo = m["otherInfo"];
-    androidAccountTypeRaw = m["androidAccountType"];
-    androidAccountType = accountTypeFromString(androidAccountTypeRaw);
-    androidAccountName = m["androidAccountName"];
-    emails = (m["emails"] as List?)?.map((m) => Item.fromMap(m)).toList();
-    phones = (m["phones"] as List?)?.map((m) => Item.fromMap(m)).toList();
-    postalAddresses = (m["postalAddresses"] as List?)
-        ?.map((m) => PostalAddress.fromMap(m))
-        .toList();
-    avatar = m["avatar"];
-    try {
-      birthday = m["birthday"] != null ? DateTime.parse(m["birthday"]) : null;
-    } catch (e) {
-      birthday = null;
-    }
-  }
+//String contactModelToJson(ContactModel data) => json.encode(data.toJson());
 
-  static Map<String, Object?> _toMap(Contact contact) {
-    var emails = [];
-    for (Item email in contact.emails ?? []) {
-      emails.add(Item._toMap(email));
-    }
-    var phones = [];
-    for (Item phone in contact.phones ?? []) {
-      phones.add(Item._toMap(phone));
-    }
-    var postalAddresses = [];
-    for (PostalAddress address in contact.postalAddresses ?? []) {
-      postalAddresses.add(PostalAddress._toMap(address));
-    }
+class ContactModel {
+    ContactModel({
+        this.id,
+        this.fullName,
+        this.jobTitle,
+        this.companyName,
+        this.phoneNumbers,
+        this.emails,
+        this.locationDetails,
+        this.website,
+        this.contactGroup,
+        this.userId,
+        this.createdAt,
+        this.updatedAt,
+        this.otherInfo,
+    });
 
-    final birthday = contact.birthday == null
-        ? null
-        : "${contact.birthday!.year.toString()}-${contact.birthday!.month.toString().padLeft(2, '0')}-${contact.birthday!.day.toString().padLeft(2, '0')}";
+    int? id;
+    String? fullName;
+    String? jobTitle;
+    String? companyName;
+    String? phoneNumbers;
+    String? emails;
+    PostalAddress? locationDetails;
+    String? website;
+    String? contactGroup;
+    String? userId;
+    String? createdAt;
+    String? updatedAt;
+    String? otherInfo;
 
-    return {
-      "identifier": contact.identifier,
-      "displayName": contact.displayName,
-      "givenName": contact.givenName,
-      "middleName": contact.middleName,
-      "familyName": contact.familyName,
-      "prefix": contact.prefix,
-      "suffix": contact.suffix,
-      "userId": contact.userId,
-      "company": contact.company,
-      "jobTitle": contact.jobTitle,
-      "website": contact.website,
-      "otherInfo": contact.otherInfo,
-      "group": contact.group,
-      "androidAccountType": contact.androidAccountTypeRaw,
-      "androidAccountName": contact.androidAccountName,
-      "emails": emails,
-      "phones": phones,
-      "postalAddresses": postalAddresses,
-      "avatar": contact.avatar,
-      "birthday": birthday
+    factory ContactModel.fromMap(Map<String, dynamic> json) => ContactModel(
+        id: json["id"],
+        fullName: json["fullName"],
+        jobTitle: json["jobTitle"],
+        companyName: json["companyName"],
+        phoneNumbers: json["phoneNumbers"],
+        emails: json["emails"],
+        locationDetails: PostalAddress.fromMap(json["locationDetails"]),
+        website: json["website"],
+        contactGroup: json["contactGroup"],
+        userId: json["userId"],
+        createdAt: json["createdAt"],
+        updatedAt: json["updatedAt"],
+        otherInfo: json["otherInfo"],
+    );
+
+    Map<String, dynamic> toMap() => {
+        "id": id,
+        "fullName": fullName,
+        "jobTitle": jobTitle,
+        "companyName": companyName,
+        "phoneNumbers": phoneNumbers,
+        "emails": emails,
+        "locationDetails": locationDetails == null ? null:locationDetails!.toMap(),
+        "website": website,
+        "contactGroup": contactGroup,
+        "userId": userId,
+        "createdAt": createdAt,
+        "updatedAt": updatedAt,
+        "otherInfo": otherInfo,
     };
-  }
-
-  Map<String, Object?> toMap() {
-    return Contact._toMap(this);
-  }
-
-  /// The [+] operator fills in this contact's empty fields with the fields from [other]
-  operator +(Contact other) => Contact(
-        givenName: this.givenName ?? other.givenName,
-        middleName: this.middleName ?? other.middleName,
-        prefix: this.prefix ?? other.prefix,
-        suffix: this.suffix ?? other.suffix,
-        familyName: this.familyName ?? other.familyName,
-        company: this.company ?? other.company,
-        jobTitle: this.jobTitle ?? other.jobTitle,
-        androidAccountType: this.androidAccountType ?? other.androidAccountType,
-        androidAccountName: this.androidAccountName ?? other.androidAccountName,
-        emails: this.emails == null
-            ? other.emails
-            : this
-                .emails!
-                .toSet()
-                .union(other.emails?.toSet() ?? Set())
-                .toList(),
-        phones: this.phones == null
-            ? other.phones
-            : this
-                .phones!
-                .toSet()
-                .union(other.phones?.toSet() ?? Set())
-                .toList(),
-        postalAddresses: this.postalAddresses == null
-            ? other.postalAddresses
-            : this
-                .postalAddresses!
-                .toSet()
-                .union(other.postalAddresses?.toSet() ?? Set())
-                .toList(),
-        avatar: this.avatar ?? other.avatar,
-        birthday: this.birthday ?? other.birthday,
-      );
-
-  /// Returns true if all items in this contact are identical.
-  @override
-  bool operator ==(Object other) {
-    return other is Contact &&
-        this.avatar == other.avatar &&
-        this.company == other.company &&
-        this.displayName == other.displayName &&
-        this.givenName == other.givenName &&
-        this.familyName == other.familyName &&
-        this.identifier == other.identifier &&
-        this.jobTitle == other.jobTitle &&
-        this.androidAccountType == other.androidAccountType &&
-        this.androidAccountName == other.androidAccountName &&
-        this.middleName == other.middleName &&
-        this.prefix == other.prefix &&
-        this.suffix == other.suffix &&
-        this.birthday == other.birthday &&
-        DeepCollectionEquality.unordered().equals(this.phones, other.phones) &&
-        DeepCollectionEquality.unordered().equals(this.emails, other.emails) &&
-        DeepCollectionEquality.unordered()
-            .equals(this.postalAddresses, other.postalAddresses);
-  }
-
-  @override
-  int get hashCode {
-    return hashObjects([
-      this.company,
-      this.displayName,
-      this.familyName,
-      this.givenName,
-      this.identifier,
-      this.jobTitle,
-      this.androidAccountType,
-      this.androidAccountName,
-      this.middleName,
-      this.prefix,
-      this.suffix,
-      this.birthday,
-    ].where((s) => s != null));
-  }
-
-  AndroidAccountType? accountTypeFromString(String? androidAccountType) {
-    if (androidAccountType == null) {
-      return null;
-    }
-    if (androidAccountType.startsWith("com.google")) {
-      return AndroidAccountType.google;
-    } else if (androidAccountType.startsWith("com.whatsapp")) {
-      return AndroidAccountType.whatsapp;
-    } else if (androidAccountType.startsWith("com.facebook")) {
-      return AndroidAccountType.facebook;
-    }
-
-    /// Other account types are not supported on Android
-    /// such as Samsung, htc etc...
-    return AndroidAccountType.other;
-  }
 }
 
 class PostalAddress {
@@ -243,36 +94,13 @@ class PostalAddress {
     country = m["country"];
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is PostalAddress &&
-        this.city == other.city &&
-        this.country == other.country &&
-        this.label == other.label &&
-        this.postcode == other.postcode &&
-        this.region == other.region &&
-        this.street == other.street;
-  }
-
-  @override
-  int get hashCode {
-    return hashObjects([
-      this.label,
-      this.street,
-      this.city,
-      this.country,
-      this.region,
-      this.postcode,
-    ].where((s) => s != null));
-  }
-
-  static Map _toMap(PostalAddress address) => {
-        "label": address.label,
-        "street": address.street,
-        "city": address.city,
-        "postcode": address.postcode,
-        "region": address.region,
-        "country": address.country
+Map<String, dynamic> toMap() => {
+        "label": label,
+        "street": street,
+        "city": city,
+        "postcode": postcode,
+        "region": region,
+        "country": country
       };
 
   @override

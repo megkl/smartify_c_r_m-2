@@ -2,6 +2,7 @@ import 'package:country_list_pick/country_list_pick.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:smartify_c_r_m/auth/auth_util.dart';
 import 'package:smartify_c_r_m/database/contact_database_helper.dart';
 import 'package:smartify_c_r_m/model/contact_model.dart';
@@ -10,8 +11,8 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
 
 class AddContactScreen extends StatefulWidget {
-  const AddContactScreen({Key? key}) : super(key: key);
-
+   AddContactScreen({Key? key, this.group}) : super(key: key);
+   int? group = 0;
   @override
   State<AddContactScreen> createState() => _AddContactScreenState();
 }
@@ -157,14 +158,8 @@ class _AddContactScreenState extends State<AddContactScreen> {
                                   .make(),
                             ),
                             addPhoneNumbers
-                                ? phoneNumbers.length == 0
-                                    ? buildPhoneTextField()
-                                    : ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: dynamicPhones.length,
-                                        itemBuilder: (_, index) =>
-                                            dynamicPhones[index],
-                                      )
+                                ?  buildPhoneTextField()
+                                    
                                 : Container(),
                           ]),
                     ),
@@ -203,10 +198,13 @@ class _AddContactScreenState extends State<AddContactScreen> {
                                         .primaryColor,
                                   ),
                                   title: CupertinoTextFormFieldRow(
+                                    controller: emailController,
                                     placeholder: "Enter Email",
                                   ),
                                   trailing: IconButton(
-                                      onPressed: () {}, icon: Icon(Icons.add)),
+                                      onPressed: () {
+                                        emails.add(Item(value: emailController.text));
+                                      }, icon: Icon(Icons.add)),
                                 )
                               : Container()),
                     ]),
@@ -349,10 +347,11 @@ class _AddContactScreenState extends State<AddContactScreen> {
           // Whether the country list should be wrapped in a SafeArea
           useSafeArea: false),
       title: CupertinoTextFormFieldRow(
+        controller: phoneController,
         placeholder: "7*******",
         onChanged: (value) {
           setState(() {
-            phoneNumbers.add(Item(label: '',value: value));
+            //phoneNumbers.add(Item(value: phoneController.text));
           });
         },
       ),
@@ -377,30 +376,24 @@ void addEditContact() async {
       //   await addNote();
       // }
 
-      Navigator.of(context).pop();
+ context.pushNamed(
+                    'Main_customerList');
+
     }
   }
 
-  // Future updateNote() async {
-  //   final note = widget.note!.copy(
-  //     isImportant: isImportant,
-  //     number: number,
-  //     title: title,
-  //     description: description,
-  //   );
-
-  //   await NotesDatabase.instance.update(note);
-  // }
+  
 
   Future addContact() async {
-    final contact = Contact(
-      displayName: fullnameController.text,
+    final contact = ContactModel(
+      fullName: fullnameController.text,
       userId: currentUserUid,
-      phones: phoneNumbers,
-      emails: emails,
+      phoneNumbers: '$phoneCountryCode${phoneController.text}',
+      emails: emailController.text,
       website: websiteController.text,
-                          jobTitle: jobCompanyController.text,
-      
+      jobTitle: jobCompanyController.text,
+      contactGroup: widget.group == 0 ? '':widget.group == 1? 'Lead':'Customer',
+      locationDetails: PostalAddress(street: addressController.text, country: countrySelectedValue, city: locationController.text)
     );
 
     await ContactDatabaseHelper().saveContact(contact);

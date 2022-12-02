@@ -93,7 +93,7 @@ DeviceSize getDeviceSize(BuildContext context) {
 
 class LightModeTheme extends FlutterFlowTheme {
   //late Color primaryColor = const Color(0xFF23A8FF);
-  late Color primaryColor = const Color(0xFFBE5F1B);
+  late Color primaryColor = const Color(0xFF296D98);
   late Color secondaryColor = const Color(0xFF18AA99);
   late Color tertiaryColor = const Color(0xFF827AE1);
   late Color alternate = const Color(0xFFFF5963);

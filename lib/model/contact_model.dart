@@ -19,6 +19,11 @@ class Contact {
     this.androidAccountType,
     this.androidAccountTypeRaw,
     this.androidAccountName,
+    this.group,
+    this.otherInfo,
+    this.website,
+    this.identifier,
+    this.userId
   });
 
   String? identifier,
@@ -29,6 +34,10 @@ class Contact {
       suffix,
       familyName,
       company,
+      otherInfo,
+      group,
+      website,
+      userId,
       jobTitle;
   String? androidAccountTypeRaw, androidAccountName;
   AndroidAccountType? androidAccountType;
@@ -54,6 +63,10 @@ class Contact {
     suffix = m["suffix"];
     company = m["company"];
     jobTitle = m["jobTitle"];
+    website = m["website"];
+    userId = m["userId"];
+    group = m["group"];
+    otherInfo = m["otherInfo"];
     androidAccountTypeRaw = m["androidAccountType"];
     androidAccountType = accountTypeFromString(androidAccountTypeRaw);
     androidAccountName = m["androidAccountName"];
@@ -70,7 +83,7 @@ class Contact {
     }
   }
 
-  static Map _toMap(Contact contact) {
+  static Map<String, Object?> _toMap(Contact contact) {
     var emails = [];
     for (Item email in contact.emails ?? []) {
       emails.add(Item._toMap(email));
@@ -96,8 +109,12 @@ class Contact {
       "familyName": contact.familyName,
       "prefix": contact.prefix,
       "suffix": contact.suffix,
+      "userId": contact.userId,
       "company": contact.company,
       "jobTitle": contact.jobTitle,
+      "website": contact.website,
+      "otherInfo": contact.otherInfo,
+      "group": contact.group,
       "androidAccountType": contact.androidAccountTypeRaw,
       "androidAccountName": contact.androidAccountName,
       "emails": emails,
@@ -108,7 +125,7 @@ class Contact {
     };
   }
 
-  Map toMap() {
+  Map<String, Object?> toMap() {
     return Contact._toMap(this);
   }
 

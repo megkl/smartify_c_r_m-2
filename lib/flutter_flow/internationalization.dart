@@ -774,7 +774,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'ms': 'Papan pemuka',
     },
     'smtxdnbn': {
-      'en': 'Invoices',
+      'en': 'Schedule',
       'id': '__',
       'ms': '__',
     },
@@ -782,7 +782,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
   // Main_profilePage
   {
     'qrxn5crt': {
-      'en': 'My Profile',
+      'en': 'Settings',
       'id': 'Profil saya',
       'ms': 'Profil saya',
     },
@@ -807,7 +807,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'ms': 'Tukar kata laluan',
     },
     'b1lw0hfu': {
-      'en': 'Edit Profile',
+      'en': 'View Profile',
       'id': 'Sunting profil',
       'ms': 'Sunting profil',
     },
@@ -949,7 +949,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'ms': '',
     },
     '20uycztj': {
-      'en': 'Edit Profile',
+      'en': 'View Profile',
       'id': '',
       'ms': '',
     },

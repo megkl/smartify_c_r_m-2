@@ -1,0 +1,22 @@
+import 'package:smartify_c_r_m/presentation/create_account/create_account_widget.dart';
+
+export 'create_account/create_account_widget.dart' show CreateAccountWidget;
+export 'project_details/project_details_widget.dart' show ProjectDetailsWidget;
+export 'user_details/user_details_widget.dart' show UserDetailsWidget;
+export 'search_page/search_page_widget.dart' show SearchPageWidget;
+export 'project_details_health_ai/project_details_health_ai_widget.dart' show ProjectDetailsHealthAiWidget;
+export 'edit_profile/edit_profile_widget.dart' show EditProfileWidget;
+export 'forgot_password/forgot_password_widget.dart' show ForgotPasswordWidget;
+export 'home/home_widget.dart' show HomeWidget;
+export 'login/login_widget.dart' show LoginWidget;
+export 'main_contracts/main_contracts_widget.dart' show MainContractsWidget;
+export 'contact/contact_details_screen.dart' show ContactDetails;
+export 'contact/contactsPage.dart' show ContactsPage;
+export 'contact/main_customer_list_widget.dart' show MainCustomerListWidget;
+export 'contact/seeContactsButton.dart' show SeeContactsButton;
+export 'contact/widget/contact_list.dart' show ContactsList;
+export 'main_profile_page/main_profile_page_widget.dart' show MainProfilePageWidget;
+export 'my_team/my_team_widget.dart' show MyTeamWidget;
+export 'user_details/user_details_widget.dart' show UserDetailsWidget; 
+export 'main_profile_page/add_company_details_screen.dart' show AddCompanyDetailsScreen; 
+export 'contact/add_contact_screen.dart' show AddContactScreen; 

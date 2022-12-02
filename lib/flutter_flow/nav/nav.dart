@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
+import '../../presentation/home/home_screen.dart';
+import '../../presentation/presentation.dart';
 import '../flutter_flow_theme.dart';
 import '../../backend/backend.dart';
 import '../../auth/firebase_user_provider.dart';
@@ -68,18 +70,28 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
       errorBuilder: (context, _) =>
-          appStateNotifier.loggedIn ? NavBarPage() : LoginWidget(),
+          appStateNotifier.loggedIn ? HomeScreen() : LoginWidget(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
           builder: (context, _) =>
-              appStateNotifier.loggedIn ? NavBarPage() : LoginWidget(),
+              appStateNotifier.loggedIn ? HomeScreen() : LoginWidget(),
           routes: [
             FFRoute(
               name: 'Login',
               path: 'login',
               builder: (context, params) => LoginWidget(),
+            ),
+            FFRoute(
+              name: 'addCompanyDetails',
+              path: 'addCompanyDetails',
+              builder: (context, params) => AddCompanyDetailsScreen(),
+            ),
+            FFRoute(
+              name: 'addContact',
+              path: 'addContact',
+              builder: (context, params) => AddContactScreen(),
             ),
             FFRoute(
               name: 'createAccount',
@@ -96,7 +108,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               path: 'home',
               builder: (context, params) => params.isEmpty
                   ? NavBarPage(initialPage: 'Home')
-                  : HomeWidget(),
+                  : HomeScreen(),
             ),
             FFRoute(
               name: 'Main_customerList',
@@ -322,13 +334,41 @@ class FFRoute {
                 )
               : builder(context, ffParams);
           final child = appStateNotifier.loading
-              ? Container(
-                  color: Colors.transparent,
-                  child: Image.asset(
-                    'assets/images/Smartify.png',
-                    fit: BoxFit.cover,
-                  ),
-                )
+              ? 
+               Scaffold(
+                backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+                 body: Center(
+                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                     children: [
+                       Image.asset(
+                      'assets/images/letter-s.png',
+                      height: 60,
+                    ),
+                    SizedBox(height: 20,),
+                       Padding(
+                         padding: const EdgeInsets.all(8.0),
+                         child: Text('Smartify CRM', style: FlutterFlowTheme.of(context).title1.override(
+                                              fontFamily: 'Outfit',
+                                              color: FlutterFlowTheme.of(context)
+                                                  .primaryColor,
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+              ),
+                       ),
+                     ],
+                   ),
+                 ),
+               )
+              // Container(
+              //     color: Colors.transparent,
+              //     child: Image.asset(
+              //       'assets/images/Smartify.png',
+              //       fit: BoxFit.cover,
+              //     ),
+              //   )
               : page;
 
           final transitionInfo = state.transitionInfo;

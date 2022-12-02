@@ -11,6 +11,7 @@ import 'flutter_flow/internationalization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'flutter_flow/nav/nav.dart';
 import 'index.dart';
+import 'presentation/presentation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -120,8 +121,8 @@ class _NavBarPageState extends State<NavBarPage> {
     final tabs = {
       'Home': HomeWidget(),
       'Main_customerList': MainCustomerListWidget(),
-      'Main_Contracts': MainContractsWidget(),
       'myTeam': MyTeamWidget(),
+      'Main_Contracts': MainContractsWidget(),
       'Main_profilePage': MainProfilePageWidget(),
     };
     final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
@@ -143,7 +144,7 @@ class _NavBarPageState extends State<NavBarPage> {
           selectedItemColor: FlutterFlowTheme.of(context).primaryColor,
           unselectedItemColor: FlutterFlowTheme.of(context).secondaryText,
           showSelectedLabels: true,
-          showUnselectedLabels: false,
+          showUnselectedLabels: true,
           type: BottomNavigationBarType.fixed,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -174,7 +175,21 @@ class _NavBarPageState extends State<NavBarPage> {
               ),
               tooltip: '',
             ),
-            BottomNavigationBarItem(
+           BottomNavigationBarItem(
+              icon: Icon(
+                Icons.list,
+                size: 24,
+              ),
+              activeIcon: Icon(
+                Icons.list,
+                size: 24,
+              ),
+              label: FFLocalizations.of(context).getText(
+                'smtxdnbn' /* __ */,
+              ),
+              tooltip: '',
+            ),
+             BottomNavigationBarItem(
               icon: Icon(
                 Icons.folder_copy,
                 size: 24,
@@ -188,27 +203,14 @@ class _NavBarPageState extends State<NavBarPage> {
               ),
               tooltip: '',
             ),
+            
             BottomNavigationBarItem(
               icon: Icon(
-                Icons.stream,
+                Icons.settings,
                 size: 24,
               ),
               activeIcon: Icon(
-                Icons.stream,
-                size: 24,
-              ),
-              label: FFLocalizations.of(context).getText(
-                'smtxdnbn' /* __ */,
-              ),
-              tooltip: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.account_circle_outlined,
-                size: 24,
-              ),
-              activeIcon: Icon(
-                Icons.account_circle,
+                Icons.settings,
                 size: 32,
               ),
               label: FFLocalizations.of(context).getText(

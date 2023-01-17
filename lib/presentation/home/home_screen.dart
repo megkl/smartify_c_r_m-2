@@ -3,11 +3,14 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:smartify_c_r_m/presentation/company_details/company_details_screen.dart';
 import 'package:smartify_c_r_m/presentation/contact/main_customer_list_widget.dart';
-import 'package:smartify_c_r_m/presentation/main_profile_page/add_company_details_screen.dart';
+import 'package:smartify_c_r_m/presentation/company_details/add_company_details_screen.dart';
+import 'package:smartify_c_r_m/presentation/invoice_details/invoice_details_screen.dart';
 import 'package:smartify_c_r_m/presentation/presentation.dart';
 
 import '../../flutter_flow/flutter_flow_theme.dart';
+import '../schedule/meeting/meetings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -43,42 +46,49 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Container(
           margin: EdgeInsets.all(12),
           child:  
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              StaggeredGrid.count(
-                            crossAxisCount: 4,
-                            mainAxisSpacing: 0,
-                            crossAxisSpacing: 0,
-                            children: [
-                              StaggeredGridTile.count(
-                                crossAxisCellCount: 2,
-                                mainAxisCellCount: 2,
-                                child: getMenus(0),
-                              ),
-                              StaggeredGridTile.count(
-                                crossAxisCellCount: 2,
-                                mainAxisCellCount: 2.5,
-                                child: getMenus(1),
-                              ),
-                              StaggeredGridTile.count(
-                                crossAxisCellCount: 2,
-                                mainAxisCellCount: 2.3,
-                                child: getMenus(2),
-                              ),
-                              StaggeredGridTile.count(
-                                crossAxisCellCount: 2,
-                                mainAxisCellCount: 1.8,
-                                child: getMenus(3),
-                              ),
-                              StaggeredGridTile.count(
-                                crossAxisCellCount: 4,
-                                mainAxisCellCount: 1.0,
-                                child: getMenus(4),
-                              ),
-                            ],
-                          ),
-            ],
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                StaggeredGrid.count(
+                              crossAxisCount: 4,
+                              mainAxisSpacing: 0,
+                              crossAxisSpacing: 0,
+                              children: [
+                                StaggeredGridTile.count(
+                                  crossAxisCellCount: 2,
+                                  mainAxisCellCount: 2,
+                                  child: getMenus(0),
+                                ),
+                                StaggeredGridTile.count(
+                                  crossAxisCellCount: 2,
+                                  mainAxisCellCount: 2.5,
+                                  child: getMenus(1),
+                                ),
+                                StaggeredGridTile.count(
+                                  crossAxisCellCount: 2,
+                                  mainAxisCellCount: 2.3,
+                                  child: getMenus(2),
+                                ),
+                                StaggeredGridTile.count(
+                                  crossAxisCellCount: 2,
+                                  mainAxisCellCount: 1.8,
+                                  child: getMenus(3),
+                                ),
+                                StaggeredGridTile.count(
+                                  crossAxisCellCount: 4,
+                                  mainAxisCellCount: 1.0,
+                                  child: getMenus(4),
+                                ),
+                                StaggeredGridTile.count(
+                                  crossAxisCellCount: 4,
+                                  mainAxisCellCount: 1.0,
+                                  child: getMenus(5),
+                                ),
+                              ],
+                            ),
+              ],
+            ),
           )),
       ),
     );
@@ -86,10 +96,11 @@ class _HomeScreenState extends State<HomeScreen> {
   getMenus(index){
     return GestureDetector(
       onTap: (){
-        index == 0? Navigator.of(context).push(MaterialPageRoute(builder: ((context) => AddCompanyDetailsScreen()))):
+        index == 0? Navigator.of(context).push(MaterialPageRoute(builder: ((context) => CompanyDetailsScreen()))):
         index == 1? Navigator.of(context).push(MaterialPageRoute(builder: ((context) => MainCustomerListWidget()))):
-        index == 2? Navigator.of(context).push(MaterialPageRoute(builder: ((context) => MainContractsWidget()))):
-        index == 3? Navigator.of(context).push(MaterialPageRoute(builder: ((context) => MyTeamWidget()))):
+        index == 2? Navigator.of(context).push(MaterialPageRoute(builder: ((context) => CalendarScheduleScreen()))):
+        index == 3? Navigator.of(context).push(MaterialPageRoute(builder: ((context) => InvoicedetailsScreen()))):
+        index == 4? Navigator.of(context).push(MaterialPageRoute(builder: ((context) => MainProfilePageWidget()))):
          Navigator.of(context).push(MaterialPageRoute(builder: ((context) => MainProfilePageWidget())));
       },
       child: Padding(
@@ -105,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
               borderRadius: const BorderRadius.all(Radius.circular(20))),
           child: 
-          index == 4?
+          index == 4 || index == 5?
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: 
@@ -196,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
    List<Menu> menus = [
     Menu(
         title: "COMPANY PROFILE",
-        subTitle: "Add company details",
+        subTitle: "Modify,view company details",
         icon: Icons.location_city,
         iconBgColor: Color.fromARGB(255, 226, 136, 26)
     ),
@@ -212,10 +223,15 @@ class _HomeScreenState extends State<HomeScreen> {
         iconBgColor:Color.fromARGB(255, 3, 50, 120),
         icon: Icons.calendar_month),
     Menu(
-        title: "QUOTATION",
-        subTitle: "Add and customize your quotations",
+        title: "INVOICE",
+        subTitle: "Add and customize your invoice & quotations",
         iconBgColor: Colors.black,
         icon: FontAwesomeIcons.fileInvoice),
+     Menu(
+        title: "ANALYTICS",
+        subTitle: "Reports section",
+        iconBgColor: Colors.white,
+        icon: Icons.stacked_line_chart),
     Menu(
         title: "SETTINGS",
         subTitle: "Configure your settings",

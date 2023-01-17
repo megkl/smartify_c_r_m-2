@@ -302,7 +302,7 @@ class DesktopTypography extends Typography {
 
 class DarkModeTheme extends FlutterFlowTheme {
   //late Color primaryColor = const Color(0xFF23A8FF);
-  late Color primaryColor = const Color(0xFFD68681);
+  late Color primaryColor = const Color(0xFF296D98);
   late Color secondaryColor = const Color(0xFF18AA99);
   late Color tertiaryColor = const Color(0xFF827AE1);
   late Color alternate = const Color(0xFFFF5963);

@@ -18,5 +18,5 @@ export 'contact/widget/contact_list.dart' show ContactsList;
 export 'main_profile_page/main_profile_page_widget.dart' show MainProfilePageWidget;
 export 'my_team/my_team_widget.dart' show MyTeamWidget;
 export 'user_details/user_details_widget.dart' show UserDetailsWidget; 
-export 'main_profile_page/add_company_details_screen.dart' show AddCompanyDetailsScreen; 
+export 'company_details/add_company_details_screen.dart' show AddCompanyDetailsScreen; 
 export 'contact/add_contact_screen.dart' show AddContactScreen; 

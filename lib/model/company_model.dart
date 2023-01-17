@@ -11,6 +11,7 @@ String companyModelToJson(CompanyModel data) => json.encode(data.toJson());
 
 class CompanyModel {
     CompanyModel({
+        this.id,
         this.companyName,
         this.contactName,
         this.photoUrl,
@@ -20,8 +21,9 @@ class CompanyModel {
         this.companyAddress,
         this.companyLocation,
         this.companyWebsite,
+        this.paypal
     });
-
+    int? id;
     String? companyName;
     String? contactName;
     Uint8List? photoUrl;
@@ -31,8 +33,10 @@ class CompanyModel {
     String? companyAddress;
     String? companyLocation;
     String? companyWebsite;
+    String? paypal;
 
     factory CompanyModel.fromJson(Map<String, dynamic> json) => CompanyModel(
+        id: json["id"],
         companyName: json["companyName"],
         contactName: json["contactName"],
         photoUrl: json["photoUrl"],
@@ -45,6 +49,7 @@ class CompanyModel {
     );
 
     Map<String, dynamic> toJson() => {
+        "id": id,
         "companyName": companyName,
         "contactName": contactName,
         "photoUrl": photoUrl,

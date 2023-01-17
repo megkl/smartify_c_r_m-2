@@ -184,7 +184,7 @@ class _MainProfilePageWidgetState extends State<MainProfilePageWidget>
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                    IconButton(onPressed: (){
-                          Navigator.pop(context);
+                         context.pushNamed('Home');
                         }, icon: Icon(Icons.arrow_back_ios)),
                                   Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(

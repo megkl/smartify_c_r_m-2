@@ -2,18 +2,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'auth_util.dart';
-
 final _googleSignIn = GoogleSignIn();
 
 Future<User?> signInWithGoogle(BuildContext context) async {
+ 
   final signInFunc = () async {
     if (kIsWeb) {
       // Once signed in, return the UserCredential
       return await FirebaseAuth.instance.signInWithPopup(GoogleAuthProvider());
     }
-
+    
     await signOutWithGoogle().catchError((_) => null);
     final auth = await (await _googleSignIn.signIn())?.authentication;
     if (auth == null) {
@@ -30,3 +30,10 @@ Future signOutWithGoogle(){
   //FirebaseAuth.instance.signOut();
   return _googleSignIn.signOut();
   }
+void prompt(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}

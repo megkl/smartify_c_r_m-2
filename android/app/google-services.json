@@ -37,6 +37,13 @@
             {
               "client_id": "519615782292-o59g2cbf7u0r3mcij5qkvbu0sulq4prm.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "519615782292-lptejc3jjo1u472vv0tmtm20ms96nvl7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.smartify.crmapp"
+              }
             }
           ]
         }

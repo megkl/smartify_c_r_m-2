@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:smartify_c_r_m/presentation/company_details/company_details_screen.dart';
+import 'package:smartify_c_r_m/presentation/invoice_details/add_invoice_screen.dart';
+import 'package:smartify_c_r_m/presentation/invoice_details/invoice_details_screen.dart';
 import '../../presentation/home/home_screen.dart';
 import '../../presentation/presentation.dart';
 import '../flutter_flow_theme.dart';
@@ -89,6 +92,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => AddCompanyDetailsScreen(),
             ),
             FFRoute(
+              name: 'invoiceDetails',
+              path: 'invoiceDetails',
+              builder: (context, params) => InvoicedetailsScreen(),
+            ),
+            // FFRoute(
+            //   name: 'addInvoiceDetails',
+            //   path: 'addInvoiceDetails',
+            //   builder: (context, params) => AddInvoiceDetails(),
+            // ),
+            FFRoute(
               name: 'addContact',
               path: 'addContact',
               builder: (context, params) => AddContactScreen(),
@@ -143,6 +156,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'userDetails',
               path: 'userDetails',
               builder: (context, params) => UserDetailsWidget(),
+            ),
+             FFRoute(
+              name: 'companyDetails',
+              path: 'companyDetails',
+              builder: (context, params) => CompanyDetailsScreen(),
             ),
             FFRoute(
               name: 'editProfile',

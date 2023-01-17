@@ -257,7 +257,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
     ),
   };
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  final db = ContactDatabaseHelper();
+  //final db = ContactDatabaseHelper();
   String? contactGroup;
   int currentIndex = 0;
 
@@ -499,7 +499,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                         .primaryBackground,
                                               ),
                                               child: FutureBuilder(
-                                                future: db.getAllContact(),
+                                                //future: db.getAllContact(),
                                                 initialData: const [],
                                                 builder: (BuildContext context,
                                                     AsyncSnapshot<List>
@@ -665,7 +665,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                         .primaryBackground,
                                               ),
                                               child: FutureBuilder(
-                                                future: db.getAllContact(),
+                                                //future: db.getAllContact(),
                                                 initialData: const [],
                                                 builder: (BuildContext context,
                                                     AsyncSnapshot<List>
@@ -831,7 +831,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                         .primaryBackground,
                                               ),
                                               child: FutureBuilder(
-                                                future: db.getAllContact(),
+                                                //future: db.getAllContact(),
                                                 initialData: const [],
                                                 builder: (BuildContext context,
                                                     AsyncSnapshot<List>

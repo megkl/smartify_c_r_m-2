@@ -10,7 +10,10 @@ class ContactDatabaseHelper {
 
   factory ContactDatabaseHelper() => _instance;
 
-  final String tableContactModel = 'contactTable';
+  final String tableContact = 'contactTable';
+  final String tableCompany = 'companyTable';
+  final String tableTeam = 'TeamTable';
+  final String tableContactModel = 'ProductTable';
   
   final String columnId = 'id';
   final String columnFullName = 'fullName';
@@ -52,7 +55,11 @@ class ContactDatabaseHelper {
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
         'CREATE TABLE $tableContactModel($columnId INTEGER PRIMARY KEY, $columnFullName TEXT,$columnUserId TEXT, $columnJobTitle TEXT,$columnCompanyName, TEXT, $columnPhoneNumbers TEXT, $columnEmails TEXT, $columnWebsite TEXT,  $columnOtherInformation TEXT, $columnLocation TEXT,$columnGroup TEXT,$columnCreatedAt TEXT,$columnUpdatedAt TEXT)');
-        
+     await db.execute(
+        'CREATE TABLE $tableContactModel($columnId INTEGER PRIMARY KEY, $columnFullName TEXT,$columnUserId TEXT, $columnJobTitle TEXT,$columnCompanyName, TEXT, $columnPhoneNumbers TEXT, $columnEmails TEXT, $columnWebsite TEXT,  $columnOtherInformation TEXT, $columnLocation TEXT,$columnGroup TEXT,$columnCreatedAt TEXT,$columnUpdatedAt TEXT)');
+     await db.execute(
+        'CREATE TABLE $tableContactModel($columnId INTEGER PRIMARY KEY, $columnFullName TEXT,$columnUserId TEXT, $columnJobTitle TEXT,$columnCompanyName, TEXT, $columnPhoneNumbers TEXT, $columnEmails TEXT, $columnWebsite TEXT,  $columnOtherInformation TEXT, $columnLocation TEXT,$columnGroup TEXT,$columnCreatedAt TEXT,$columnUpdatedAt TEXT)');
+            
   }
 
   Future<ContactModel> saveContact(ContactModel contact) async {

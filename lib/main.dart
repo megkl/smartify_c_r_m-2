@@ -2,13 +2,19 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:smartify_c_r_m/backend/service_account_json.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'auth/firebase_user_provider.dart';
 import 'auth/auth_util.dart';
+import 'package:googleapis/calendar/v3.dart' as cal;
+import 'package:http/http.dart' as http;
 
+import 'backend/calendar_client.dart';
+import 'backend/secrets.dart';
 import 'flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'flutter_flow/nav/nav.dart';
 import 'index.dart';
 import 'presentation/presentation.dart';
@@ -17,10 +23,28 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FlutterFlowTheme.initialize();
-
+  obtainCredentials();
+  // await clientViaUserConsent(_clientID, _scopes, prompt).then((AuthClient client) async {
+  //   CalendarClient.calendar = cal.CalendarApi(client);
+  // });
   runApp(MyApp());
 }
-
+Future<AuthClient> obtainCredentials() async {
+  var _clientID = new ClientId(Secret.ANDROID_CLIENT_ID, "");
+  const _scopes = const [cal.CalendarApi.calendarScope];
+  final accountCredentials = ServiceAccountCredentials.fromJson(ServiceAccount.serviceAccJson);
+  
+  AuthClient client = await clientViaServiceAccount(accountCredentials, _scopes);
+  CalendarClient.calendar = cal.CalendarApi(client);
+  return client;
+}
+void prompt(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   @override

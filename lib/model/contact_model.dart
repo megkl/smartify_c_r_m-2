@@ -23,6 +23,7 @@ class ContactModel {
         this.website,
         this.contactGroup,
         this.userId,
+        this.address,
         this.createdAt,
         this.updatedAt,
         this.otherInfo,
@@ -41,6 +42,7 @@ class ContactModel {
     String? createdAt;
     String? updatedAt;
     String? otherInfo;
+    String? address;
 
     factory ContactModel.fromMap(Map<String, dynamic> json) => ContactModel(
         id: json["id"],

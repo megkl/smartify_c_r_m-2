@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:go_router/go_router.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/add_invoice_screen.dart';
@@ -11,6 +12,7 @@ import 'package:smartify_c_r_m/presentation/invoice_details/tabs/customers_scree
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/products_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/review_invoice.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/terms_screen.dart';
+import '../../database/profile_database_helper.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
 import '../../model/invoice_model.dart';
 
@@ -24,7 +26,7 @@ class InvoicedetailsScreen extends StatefulWidget {
 class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
-
+  
   @override
   void initState() {
     tabController = TabController(length: 5, vsync: this);
@@ -46,6 +48,11 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
         elevation: 0,
         backgroundColor: kPrimaryColor,
         title: Text('New Invoice'),
+        leading: IconButton(
+          onPressed: (){
+            context.pushNamed('home');
+          },
+          icon: Icon(Icons.arrow_back),),
         bottom: TabBar(
           unselectedLabelColor: Colors.white,
           labelColor: Colors.white,

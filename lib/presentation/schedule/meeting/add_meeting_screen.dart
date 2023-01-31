@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:go_router/go_router.dart';
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:intl/intl.dart';
+import 'package:smartify_c_r_m/database/meet_database_helper.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../../../backend/calendar_client.dart';
 import '../../../backend/firebase_storage/calendar_api.dart';
@@ -21,13 +24,13 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
   Storage storage = Storage();
   CalendarClient calendarClient = CalendarClient();
 
-  TextEditingController? textControllerDate;
-  TextEditingController? textControllerStartTime;
-  TextEditingController? textControllerEndTime;
-  TextEditingController? textControllerTitle;
-  TextEditingController? textControllerDesc;
-  TextEditingController? textControllerLocation;
-  TextEditingController? textControllerAttendee;
+  TextEditingController? textControllerDate = TextEditingController();
+  TextEditingController? textControllerStartTime = TextEditingController();
+  TextEditingController? textControllerEndTime = TextEditingController();
+  TextEditingController? textControllerTitle = TextEditingController();
+  TextEditingController? textControllerDesc = TextEditingController();
+  TextEditingController? textControllerLocation = TextEditingController();
+  TextEditingController? textControllerAttendee = TextEditingController();
 
   FocusNode? textFocusNodeTitle;
   FocusNode? textFocusNodeDesc;
@@ -939,151 +942,179 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                       ],
                     ),
                     SizedBox(height: 30),
-                    Container(
-                      width: double.maxFinite,
-                      child: RaisedButton(
-                        elevation: 0,
-                        focusElevation: 0,
-                        highlightElevation: 0,
-                        color: kPrimaryColor,
-                        onPressed: isDataStorageInProgress
-                            ? null
-                            : () async {
-                                setState(() {
-                                  isErrorTime = false;
-                                  isDataStorageInProgress = true;
-                                });
-
-                                textFocusNodeTitle!.unfocus();
-                                textFocusNodeDesc!.unfocus();
-                                textFocusNodeLocation!.unfocus();
-                                textFocusNodeAttendee!.unfocus();
-
-                                if (selectedDate != null &&
-                                    selectedStartTime != null &&
-                                    selectedEndTime != null &&
-                                    currentTitle != null) {
-                                  int startTimeInEpoch = DateTime(
-                                    selectedDate.year,
-                                    selectedDate.month,
-                                    selectedDate.day,
-                                    selectedStartTime.hour,
-                                    selectedStartTime.minute,
-                                  ).millisecondsSinceEpoch;
-
-                                  int endTimeInEpoch = DateTime(
-                                    selectedDate.year,
-                                    selectedDate.month,
-                                    selectedDate.day,
-                                    selectedEndTime.hour,
-                                    selectedEndTime.minute,
-                                  ).millisecondsSinceEpoch;
-
-                                  print('DIFFERENCE: ${endTimeInEpoch - startTimeInEpoch}');
-
-                                  print('Start Time: ${DateTime.fromMillisecondsSinceEpoch(startTimeInEpoch)}');
-                                  print('End Time: ${DateTime.fromMillisecondsSinceEpoch(endTimeInEpoch)}');
-
-                                  if (endTimeInEpoch - startTimeInEpoch > 0) {
-                                    if (_validateTitle(currentTitle) == null) {
-                                      await calendarClient
-                                          .insert(
-                                              title: currentTitle!,
-                                              description: currentDesc ?? '',
-                                              location: currentLocation??'',
-                                              attendeeEmailList: attendeeEmails,
-                                              shouldNotifyAttendees: shouldNofityAttendees,
-                                              hasConferenceSupport: hasConferenceSupport,
-                                              startTime: DateTime.fromMillisecondsSinceEpoch(startTimeInEpoch),
-                                              endTime: DateTime.fromMillisecondsSinceEpoch(endTimeInEpoch))
-                                          .then((eventData) async {
-                                        String eventId = eventData['id']!;
-                                        String eventLink = eventData['link']!;
-
-                                        List<String> emails = [];
-
-                                        for (int i = 0; i < attendeeEmails.length; i++)
-                                          emails.add(attendeeEmails[i].email!);
-
-                                        EventInfo eventInfo = EventInfo(
-                                          id: eventId,
-                                          name: currentTitle!,
-                                          description: currentDesc ?? '',
-                                          location: currentLocation!,
-                                          link: eventLink,
-                                          attendeeEmails: emails,
-                                          shouldNotifyAttendees: shouldNofityAttendees,
-                                          hasConfereningSupport: hasConferenceSupport,
-                                          startTimeInEpoch: startTimeInEpoch,
-                                          endTimeInEpoch: endTimeInEpoch,
-                                        );
-
-                                        await storage
-                                            .storeEventData(eventInfo)
-                                            .whenComplete(() => Navigator.of(context).pop())
-                                            .catchError(
-                                              (e) => print(e),
-                                            );
-                                      }).catchError(
-                                        (e) => print(e),
-                                      );
-
-                                      setState(() {
-                                        isDataStorageInProgress = false;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        isEditingTitle = true;
-                                        isEditingLink = true;
-                                      });
-                                    }
-                                  } else {
-                                    setState(() {
-                                      isErrorTime = true;
-                                      errorString = 'Invalid time! Please use a proper start and end time';
-                                    });
-                                  }
-                                } else {
-                                  setState(() {
-                                    isEditingDate = true;
-                                    isEditingStartTime = true;
-                                    isEditingEndTime = true;
-                                    isEditingBatch = true;
-                                    isEditingTitle = true;
-                                    isEditingLink = true;
-                                  });
-                                }
-                                setState(() {
-                                  isDataStorageInProgress = false;
-                                });
-                              },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                          child: isDataStorageInProgress
-                              ? SizedBox(
-                                  height: 28,
-                                  width: 28,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
-                                )
-                              : Text(
-                                  'ADD',
-                                  style: FlutterFlowTheme.of(context).title3
-                                                      .override(
-                                                        fontFamily: 'Outfit',
-                                                        color: Colors.white,
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
-                                ),
+                       Material(
+                      color: FlutterFlowTheme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(8),
+                      child: InkWell(
+                        onTap: (){
+                          addEveent();
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(seconds: 1),
+                          width: 160,
+                          height: 50,
+                          alignment: Alignment.center,
+                          child: "Save"
+                              .text
+                              .textStyle(
+                                FlutterFlowTheme.of(context).title2.override(
+                                      fontFamily: 'Outfit',
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              )
+                              .make(),
                         ),
                       ),
-                    ),
+                    ).centered(),
+                  
+                    // Container(
+                    //   width: double.maxFinite,
+                    //   child: RaisedButton(
+                    //     elevation: 0,
+                    //     focusElevation: 0,
+                    //     highlightElevation: 0,
+                    //     color: kPrimaryColor,
+                    //     onPressed: isDataStorageInProgress
+                    //         ? null
+                    //         : () async {
+                    //             setState(() {
+                    //               isErrorTime = false;
+                    //               isDataStorageInProgress = true;
+                    //             });
+
+                    //             textFocusNodeTitle!.unfocus();
+                    //             textFocusNodeDesc!.unfocus();
+                    //             textFocusNodeLocation!.unfocus();
+                    //             textFocusNodeAttendee!.unfocus();
+
+                    //             if (selectedDate != null &&
+                    //                 selectedStartTime != null &&
+                    //                 selectedEndTime != null &&
+                    //                 currentTitle != null) {
+                    //               int startTimeInEpoch = DateTime(
+                    //                 selectedDate.year,
+                    //                 selectedDate.month,
+                    //                 selectedDate.day,
+                    //                 selectedStartTime.hour,
+                    //                 selectedStartTime.minute,
+                    //               ).millisecondsSinceEpoch;
+
+                    //               int endTimeInEpoch = DateTime(
+                    //                 selectedDate.year,
+                    //                 selectedDate.month,
+                    //                 selectedDate.day,
+                    //                 selectedEndTime.hour,
+                    //                 selectedEndTime.minute,
+                    //               ).millisecondsSinceEpoch;
+
+                    //               print('DIFFERENCE: ${endTimeInEpoch - startTimeInEpoch}');
+
+                    //               print('Start Time: ${DateTime.fromMillisecondsSinceEpoch(startTimeInEpoch)}');
+                    //               print('End Time: ${DateTime.fromMillisecondsSinceEpoch(endTimeInEpoch)}');
+
+                    //               if (endTimeInEpoch - startTimeInEpoch > 0) {
+                    //                 if (_validateTitle(currentTitle) == null) {
+                    //                   await calendarClient
+                    //                       .insert(
+                    //                           title: currentTitle!,
+                    //                           description: currentDesc ?? '',
+                    //                           location: currentLocation??'',
+                    //                           attendeeEmailList: attendeeEmails,
+                    //                           shouldNotifyAttendees: shouldNofityAttendees,
+                    //                           hasConferenceSupport: hasConferenceSupport,
+                    //                           startTime: DateTime.fromMillisecondsSinceEpoch(startTimeInEpoch),
+                    //                           endTime: DateTime.fromMillisecondsSinceEpoch(endTimeInEpoch))
+                    //                       .then((eventData) async {
+                    //                     String eventId = eventData['id']!;
+                    //                     String eventLink = eventData['link']!;
+
+                    //                     List<String> emails = [];
+
+                    //                     for (int i = 0; i < attendeeEmails.length; i++)
+                    //                       emails.add(attendeeEmails[i].email!);
+
+                    //                     EventInfo eventInfo = EventInfo(
+                    //                       id: int.parse(eventId),
+                    //                       name: currentTitle!,
+                    //                       description: currentDesc ?? '',
+                    //                       location: currentLocation!,
+                    //                       link: eventLink,
+                    //                       attendeeEmails: emails,
+                    //                       shouldNotifyAttendees: shouldNofityAttendees,
+                    //                       hasConfereningSupport: hasConferenceSupport,
+                    //                       startTimeInEpoch: startTimeInEpoch,
+                    //                       endTimeInEpoch: endTimeInEpoch,
+                    //                     );
+
+                    //                     await storage
+                    //                         .storeEventData(eventInfo)
+                    //                         .whenComplete(() => Navigator.of(context).pop())
+                    //                         .catchError(
+                    //                           (e) => print(e),
+                    //                         );
+                    //                   }).catchError(
+                    //                     (e) => print(e),
+                    //                   );
+
+                    //                   setState(() {
+                    //                     isDataStorageInProgress = false;
+                    //                   });
+                    //                 } else {
+                    //                   setState(() {
+                    //                     isEditingTitle = true;
+                    //                     isEditingLink = true;
+                    //                   });
+                    //                 }
+                    //               } else {
+                    //                 setState(() {
+                    //                   isErrorTime = true;
+                    //                   errorString = 'Invalid time! Please use a proper start and end time';
+                    //                 });
+                    //               }
+                    //             } else {
+                    //               setState(() {
+                    //                 isEditingDate = true;
+                    //                 isEditingStartTime = true;
+                    //                 isEditingEndTime = true;
+                    //                 isEditingBatch = true;
+                    //                 isEditingTitle = true;
+                    //                 isEditingLink = true;
+                    //               });
+                    //             }
+                    //             setState(() {
+                    //               isDataStorageInProgress = false;
+                    //             });
+                    //           },
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(10),
+                    //     ),
+                    //     child: Padding(
+                    //       padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                    //       child: isDataStorageInProgress
+                    //           ? SizedBox(
+                    //               height: 28,
+                    //               width: 28,
+                    //               child: CircularProgressIndicator(
+                    //                 strokeWidth: 2,
+                    //                 valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+                    //               ),
+                    //             )
+                    //           : Text(
+                    //               'ADD',
+                    //               style: FlutterFlowTheme.of(context).title3
+                    //                                   .override(
+                    //                                     fontFamily: 'Outfit',
+                    //                                     color: Colors.white,
+                    //                                     fontSize: 14,
+                    //                                     fontWeight: FontWeight.w500,
+                    //                                   ),
+                    //             ),
+                    //     ),
+                    //   ),
+                    // ),
+                    
                     Visibility(
                       visible: isErrorTime,
                       child: Center(
@@ -1109,4 +1140,37 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
       ),
     );
   }
-}
+  void addEveent() async {
+
+      await addEvent();
+      //final isUpdating = widget.note != null;
+
+      // if (isUpdating) {
+      //   await updateNote();
+      // } else {
+      //   await addNote();
+      // }
+
+ context.pushNamed(
+                    'home');
+
+    }
+      Future addEvent() async {
+
+    final event = EventInfo(
+      name: textControllerTitle!.text,
+      description: textControllerDesc!.text,
+      startTimeInEpoch: textControllerStartTime!.text,
+      endTimeInEpoch: textControllerEndTime!.text,
+      link: '',
+      date: textControllerDate!.text,
+      location: textControllerLocation!.text,
+      //attendeeEmails: [textControllerAttendee!.text]
+     );
+
+    await MeetingsDatabaseHelper().saveMeetings(event);
+  }
+
+  }
+
+

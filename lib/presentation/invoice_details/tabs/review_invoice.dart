@@ -234,14 +234,14 @@ class _ReviewInvoiceScreenState extends State<ReviewInvoiceScreen> {
       DataColumn(label: Text('Total'))
     ];
     final data = invoice.items.map((item) {
-      final total = item.unitPrice * item.quantity * (1 + item.vat);
+      final total = item.unitPrice! * item.quantity! * (1 + item.vat!);
 
       return DataRow(cells:[
-        DataCell(Text(item.description)),
-        DataCell(Text(Utils.formatDate(item.date))),
+        DataCell(Text(item.description!)),
+        DataCell(Text(Utils.formatDate(item.date!))),
         DataCell(Text('${item.quantity}')),
         DataCell(Text('\KES ${item.unitPrice}')),
-        DataCell(Text('${item.vat*100} %')),
+        DataCell(Text('${item.vat!*100} %')),
         DataCell(Text('\KES ${total.toStringAsFixed(2)}')),
   ]);
     }).toList();
@@ -253,11 +253,11 @@ class _ReviewInvoiceScreenState extends State<ReviewInvoiceScreen> {
 
   static Widget buildTotal(Invoice invoice) {
     final netTotal = invoice.items
-        .map((item) => item.unitPrice * item.quantity)
+        .map((item) => item.unitPrice! * item.quantity!)
         .reduce((item1, item2) => item1 + item2);
     final vatPercent = invoice.items.first.vat;
     final discountPercent = invoice.items.first.discount;
-    final vat = netTotal * vatPercent;
+    final vat = netTotal * vatPercent!;
     final total = netTotal + vat;
 
     return Container(
@@ -281,7 +281,7 @@ class _ReviewInvoiceScreenState extends State<ReviewInvoiceScreen> {
                   unite: true,
                 ),
                 buildText(
-                  title: 'Discount ${discountPercent * 100} %',
+                  title: 'Discount ${discountPercent! * 100} %',
                   value: Utils.formatPrice(vat),
                   unite: true,
                 ),

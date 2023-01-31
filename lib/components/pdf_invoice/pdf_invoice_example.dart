@@ -125,11 +125,11 @@ class PdfInvoiceApi {
       'Total'
     ];
     final data = invoice.items.map((item) {
-      final total = item.unitPrice * item.quantity * (1 + item.vat);
+      final total = item.unitPrice! * item.quantity! * (1 + item.vat!);
 
       return [
         item.description,
-        Utils.formatDate(item.date),
+        Utils.formatDate(item.date!),
         '${item.quantity}',
         '\$ ${item.unitPrice}',
         '${item.vat} %',
@@ -157,11 +157,11 @@ class PdfInvoiceApi {
 
   static Widget buildTotal(Invoice invoice) {
     final netTotal = invoice.items
-        .map((item) => item.unitPrice * item.quantity)
+        .map((item) => item.unitPrice! * item.quantity!)
         .reduce((item1, item2) => item1 + item2);
     final vatPercent = invoice.items.first.vat;
     final discountPercent = invoice.items.first.discount;
-    final vat = netTotal * vatPercent;
+    final vat = netTotal * vatPercent!;
     final total = netTotal + vat;
 
     return Container(
@@ -185,7 +185,7 @@ class PdfInvoiceApi {
                   unite: true,
                 ),
                 buildText(
-                  title: 'Discount ${discountPercent * 100} %',
+                  title: 'Discount ${discountPercent! * 100} %',
                   value: Utils.formatPrice(vat),
                   unite: true,
                 ),

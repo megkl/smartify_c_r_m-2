@@ -3,23 +3,51 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:smartify_c_r_m/database/contact_database_helper.dart';
+import 'package:smartify_c_r_m/database/meet_database_helper.dart';
+import 'package:smartify_c_r_m/database/products_database_helper.dart';
 import 'package:smartify_c_r_m/presentation/company_details/company_details_screen.dart';
 import 'package:smartify_c_r_m/presentation/contact/main_customer_list_widget.dart';
 import 'package:smartify_c_r_m/presentation/company_details/add_company_details_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/invoice_details_screen.dart';
 import 'package:smartify_c_r_m/presentation/presentation.dart';
 
+import '../../auth/firebase_user_provider.dart';
+import '../../database/profile_database_helper.dart';
+import '../../database/team_database_helper.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
 import '../schedule/meeting/meetings_screen.dart';
 
+var companyProfile;
+var teamList;
+var eventsList;
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
+   
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final profileDb = CompanyDatabaseHelper();
+  final teamDb = TeamDatabaseHelper();
+  final productsDb = ProductDatabaseHelper();
+  final customersDb = ContactDatabaseHelper();
+  final eventsDb = MeetingsDatabaseHelper();
+  
+  void initState(){
+    super.initState();
+    getProfile();        
+  }
+
+  void getProfile() async {
+  companyProfile = await profileDb.getCompanyById(1);
+  //companyProfile = await profileDb.getCompanyByUserId(currentUser!.user!.uid);
+
+  teamList = await teamDb.getAllTeam();
+  eventsList = await eventsDb.getAllMeetings();
+  }
   @override
   Widget build(BuildContext context) {
    return SafeArea(

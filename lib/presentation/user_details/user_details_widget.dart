@@ -15,7 +15,7 @@ import '../../flutter_flow/internationalization.dart';
 
 class UserDetailsWidget extends StatefulWidget {
   const UserDetailsWidget({Key? key}) : super(key: key);
-
+  
   @override
   _UserDetailsWidgetState createState() => _UserDetailsWidgetState();
 }

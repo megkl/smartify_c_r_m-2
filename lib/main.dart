@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 
 import 'backend/calendar_client.dart';
 import 'backend/secrets.dart';
+import 'database/profile_database_helper.dart';
 import 'flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
@@ -23,6 +24,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FlutterFlowTheme.initialize();
+  
   obtainCredentials();
   // await clientViaUserConsent(_clientID, _scopes, prompt).then((AuthClient client) async {
   //   CalendarClient.calendar = cal.CalendarApi(client);
@@ -110,7 +112,7 @@ class _MyAppState extends State<MyApp> {
         Locale('ms'),
       ],
       theme: ThemeData(brightness: Brightness.light),
-      darkTheme: ThemeData(brightness: Brightness.dark),
+      darkTheme: ThemeData(brightness: Brightness.dark, fontFamily: 'Outfit'),
       themeMode: _themeMode,
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,

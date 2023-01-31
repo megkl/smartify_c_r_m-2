@@ -7,6 +7,9 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:smartify_c_r_m/auth/auth_util.dart';
 import 'package:smartify_c_r_m/database/contact_database_helper.dart';
+import 'package:smartify_c_r_m/presentation/company_details/team/team_list_screen.dart';
+import 'package:smartify_c_r_m/presentation/home/home_screen.dart';
+import 'package:smartify_c_r_m/presentation/invoice_details/tabs/products_screen.dart';
 import '../../components/command_palette_widget.dart';
 import '../../components/web_nav_widget.dart';
 import '../../flutter_flow/flutter_flow_animations.dart';
@@ -19,6 +22,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../model/contact_model.dart';
+import '../invoice_details/tabs/company_profile_screen.dart';
 
 
 class CompanyDetailsScreen extends StatefulWidget {
@@ -374,7 +378,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
                               children: [
                                 IconButton(
                                     onPressed: () {
-                                      context.pushNamed('Home');
+                                      context.pushNamed('home');
                                     },
                                     icon: Icon(Icons.arrow_back_ios)),
                                 Padding(
@@ -392,6 +396,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
                                             fontWeight: FontWeight.w500,
                                           )),
                                 ),
+                                
                                 if (responsiveVisibility(
                                   context: context,
                                   tabletLandscape: false,
@@ -475,6 +480,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
                                     Expanded(
                                       child: TabBarView(
                                         children: [
+                                    companyProfile.isEmpty? 
                                           Center(
                                            child: Container(
                                             height: 50,
@@ -484,360 +490,24 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
                                             onPressed: (){
                                             context.pushNamed('addCompanyDetails');
                                            }, child: Text('Add Company Profile')),)
-                                          ),
-                                          Center(
+                                          ):
+                                          EditCompanyProfileScreen(),
+                                         teamList.isEmpty? Center(
                                            child: Container(
                                             height: 50,
                                             width: 200,
                                             child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(primary: FlutterFlowTheme.of(context).primaryColor),
                                             onPressed: (){
-                                            context.pushNamed('addCompanyDetails');
+                                            context.pushNamed('addTeamMembers');
                                            }, child: Text('Add Team Member')),)
-                                          ),
-                                          Center(
-                                           child: Container(
-                                            height: 50,
-                                            width: 200,
-                                            child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(primary: FlutterFlowTheme.of(context).primaryColor),
-                                            onPressed: (){
-                                            context.pushNamed('addCompanyDetails');
-                                           }, child: Text('Add Products')),)
-                                          ),
-                                          // Padding(
-                                          //   padding:
-                                          //       EdgeInsetsDirectional.fromSTEB(
-                                          //           0, 0, 0, 24),
-                                          //   child: Container(
-                                          //     width: 100,
-                                          //     decoration: BoxDecoration(
-                                          //       color:
-                                          //           FlutterFlowTheme.of(context)
-                                          //               .primaryBackground,
-                                          //     ),
-                                          //     child: FutureBuilder(
-                                          //       future: db.getAllContact(),
-                                          //       initialData: const [],
-                                          //       builder: (BuildContext context,
-                                          //           AsyncSnapshot<List>
-                                          //               snapshot) {
-                                          //         var data = snapshot
-                                          //             .data!.where((element) => element['contactGroup'] == 'Lead').toList(); // this is the data we have to show. (list of todo)
-                                          //         var datalength = data.length;
-
-                                          //         return datalength == 0
-                                          //             ? const Center(
-                                          //                 child: Text(
-                                          //                     'no data found'),
-                                          //               )
-                                          //             : ListView.builder(
-                                          //                 itemCount: datalength,
-                                          //                 itemBuilder:
-                                          //                     (context, i) =>
-                                          //                         Padding(
-                                          //                   padding:
-                                          //                       EdgeInsetsDirectional
-                                          //                           .fromSTEB(
-                                          //                               16,
-                                          //                               8,
-                                          //                               16,
-                                          //                               0),
-                                          //                   child: InkWell(
-                                          //                     onTap: () async {
-                                          //                       context.pushNamed(
-                                          //                           'userDetails');
-                                          //                     },
-                                          //                     child: Container(
-                                          //                       width: double
-                                          //                           .infinity,
-                                          //                       decoration:
-                                          //                           BoxDecoration(
-                                          //                         color: FlutterFlowTheme.of(
-                                          //                                 context)
-                                          //                             .secondaryBackground,
-                                          //                         boxShadow: [
-                                          //                           BoxShadow(
-                                          //                             blurRadius:
-                                          //                                 3,
-                                          //                             color: Color(
-                                          //                                 0x20000000),
-                                          //                             offset:
-                                          //                                 Offset(
-                                          //                                     0,
-                                          //                                     1),
-                                          //                           )
-                                          //                         ],
-                                          //                         borderRadius:
-                                          //                             BorderRadius
-                                          //                                 .circular(
-                                          //                                     12),
-                                          //                       ),
-                                          //                       child: Padding(
-                                          //                         padding: EdgeInsetsDirectional
-                                          //                             .fromSTEB(
-                                          //                                 8,
-                                          //                                 8,
-                                          //                                 12,
-                                          //                                 8),
-                                          //                         child: Row(
-                                          //                           mainAxisSize:
-                                          //                               MainAxisSize
-                                          //                                   .max,
-                                          //                           crossAxisAlignment:
-                                          //                               CrossAxisAlignment
-                                          //                                   .center,
-                                          //                           children: [
-                                          //                             ClipRRect(
-                                          //                                 borderRadius:
-                                          //                                     BorderRadius.circular(8),
-                                          //                                 child: Container(
-                                          //                                     height: 40,
-                                          //                                     width: 40,
-                                          //                                     decoration: BoxDecoration(
-                                          //                                       color: FlutterFlowTheme.of(context).primaryColor,
-                                          //                                     ),
-                                          //                                     child: Center(
-                                          //                                       child: Text(
-                                          //                                         data[i]['fullName'][0].toString().toUpperCase(),
-                                          //                                         textAlign: TextAlign.center,
-                                          //                                         style: TextStyle(color: Colors.white),
-                                          //                                       ),
-                                          //                                     ))),
-                                          //                             Expanded(
-                                          //                               child:
-                                          //                                   Column(
-                                          //                                 mainAxisSize:
-                                          //                                     MainAxisSize.max,
-                                          //                                 crossAxisAlignment:
-                                          //                                     CrossAxisAlignment.start,
-                                          //                                 children: [
-                                          //                                   Padding(
-                                          //                                     padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                                          //                                     child: Text(
-                                          //                                       data[i]['fullName'].toString().toUpperCase(),
-                                          //                                       style: FlutterFlowTheme.of(context).subtitle1,
-                                          //                                     ),
-                                          //                                   ),
-                                          //                                   Padding(
-                                          //                                     padding: EdgeInsetsDirectional.fromSTEB(16, 2, 0, 0),
-                                          //                                     child: Text(
-                                          //                                       data[i]['jobTitle'].toString().toLowerCase(),
-                                          //                                       style: FlutterFlowTheme.of(context).bodyText2,
-                                          //                                     ),
-                                          //                                   ),
-                                          //                                   Padding(
-                                          //                                     padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                                          //                                     child: data[i]['phoneNumbers'] == null || data[i]['phoneNumbers'] ==[]?Text(
-                                          //                                       data[i]['phoneNumbers'].toString().toUpperCase(),
-                                          //                                       style: FlutterFlowTheme.of(context).bodyText2.override(
-                                          //                                             fontFamily: FlutterFlowTheme.of(context).bodyText2Family,
-                                          //                                             color: FlutterFlowTheme.of(context).primaryColor,
-                                          //                                             fontSize: 12,
-                                          //                                             useGoogleFonts: GoogleFonts.asMap().containsKey(FlutterFlowTheme.of(context).bodyText2Family),
-                                          //                                           ),
-                                          //                                     ):Text(''),
-                                          //                                   ),
-                                          //                                 ],
-                                          //                               ),
-                                          //                             ),
-                                          //                             GestureDetector(
-                                          //                               onTap: (){
-                                          //                                 },
-                                          //                               child: Container(
-                                          //                                 width: 50,
-                                          //                                 child: Icon(
-                                          //                                   FontAwesomeIcons
-                                          //                                       .ellipsisVertical,
-                                          //                                   color: FlutterFlowTheme.of(context)
-                                          //                                       .primaryColor,
-                                          //                                   size:
-                                          //                                       24,
-                                          //                                 ),
-                                          //                               ),
-                                          //                             ),
-                                          //                           ],
-                                          //                         ),
-                                          //                       ),
-                                          //                     ),
-                                          //                   ).animateOnPageLoad(
-                                          //                       animationsMap[
-                                          //                           'containerOnPageLoadAnimation1']!),
-                                          //                 ),
-                                          //               );
-                                          //       },
-                                          //     ),
-                                          //   ),
-                                          // ),
-                                          // Padding(
-                                          //   padding:
-                                          //       EdgeInsetsDirectional.fromSTEB(
-                                          //           0, 0, 0, 24),
-                                          //   child: Container(
-                                          //     width: 100,
-                                          //     decoration: BoxDecoration(
-                                          //       color:
-                                          //           FlutterFlowTheme.of(context)
-                                          //               .primaryBackground,
-                                          //     ),
-                                          //     child: FutureBuilder(
-                                          //       future: db.getAllContact(),
-                                          //       initialData: const [],
-                                          //       builder: (BuildContext context,
-                                          //           AsyncSnapshot<List>
-                                          //               snapshot) {
-                                          //         var data = snapshot
-                                          //             .data!.where((element) => element['contactGroup'] == 'Customer').toList(); // this is the data we have to show. (list of todo)
-                                          //         var datalength = data.length;
-
-                                          //         return datalength == 0
-                                          //             ? const Center(
-                                          //                 child: Text(
-                                          //                     'no data found'),
-                                          //               )
-                                          //             : ListView.builder(
-                                          //                 itemCount: datalength,
-                                          //                 itemBuilder:
-                                          //                     (context, i) =>
-                                          //                         Padding(
-                                          //                   padding:
-                                          //                       EdgeInsetsDirectional
-                                          //                           .fromSTEB(
-                                          //                               16,
-                                          //                               8,
-                                          //                               16,
-                                          //                               0),
-                                          //                   child: InkWell(
-                                          //                     onTap: () async {
-                                          //                       context.pushNamed(
-                                          //                           'userDetails');
-                                          //                     },
-                                          //                     child: Container(
-                                          //                       width: double
-                                          //                           .infinity,
-                                          //                       decoration:
-                                          //                           BoxDecoration(
-                                          //                         color: FlutterFlowTheme.of(
-                                          //                                 context)
-                                          //                             .secondaryBackground,
-                                          //                         boxShadow: [
-                                          //                           BoxShadow(
-                                          //                             blurRadius:
-                                          //                                 3,
-                                          //                             color: Color(
-                                          //                                 0x20000000),
-                                          //                             offset:
-                                          //                                 Offset(
-                                          //                                     0,
-                                          //                                     1),
-                                          //                           )
-                                          //                         ],
-                                          //                         borderRadius:
-                                          //                             BorderRadius
-                                          //                                 .circular(
-                                          //                                     12),
-                                          //                       ),
-                                          //                       child: Padding(
-                                          //                         padding: EdgeInsetsDirectional
-                                          //                             .fromSTEB(
-                                          //                                 8,
-                                          //                                 8,
-                                          //                                 12,
-                                          //                                 8),
-                                          //                         child: Row(
-                                          //                           mainAxisSize:
-                                          //                               MainAxisSize
-                                          //                                   .max,
-                                          //                           crossAxisAlignment:
-                                          //                               CrossAxisAlignment
-                                          //                                   .center,
-                                          //                           children: [
-                                          //                             ClipRRect(
-                                          //                                 borderRadius:
-                                          //                                     BorderRadius.circular(8),
-                                          //                                 child: Container(
-                                          //                                     height: 40,
-                                          //                                     width: 40,
-                                          //                                     decoration: BoxDecoration(
-                                          //                                       color: FlutterFlowTheme.of(context).primaryColor,
-                                          //                                     ),
-                                          //                                     child: Center(
-                                          //                                       child: Text(
-                                          //                                         data[i]['fullName'][0].toString().toUpperCase(),
-                                          //                                         textAlign: TextAlign.center,
-                                          //                                         style: TextStyle(color: Colors.white),
-                                          //                                       ),
-                                          //                                     ))),
-                                          //                             Expanded(
-                                          //                               child:
-                                          //                                   Column(
-                                          //                                 mainAxisSize:
-                                          //                                     MainAxisSize.max,
-                                          //                                 crossAxisAlignment:
-                                          //                                     CrossAxisAlignment.start,
-                                          //                                 children: [
-                                          //                                   Padding(
-                                          //                                     padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                                          //                                     child: Text(
-                                          //                                       data[i]['fullName'].toString().toUpperCase(),
-                                          //                                       style: FlutterFlowTheme.of(context).subtitle1,
-                                          //                                     ),
-                                          //                                   ),
-                                          //                                   Padding(
-                                          //                                     padding: EdgeInsetsDirectional.fromSTEB(16, 2, 0, 0),
-                                          //                                     child: Text(
-                                          //                                       data[i]['jobTitle'].toString().toLowerCase(),
-                                          //                                       style: FlutterFlowTheme.of(context).bodyText2,
-                                          //                                     ),
-                                          //                                   ),
-                                          //                                   Padding(
-                                          //                                     padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                                          //                                     child: data[i]['phoneNumbers'] == null || data[i]['phoneNumbers'] ==[]?Text(
-                                          //                                       data[i]['phoneNumbers'].toString().toUpperCase(),
-                                          //                                       style: FlutterFlowTheme.of(context).bodyText2.override(
-                                          //                                             fontFamily: FlutterFlowTheme.of(context).bodyText2Family,
-                                          //                                             color: FlutterFlowTheme.of(context).primaryColor,
-                                          //                                             fontSize: 12,
-                                          //                                             useGoogleFonts: GoogleFonts.asMap().containsKey(FlutterFlowTheme.of(context).bodyText2Family),
-                                          //                                           ),
-                                          //                                     ):Text(''),
-                                          //                                   ),
-                                          //                                 ],
-                                          //                               ),
-                                          //                             ),
-                                          //                             GestureDetector(
-                                          //                               onTap: (){
-                                                                        
-                                          //                               },
-                                          //                               child: Container(
-                                          //                                 width: 50,
-                                          //                                 child: Icon(
-                                          //                                   FontAwesomeIcons
-                                          //                                       .ellipsisVertical,
-                                          //                                   color: FlutterFlowTheme.of(context)
-                                          //                                       .primaryColor,
-                                          //                                   size:
-                                          //                                       24,
-                                          //                                 ),
-                                          //                               ),
-                                          //                             ),
-                                          //                           ],
-                                          //                         ),
-                                          //                       ),
-                                          //                     ),
-                                          //                   ).animateOnPageLoad(
-                                          //                       animationsMap[
-                                          //                           'containerOnPageLoadAnimation1']!),
-                                          //                 ),
-                                          //               );
-                                          //       },
-                                          //     ),
-                                          //   ),
-                                          // ),
+                                          ):TeamListScreen(),
+                                          ProductsScreen()
                                           
                                         ],
                                       ),
                                     ),
+                                  
                                   ],
                                 ),
                               ),

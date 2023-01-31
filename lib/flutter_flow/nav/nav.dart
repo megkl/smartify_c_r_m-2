@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:smartify_c_r_m/presentation/company_details/team/add_team_screen.dart';
 import 'package:smartify_c_r_m/presentation/company_details/company_details_screen.dart';
+import 'package:smartify_c_r_m/presentation/contact/contact_details_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/add_invoice_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/invoice_details_screen.dart';
 import '../../presentation/home/home_screen.dart';
@@ -92,6 +94,15 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => AddCompanyDetailsScreen(),
             ),
             FFRoute(
+              name: 'addTeamMembers',
+              path: 'addTeamMembers',
+              builder: (context, params) => AddTeamScreen(),
+            ),FFRoute(
+              name: 'addProducts',
+              path: 'addProducts',
+              builder: (context, params) => AddCompanyDetailsScreen(),
+            ),
+            FFRoute(
               name: 'invoiceDetails',
               path: 'invoiceDetails',
               builder: (context, params) => InvoicedetailsScreen(),
@@ -116,6 +127,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               path: 'forgotPassword',
               builder: (context, params) => ForgotPasswordWidget(),
             ),
+             FFRoute(
+              name: 'Main_customerList',
+              path: 'mainCustomerList',
+              builder: (context, params) => MainCustomerListWidget(),
+            ),
             FFRoute(
               name: 'Home',
               path: 'home',
@@ -125,8 +141,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                   : HomeScreen(),
             ),
             FFRoute(
-              name: 'Main_customerList',
-              path: 'mainCustomerList',
+              name: 'Main1_customerList',
+              path: 'mainCustomerList1',
               builder: (context, params) => params.isEmpty
                   ? NavBarPage(initialPage: 'Main_customerList')
                   : MainCustomerListWidget(),
@@ -156,6 +172,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'userDetails',
               path: 'userDetails',
               builder: (context, params) => UserDetailsWidget(),
+            ),
+            FFRoute(
+              name: 'contactDetails',
+              path: 'contactDetails',
+              builder: (context, params) => ContactDetailsScreen(),
             ),
              FFRoute(
               name: 'companyDetails',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:smartify_c_r_m/database/meet_database_helper.dart';
 import 'package:smartify_c_r_m/flutter_flow/flutter_flow_theme.dart';
 import 'package:smartify_c_r_m/presentation/schedule/meeting/add_meeting_screen.dart';
 import 'package:smartify_c_r_m/presentation/schedule/meeting/edit_delete_screen.dart';
@@ -18,6 +19,8 @@ class CalendarScheduleScreen extends StatefulWidget {
 
 class _CalendarScheduleScreenState extends State<CalendarScheduleScreen> {
   Storage? storage = Storage();
+  final db = MeetingsDatabaseHelper();
+
   @override
   Widget build(BuildContext context) {
      var kPrimaryColor = FlutterFlowTheme.of(context).primaryColor;
@@ -46,28 +49,36 @@ class _CalendarScheduleScreenState extends State<CalendarScheduleScreen> {
           left: 16.0,
           right: 16.0,
         ),
-        child: Container(
+        child: 
+        Container(
           padding: EdgeInsets.only(top: 8.0),
           color: Colors.white,
-          child: StreamBuilder(
-            stream: storage!.retrieveEvents(),
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                if (snapshot.data!.docs.length > 0) {
-                  return ListView.builder(
+          child: FutureBuilder(
+                                                future: db.getAllMeetings(),
+                                                initialData: const [],
+                                                builder: (BuildContext context,
+                                                    AsyncSnapshot<List>
+                                                        snapshot) {
+                                                  var data = snapshot
+                                                      .data;
+                                                      print(data);
+                                                       {
+                 return 
+                 data!.isNotEmpty? 
+                 ListView.builder(
                     physics: BouncingScrollPhysics(),
-                    itemCount: snapshot.data?.docs.length,
+                    itemCount: data.length,
                     itemBuilder: (context, index) {
-                      Map<String, dynamic> eventInfo = snapshot.data.docs[index].data();
+                      Map<String, dynamic> eventInfo = data[index];
 
                       EventInfo event = EventInfo.fromMap(eventInfo);
 
-                      DateTime startTime = DateTime.fromMillisecondsSinceEpoch(event.startTimeInEpoch);
-                      DateTime endTime = DateTime.fromMillisecondsSinceEpoch(event.endTimeInEpoch);
+                      // DateTime startTime = DateTime.fromMillisecondsSinceEpoch(int.parse(event.startTimeInEpoch));
+                      // DateTime endTime = DateTime.fromMillisecondsSinceEpoch(int.parse(event.endTimeInEpoch));
 
-                      String startTimeString = DateFormat.jm().format(startTime);
-                      String endTimeString = DateFormat.jm().format(endTime);
-                      String dateString = DateFormat.yMMMMd().format(startTime);
+                      String startTimeString = event.startTimeInEpoch;
+                      String endTimeString = event.endTimeInEpoch;
+                      String dateString = event.date!;
 
                       return Padding(
                         padding: EdgeInsets.only(bottom: 16.0),
@@ -92,7 +103,7 @@ class _CalendarScheduleScreenState extends State<CalendarScheduleScreen> {
                                   right: 16.0,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.greenAccent.withOpacity(0.3),
+                                  color: kPrimaryColor.withOpacity(0.3),
                                   borderRadius: BorderRadius.circular(12.0),
                                 ),
                                 child: Column(
@@ -100,24 +111,30 @@ class _CalendarScheduleScreenState extends State<CalendarScheduleScreen> {
                                   children: [
                                     Text(
                                       event.name,
-                                      style: TextStyle(
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 22,
-                                        letterSpacing: 1,
-                                      ),
+                                      style:FlutterFlowTheme.of(context)
+                                          .subtitle1
+                                          .override(
+                                            fontFamily: 'Outfit',
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryText,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                     ),
                                     SizedBox(height: 10),
                                     Text(
                                       event.description,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Colors.black38,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        letterSpacing: 1,
-                                      ),
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyText2
+                                          .override(
+                                            fontFamily: 'Outfit',
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryText,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w300,
+                                          )
                                     ),
                                     SizedBox(height: 10),
                                     Padding(
@@ -147,23 +164,26 @@ class _CalendarScheduleScreenState extends State<CalendarScheduleScreen> {
                                           children: [
                                             Text(
                                               dateString,
-                                              style: TextStyle(
-                                                color: Colors.blue,
-                                                fontFamily: 'Outfit',
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                                letterSpacing: 1.5,
-                                              ),
+                                              style: FlutterFlowTheme.of(context)
+                                          .bodyText2
+                                          .override(
+                                            fontFamily: 'Outfit',
+                                            color: kPrimaryColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          )
                                             ),
+                                            SizedBox(height: 10,),
                                             Text(
                                               '$startTimeString - $endTimeString',
-                                              style: TextStyle(
-                                                color: Colors.blue,
-                                                fontFamily: 'Outfit',
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                                letterSpacing: 1.5,
-                                              ),
+                                              style:  FlutterFlowTheme.of(context)
+                                          .bodyText2
+                                          .override(
+                                            fontFamily: 'Outfit',
+                                            color: kPrimaryColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          )
                                             ),
                                           ],
                                         )
@@ -177,27 +197,10 @@ class _CalendarScheduleScreenState extends State<CalendarScheduleScreen> {
                         ),
                       );
                     },
-                  );
-                } else {
-                  return Center(
-                    child: Text(
-                      'No Events',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        fontFamily: 'Outfit',
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  );
+                  ):Center(child: Text('No events found'),);
+                 
                 }
-              }
-              return Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                ),
-              );
+              
             },
           ),
         ),

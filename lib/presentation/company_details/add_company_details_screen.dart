@@ -5,9 +5,14 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
+import 'package:smartify_c_r_m/auth/auth_util.dart';
+import 'package:smartify_c_r_m/auth/firebase_user_provider.dart';
+import 'package:smartify_c_r_m/database/profile_database_helper.dart';
 import 'package:smartify_c_r_m/flutter_flow/flutter_flow_theme.dart';
+import 'package:smartify_c_r_m/model/company_model.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -28,6 +33,7 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
   TextEditingController contactNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController websiteController = TextEditingController();
+  TextEditingController zipController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController countryController = TextEditingController();
@@ -37,7 +43,7 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
   IconData iconphoto = Icons.image;
   @override
   Widget build(BuildContext context) {
-  var kPrimaryColor = FlutterFlowTheme.of(context).primaryColor;
+    var kPrimaryColor = FlutterFlowTheme.of(context).primaryColor;
     return Scaffold(
       backgroundColor: context.canvasColor,
       body: SafeArea(
@@ -77,197 +83,74 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       companyLogoImage(context),
-
                       signatureImg(context),
                     ],
                   ),
-                  SizedBox(height: 30,),
-                  CupertinoFormSection(
-                      margin: EdgeInsets.all(10),
-                      header: "Main Company Details".text.make(),
-                      children: [
-                        CupertinoFormRow(
-                          child: CupertinoTextFormFieldRow(
-                            placeholder: "Enter company name",
-                          ),
-                          prefix: "Company Name:"
-                              .text
-                              .textStyle(
-                                FlutterFlowTheme.of(context).title2.override(
-                                      fontFamily: 'Outfit',
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                              )
-                              .make(),
-                        ),
-                        CupertinoFormRow(
-                          child: CupertinoTextFormFieldRow(
-                            placeholder: "Enter contact person name",
-                          ),
-                          prefix: "Contact Person Name:"
-                              .text
-                              .textStyle(
-                                FlutterFlowTheme.of(context).title2.override(
-                                      fontFamily: 'Outfit',
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                              )
-                              .make(),
-                        )
-                      ]),
-                  CupertinoFormSection(
-                      margin: EdgeInsets.all(10),
-                      header: "Contact Details".text.make(),
-                      children: [
-                        CupertinoFormRow(
-                          child: CupertinoTextFormFieldRow(
-                            placeholder: "Enter email",
-                          ),
-                          prefix: "Email:"
-                              .text
-                              .textStyle(
-                                FlutterFlowTheme.of(context).title2.override(
-                                      fontFamily: 'Outfit',
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                              )
-                              .make(),
-                        ),
-                        CupertinoFormRow(
-                          child: CupertinoTextFormFieldRow(
-                            placeholder: "Enter phone number",
-                          ),
-                          prefix: "Phone Number:"
-                              .text
-                              .textStyle(
-                                FlutterFlowTheme.of(context).title2.override(
-                                      fontFamily: 'Outfit',
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                              )
-                              .make(),
-                        ),
-                        CupertinoFormRow(
-                          child: CupertinoTextFormFieldRow(
-                            placeholder: "Enter website",
-                          ),
-                          prefix: "Website:"
-                              .text
-                              .textStyle(
-                                FlutterFlowTheme.of(context).title2.override(
-                                      fontFamily: 'Outfit',
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                              )
-                              .make(),
-                        )
-                      ]),
-                  CupertinoFormSection(
-                      margin: EdgeInsets.all(10),
-                      header: "Location Details".text.make(),
-                      children: [
-                        CupertinoFormRow(
-                          child: countryListWidget(context),
-                          prefix: "Country:"
-                              .text
-                              .textStyle(
-                                FlutterFlowTheme.of(context).title2.override(
-                                      fontFamily: 'Outfit',
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                              )
-                              .make(),
-                        ),
-                        
-                        CupertinoFormRow(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 60,
-                            child: OutlinedButton(
-                              style: OutlinedButton.styleFrom(side: BorderSide(color: kPrimaryColor)),
-                              onPressed: ()=>showModal(context), child: ListTile(leading: Icon(FontAwesomeIcons.locationArrow, color: kPrimaryColor,), 
-                              title: Text('Mark Location in map',style: FlutterFlowTheme.of(context).title2.override(
-                                      fontFamily: 'Outfit',
-                                      color: kPrimaryColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),),)
-                                    ))
-                           ),
-                       locationAddress!= null?
-                        CupertinoFormRow(
-                          child: CupertinoTextFormFieldRow(
+                  SizedBox(
+                    height: 30,
+                  ),
+                  textFormFields(
+                            icon: Icon(Icons.group),
+                            controller: companyNameController,
+                            textInputType: TextInputType.text,
+                            hintText: 'Company name'),
+                  10.heightBox,
+                  textFormFields(
+                            icon: Icon(Icons.person),
+                            controller: contactNameController,
+                            textInputType: TextInputType.text,
+                            hintText: 'Person name'),
+                  10.heightBox,
+                  textFormFields(
+                            icon: Icon(Icons.phone_android),
+                            controller: phoneController,
+                            textInputType: TextInputType.text,
+                            hintText: 'Contact No *'),
+                  10.heightBox,
+                            textFormFields(
+                            icon: Icon(Icons.mail),
+                            controller: emailController,
+                            textInputType: TextInputType.text,
+                            hintText: 'Email Address'),
+                  10.heightBox,
+                            textFormFields(
+                            icon: Icon(FontAwesomeIcons.locationArrow),
                             controller: addressController,
-                            placeholder: "Enter Address",
-                          ),
-                          prefix: "Address:"
-                              .text
-                              .textStyle(
-                                FlutterFlowTheme.of(context).title2.override(
-                                      fontFamily: 'Outfit',
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                              )
-                              .make(),
-                        ):Container()
-                        
-                      ]),
-
-                  // CupertinoFormSection(
-                  //     margin: EdgeInsets.all(10),
-                  //     header: "Read Terms & Conditions"
-                  //         .text
-                  //         .color(kPrimaryColor)
-                  //         .make(),
-                  //     children: [
-                  //       CupertinoFormRow(
-                  //         child: CupertinoSwitch(
-                  //           value: true,
-                  //           onChanged: (value) {
-                  //             value = false;
-                  //           },
-                  //         ),
-                  //         prefix: "I Agree"
-                  //             .text
-                  //             .textStyle(
-                  //               FlutterFlowTheme.of(context).subtitle2.override(
-                  //                     fontFamily: 'Outfit',
-                  //                     color: FlutterFlowTheme.of(context)
-                  //                         .primaryText,
-                  //                     fontSize: 16,
-                  //                     fontWeight: FontWeight.w500,
-                  //                   ),
-                  //             )
-                  //             .make(),
-                  //       ),
-                  //     ]),
-                  
+                            textInputType: TextInputType.text,
+                            hintText: 'Address'),
+                            10.heightBox,
+                            textFormFields(
+                            icon: Icon(Icons.location_city),
+                            controller: locationController,
+                            textInputType: TextInputType.text,
+                            hintText: 'City'),
+                            10.heightBox,
+                            textFormFields(
+                            icon: Icon(FontAwesomeIcons.locationCrosshairs),
+                            controller: countryController,
+                            textInputType: TextInputType.text,
+                            hintText: 'Country'),
+                            10.heightBox,
+                            textFormFields(
+                            icon: Icon(FontAwesomeIcons.mapPin),
+                            controller: zipController,
+                            textInputType: TextInputType.text,
+                            hintText: 'Zip Code'),
+                            10.heightBox,
+                            textFormFields(
+                            icon: Icon(FontAwesomeIcons.chrome),
+                            controller: websiteController,
+                            textInputType: TextInputType.text,
+                            hintText: 'Website'),
                   20.heightBox,
                   Material(
                     color: FlutterFlowTheme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(15),
                     child: InkWell(
+                      onTap: () {
+                        addCompanyDetails();
+                        context.pushNamed('home');
+                      },
                       child: AnimatedContainer(
                         duration: Duration(seconds: 1),
                         width: 300,
@@ -320,64 +203,69 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
           useSafeArea: false),
     );
   }
-   showModal(BuildContext ctx){
-     showModalBottomSheet(context: ctx, builder: (context){
-    return Container(
-                            height: 500,
-                            child: OpenStreetMapSearchAndPick(
-                                center: LatLong(-1.3226022, 36.7986286),
-                                buttonColor: Colors.blue,
-                                buttonText: 'Set Current Location',
-                                onPicked: (pickedData) {
-                                  //Navigator.pop(context);
-                                  setState(() {
-                                  addressController.text = pickedData.address;
-                                  locationAddress =pickedData.address; 
-                                  });
-                                }),
-                          );
-                       
-    });
+
+  showModal(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (context) {
+          return Container(
+            height: 500,
+            child: OpenStreetMapSearchAndPick(
+                center: LatLong(-1.3226022, 36.7986286),
+                buttonColor: Colors.blue,
+                buttonText: 'Set Current Location',
+                onPicked: (pickedData) {
+                  //Navigator.pop(context);
+                  setState(() {
+                    addressController.text = pickedData.address;
+                    locationAddress = pickedData.address;
+                  });
+                }),
+          );
+        });
   }
+
   Widget companyLogoImage(BuildContext context) {
     return Center(
       child: Stack(children: <Widget>[
         _imageFile != null
-            ? Container(
-                height: 200,
-                width: 300,
-                decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: FileImage(File(_imageFile!.path)))))
-            :  InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: ((builder) => choosePhotoBottomSheet(context)),
-                      );
-                    },
-                    child: ClipRect(
-                      child: Container(
-                        height: 100,
-                        width: 100,
-                        child: Center(
-                            child: Text(
-                          "Add Logo",
-                          style: FlutterFlowTheme.of(context).bodyText2.override(
-                                fontFamily: 'Outfit',
-                                color:FlutterFlowTheme.of(context).primaryColor,
-                              ),
-                        )),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                            color: Colors.black.withOpacity(0.1),
-                            ),
-                      ),
+            ? ClipRect(
+              child: Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: FileImage(File(_imageFile!.path))))),
+            )
+            : InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: ((builder) => choosePhotoBottomSheet(context)),
+                  );
+                },
+                child: ClipRect(
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    child: Center(
+                        child: Text(
+                      "Add Logo",
+                      style: FlutterFlowTheme.of(context).bodyText2.override(
+                            fontFamily: 'Outfit',
+                            color: FlutterFlowTheme.of(context).primaryColor,
+                          ),
+                    )),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black.withOpacity(0.1),
                     ),
                   ),
+                ),
+              ),
         Positioned(
           bottom: 5,
           right: 0,
@@ -390,9 +278,9 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
             }),
             child: Container(
               decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                            color: FlutterFlowTheme.of(context).primaryBackground,
-                            ),
+                shape: BoxShape.circle,
+                color: FlutterFlowTheme.of(context).primaryBackground,
+              ),
               child: Icon(
                 Icons.add_a_photo,
                 color: FlutterFlowTheme.of(context).primaryColor,
@@ -402,21 +290,24 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
           ),
         ),
       ]),
-    );}
-  
+    );
+  }
+
    Widget signatureImg(BuildContext context) {
     return Center(
       child: Stack(children: <Widget>[
         _imageFile != null
-            ? Container(
-                height: 200,
-                width: 300,
-                decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: FileImage(File(_imageFile!.path)))))
+            ? ClipRect(
+              child: Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                      color: Colors.black.withOpacity(0.2),
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: FileImage(File(_imageFile!.path))))),
+            )
             :  InkWell(
                     onTap: () {
                       showDialog(
@@ -474,7 +365,7 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
   Widget choosePhotoBottomSheet(BuildContext context) {
     return Dialog(
       child: Container(
-        height: 200.0,
+        height: 250.0,
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.symmetric(
           horizontal: 20,
@@ -528,6 +419,7 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
               ),
             ),
             SizedBox(height: 10,),
+            
              OutlinedButton(
               onPressed: () {
                   takePhoto(ImageSource.camera,context);
@@ -544,6 +436,27 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
                                 
             )),),
              ),
+            SizedBox(height: 10,),
+             Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+              child: OutlinedButton(
+                onPressed: () {
+                    takePhoto(ImageSource.camera,context);
+                  },
+                child: ListTile(
+                  leading:  Icon(
+                      Icons.camera,
+                                    color:FlutterFlowTheme.of(context).primaryColor,
+                    ),
+                  title: Text('Remove Logo',style: FlutterFlowTheme.of(context).bodyText2.override(
+                                    fontFamily: 'Outfit',
+                                    fontSize: 16,
+                                    color:FlutterFlowTheme.of(context).primaryColor,
+                                  
+                )),),
+              ),
+            ),
+            
            ],
         ),
       ),
@@ -553,7 +466,7 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
    Widget chooseSignatureDialog(BuildContext context) {
     return Dialog(
       child: Container(
-        height: 250.0,
+        height: 335.0,
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.symmetric(
           horizontal: 20,
@@ -581,7 +494,7 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
                   onPressed: () {
                   Navigator.pop(context);
                 },
-                  child: Icon(Icons.close,color:FlutterFlowTheme.of(context).primaryColor,
+                  child: Icon(Icons.close_rounded,color:FlutterFlowTheme.of(context).primaryColor,
 ),
                 )
               ],
@@ -640,8 +553,74 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
                                 
             )),),
              ),
-           
+           SizedBox(height: 10,),
+            
+            Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+              child: OutlinedButton(
+                onPressed: () {
+                    
+                  },
+                child: ListTile(
+                  leading:  Icon(
+                      Icons.remove_circle_outline,
+                                    color:FlutterFlowTheme.of(context).primaryColor,
+                    ),
+                  title: Text('Remove Signature',style: FlutterFlowTheme.of(context).bodyText2.override(
+                                    fontFamily: 'Outfit',
+                                    fontSize: 16,
+                                    color:FlutterFlowTheme.of(context).primaryColor,
+                                  
+                )),),
+              ),
+            ),
+            
            ],
+        ),
+      ),
+    );
+  }
+
+  Widget textFormFields({controller, hintText, onSaved, textInputType, icon}) {
+    return Container(
+
+      margin: EdgeInsets.only(left: 5, right: 5, top: 10),
+      child: TextFormField(
+        controller: controller,
+        validator: (val) {
+          if (val!.isEmpty) {
+            return "Enter your $hintText first";
+          }
+          return null;
+        },
+        onSaved: onSaved,
+        keyboardType: textInputType,
+        maxLines: null,
+        decoration: InputDecoration(
+          prefixIcon: icon,
+          prefixIconColor: Colors.black38,
+          hintText: hintText,
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide(
+              color: Colors.grey,
+              width: 2,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(
+              color: Colors.red,
+              width: 2,
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide(
+              color: Colors.grey,
+              width: 0,
+            ),
+          ),
         ),
       ),
     );
@@ -655,6 +634,11 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
     setState(() {
       _imageFile = pickedFile;
     });
+
+      File tmpFile = File(_imageFile!.path);
+    final appDir = await getApplicationDocumentsDirectory();
+    final fileName = basename(_imageFile!.path);
+    _image = await tmpFile.copy('${appDir.path}/$fileName');
   }
 
   void getImage(ImageSource imageSource) async {
@@ -671,7 +655,23 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
       _image = tmpFile;
       iconphoto = Icons.check_box;
     });
+   
+  }
+
+  Future addCompanyDetails() async {
+    final companyDetails = CompanyModel(
+        companyName: companyNameController.text,
+        companyAddress: addressController.text,
+        companyPhoneNumber: phoneController.text,
+        companyEmail: emailController.text,
+        companyWebsite: websiteController.text,
+        contactName: contactNameController.text,
+        companyLocation: locationController.text,
+        country: countrySelectedValue,
+        userId: currentUser!.user!.uid,
+        paypal: '',
+        photoUrl: _image!.path);
+
+    await CompanyDatabaseHelper().saveCompany(companyDetails);
   }
 }
-
-

@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
 
 class EventInfo {
-  final String id;
-  final String name;
-  final String description;
-  final String location;
-  final String link;
-  final List<dynamic> attendeeEmails;
-  final bool shouldNotifyAttendees;
-  final bool hasConfereningSupport;
-  final int startTimeInEpoch;
-  final int endTimeInEpoch;
+   int? id;
+   String name;
+   String description;
+   String location;
+   String link;
+   dynamic attendeeEmails;
+   dynamic shouldNotifyAttendees;
+   dynamic hasConfereningSupport;
+   String startTimeInEpoch;
+   String endTimeInEpoch;
+   String? date;
 
   EventInfo({
-    required this.id,
+    this.id,
     required this.name,
     required this.description,
     required this.location,
     required this.link,
-    required this.attendeeEmails,
-    required this.shouldNotifyAttendees,
-    required this.hasConfereningSupport,
+     this.attendeeEmails,
+     this.shouldNotifyAttendees,
+     this.hasConfereningSupport,
     required this.startTimeInEpoch,
     required this.endTimeInEpoch,
+    this.date
   });
 
   EventInfo.fromMap(Map snapshot)
@@ -31,19 +33,21 @@ class EventInfo {
         description = snapshot['desc'],
         location = snapshot['loc'],
         link = snapshot['link'],
+        date = snapshot['date'],
         attendeeEmails = snapshot['emails'] ?? '',
         shouldNotifyAttendees = snapshot['should_notify'],
         hasConfereningSupport = snapshot['has_conferencing'],
         startTimeInEpoch = snapshot['start'],
         endTimeInEpoch = snapshot['end'];
 
-  toJson() {
+  toMap() {
     return {
       'id': id,
       'name': name,
       'desc': description,
       'loc': location,
       'link': link,
+      'date': date,
       'emails': attendeeEmails,
       'should_notify': shouldNotifyAttendees,
       'has_conferencing': hasConfereningSupport,

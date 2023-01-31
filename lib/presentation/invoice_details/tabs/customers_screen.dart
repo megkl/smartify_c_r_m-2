@@ -4,8 +4,13 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:smartify_c_r_m/flutter_flow/flutter_flow_theme.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../../../database/contact_database_helper.dart';
+import '../../contact/update_contact_screen.dart';
 
 class CustomersScreen extends StatefulWidget {
   const CustomersScreen({Key? key}) : super(key: key);
@@ -25,6 +30,8 @@ class _CustomersScreenState extends State<CustomersScreen> {
   TextEditingController locationController = TextEditingController();
   TextEditingController countryController = TextEditingController();
   bool isChecked = false;
+  final db = ContactDatabaseHelper();
+
   @override
   Widget build(BuildContext context) {
     var kPrimaryColor = FlutterFlowTheme.of(context).primaryColor;
@@ -42,40 +49,213 @@ class _CustomersScreenState extends State<CustomersScreen> {
         )),
       ),
       body: SingleChildScrollView(
-        child: Column(children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-            child: Card(
-              child: Container(
-                child: ListTile(
-                  leading: IconButton(
-                    onPressed: (){},
+        child: Container(
+          height: 500,
+          width: 400,
+          child: Padding(
+                                              padding:
+                                                  EdgeInsetsDirectional.fromSTEB(
+                                                      0, 0, 0, 24),
+                                              child: Container(
+                                                width: 100,
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      FlutterFlowTheme.of(context)
+                                                          .primaryBackground,
+                                                ),
+                                                child: FutureBuilder(
+                                                  future: db.getAllContact(),
+                                                  initialData: const [],
+                                                  builder: (BuildContext context,
+                                                      AsyncSnapshot<List>
+                                                          snapshot) {
+                                                    var data = snapshot
+                                                        .data!.where((element) => element['contactGroup'] == 'Customer').toList(); // this is the data we have to show. (list of todo)
+                                                    var datalength = data.length;
+
+                                                    return datalength == 0
+                                                        ? const Center(
+                                                            child: Text(
+                                                                'no data found'),
+                                                          )
+                                                        : ListView.builder(
+                                                            itemCount: datalength,
+                                                            itemBuilder:
+                                                                (context, i) =>
+                                                                    Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          16,
+                                                                          8,
+                                                                          16,
+                                                                          0),
+                                                              child: InkWell(
+                                                                onTap: () async {
+                                                                  setState(() {
+                                                                    isChecked = true;
+                                                                  });
+                                                                },
+                                                                child: Container(
+                                                                  width: double
+                                                                      .infinity,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .secondaryBackground,
+                                                                    boxShadow: [
+                                                                      BoxShadow(
+                                                                        blurRadius:
+                                                                            3,
+                                                                        color: Color(
+                                                                            0x20000000),
+                                                                        offset:
+                                                                            Offset(
+                                                                                0,
+                                                                                1),
+                                                                      )
+                                                                    ],
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(
+                                                                                12),
+                                                                  ),
+                                                                  child: Padding(
+                                                                    padding: EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            8,
+                                                                            8,
+                                                                            12,
+                                                                            8),
+                                                                    child: Row(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .max,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        ClipRRect(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(8),
+                                                                            child: Container(
+                                                                                height: 40,
+                                                                                width: 40,
+                                                                                decoration: BoxDecoration(
+                                                                                  color: FlutterFlowTheme.of(context).primaryColor,
+                                                                                ),
+                                                                                child: Center(
+                                                                                  child: IconButton(
+                     onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> UpdateContactScreen(contact: data[i],)));
+
+                     },
                     icon: Icon(FontAwesomeIcons.penClip)),
-                  trailing: IconButton(
-                    onPressed: (){
-                      setState(() {
-isChecked?isChecked = false: isChecked = true;
+                                                                                ))),
+                                                                        Expanded(
+                                                                          child:
+                                                                              Column(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.max,
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Padding(
+                                                                                padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
+                                                                                child: Text(
+                                                                                  data[i]['fullName'].toString().toUpperCase(),
+                                                                                  style: FlutterFlowTheme.of(context).subtitle1,
+                                                                                ),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsetsDirectional.fromSTEB(16, 2, 0, 0),
+                                                                                child: Text(
+                                                                                  data[i]['jobTitle'].toString().toLowerCase(),
+                                                                                  style: FlutterFlowTheme.of(context).bodyText2,
+                                                                                ),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
+                                                                                child: data[i]['phoneNumbers'] == null || data[i]['phoneNumbers'] ==[]?Text(
+                                                                                  data[i]['phoneNumbers'].toString().toUpperCase(),
+                                                                                  style: FlutterFlowTheme.of(context).bodyText2.override(
+                                                                                        fontFamily: FlutterFlowTheme.of(context).bodyText2Family,
+                                                                                        color: FlutterFlowTheme.of(context).primaryColor,
+                                                                                        fontSize: 12,
+                                                                                        useGoogleFonts: GoogleFonts.asMap().containsKey(FlutterFlowTheme.of(context).bodyText2Family),
+                                                                                      ),
+                                                                                ):Text(''),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        GestureDetector(
+                                                                          onTap: (){
+                                                                
+                                                                          },
+                                                                          child: Container(
+                                                                            width: 50,
+                                                                            child: Icon(
+                                                                              isChecked? Icons
+                                                                                  .check_box:Icons
+                                                                                  .check_box_outline_blank,
+                                                                              color: FlutterFlowTheme.of(context)
+                                                                                  .primaryColor,
+                                                                              size:
+                                                                                  24,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            ),
+                                                          );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+        ),
+                                          
+        
+//         Column(children: [
+//           Container(
+//             margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+//             child: Card(
+//               child: Container(
+//                 child: ListTile(
+//                   leading: IconButton(
+//                     onPressed: (){},
+//                     icon: Icon(FontAwesomeIcons.penClip)),
+//                   trailing: IconButton(
+//                     onPressed: (){
+//                       setState(() {
+// isChecked?isChecked = false: isChecked = true;
                         
-                      });
-                    },
-                    icon: isChecked? Icon(Icons.check_box) :Icon(Icons.check_box_outline_blank)),
-                  title:  Text('Magdaline Luke', style: FlutterFlowTheme.of(context).title2.override(
-                                        fontFamily: 'Outfit',
-                                        color: FlutterFlowTheme.of(context).primaryText,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
-                                      ),),subtitle:  Text('Design By Meg', style: FlutterFlowTheme.of(context).subtitle2.override(
-                                        fontFamily: 'Outfit',
-                                        color: FlutterFlowTheme.of(context).primaryColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),),),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-          )
-        ]),
+//                       });
+//                     },
+//                     icon: isChecked? Icon(Icons.check_box) :Icon(Icons.check_box_outline_blank)),
+//                   title:  Text('Magdaline Luke', style: FlutterFlowTheme.of(context).title2.override(
+//                                         fontFamily: 'Outfit',
+//                                         color: FlutterFlowTheme.of(context).primaryText,
+//                                         fontSize: 20,
+//                                         fontWeight: FontWeight.w500,
+//                                       ),),subtitle:  Text('Design By Meg', style: FlutterFlowTheme.of(context).subtitle2.override(
+//                                         fontFamily: 'Outfit',
+//                                         color: FlutterFlowTheme.of(context).primaryColor,
+//                                         fontSize: 16,
+//                                         fontWeight: FontWeight.w500,
+//                                       ),),),
+//                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
+//                 ),
+//               ),
+//             ),
+//           )
+//         ]),
+      
       ),
     );
   }

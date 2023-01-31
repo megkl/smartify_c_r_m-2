@@ -11,8 +11,8 @@ class SeeContactsButton extends StatelessWidget {
       onPressed: () async {
         final PermissionStatus permissionStatus = await _getPermission();
         if (permissionStatus == PermissionStatus.granted) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ContactsPage()));
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => ContactsPage()));
         } else {
           //If permissions have been denied show standard cupertino alert dialog
           showDialog(

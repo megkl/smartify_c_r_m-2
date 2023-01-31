@@ -19,7 +19,7 @@ class ContactsList extends StatelessWidget {
           return 
             GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: ((context) => ContactDetails(contact))));
+                //Navigator.push(context, MaterialPageRoute(builder: ((context) => ContactDetails(contact))));
               },
               child: ListTile(
                     contentPadding:

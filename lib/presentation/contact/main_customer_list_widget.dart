@@ -1,3 +1,4 @@
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -8,7 +9,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:smartify_c_r_m/auth/auth_util.dart';
 import 'package:smartify_c_r_m/database/contact_database_helper.dart';
 import 'package:smartify_c_r_m/presentation/contact/add_contact_screen.dart';
+import 'package:smartify_c_r_m/presentation/contact/contact_details_screen.dart';
 import 'package:smartify_c_r_m/presentation/contact/seeContactsButton.dart';
+import 'package:smartify_c_r_m/presentation/contact/update_contact_screen.dart';
 
 import '../../components/command_palette_widget.dart';
 import '../../components/web_nav_widget.dart';
@@ -257,9 +260,10 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
     ),
   };
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  //final db = ContactDatabaseHelper();
+  final db = ContactDatabaseHelper();
   String? contactGroup;
   int currentIndex = 0;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -300,7 +304,8 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
         child: builSpeedDial(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      body: GestureDetector(
+      body: 
+      !isLoading? GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -499,7 +504,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                         .primaryBackground,
                                               ),
                                               child: FutureBuilder(
-                                                //future: db.getAllContact(),
+                                                future: db.getAllContact(),
                                                 initialData: const [],
                                                 builder: (BuildContext context,
                                                     AsyncSnapshot<List>
@@ -527,8 +532,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                         0),
                                                             child: InkWell(
                                                               onTap: () async {
-                                                                context.pushNamed(
-                                                                    'userDetails');
+                                                                 Navigator.push(context, MaterialPageRoute(builder: (context)=> ContactDetailsScreen(contact: data[i])));
                                                               },
                                                               child: Container(
                                                                 width: double
@@ -604,7 +608,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 2, 0, 0),
                                                                               child: Text(
-                                                                                data[i]['jobTitle'].toString().toLowerCase(),
+                                                                                data[i]['phoneNumbers'].toString().toLowerCase(),
                                                                                 style: FlutterFlowTheme.of(context).bodyText2,
                                                                               ),
                                                                             ),
@@ -665,7 +669,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                         .primaryBackground,
                                               ),
                                               child: FutureBuilder(
-                                                //future: db.getAllContact(),
+                                                future: db.getAllContact(),
                                                 initialData: const [],
                                                 builder: (BuildContext context,
                                                     AsyncSnapshot<List>
@@ -693,8 +697,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                         0),
                                                             child: InkWell(
                                                               onTap: () async {
-                                                                context.pushNamed(
-                                                                    'userDetails');
+                                                                Navigator.push(context, MaterialPageRoute(builder: (context)=> ContactDetailsScreen(contact: data[i])));
                                                               },
                                                               child: Container(
                                                                 width: double
@@ -831,7 +834,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                         .primaryBackground,
                                               ),
                                               child: FutureBuilder(
-                                                //future: db.getAllContact(),
+                                                future: db.getAllContact(),
                                                 initialData: const [],
                                                 builder: (BuildContext context,
                                                     AsyncSnapshot<List>
@@ -859,8 +862,8 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                         0),
                                                             child: InkWell(
                                                               onTap: () async {
-                                                                context.pushNamed(
-                                                                    'userDetails');
+                                                                                                                                Navigator.push(context, MaterialPageRoute(builder: (context)=> ContactDetailsScreen(contact: data[i])));
+
                                                               },
                                                               child: Container(
                                                                 width: double
@@ -1003,7 +1006,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
             ),
           ],
         ),
-      ),
+      ): Center(child: CircularProgressIndicator(),) 
     );
   }
 
@@ -1078,8 +1081,16 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
           onTap: () async {
             final PermissionStatus permissionStatus = await _getPermission();
             if (permissionStatus == PermissionStatus.granted) {
+              setState(() {
+                isLoading = true;
+              });
+              var contacts = await getContacts();
+              setState(() {
+
+                isLoading = false;
+              });
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ContactsPage()));
+                  MaterialPageRoute(builder: (context) => ContactsPage(contacts)));
             } else {
               //If permissions have been denied show standard cupertino alert dialog
               if (await showPlatformDialog(
@@ -1159,6 +1170,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                     children: [
                       GestureDetector(
                         onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> UpdateContactScreen(contact: data[index],)));
                          },
                         child: ActionsButtonWidget(
                           text: "Edit",
@@ -1199,6 +1211,13 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
             ),
           );
         });
+  }
+  Future<List<Contact>> getContacts() async {
+    //We already have permissions for contact when we get to this page, so we
+    // are now just retrieving it
+    final List<Contact> contacts = await ContactsService.getContacts();
+    return contacts;
+    
   }
   Future updateContact(dynamic contactModel, String? group) async {
     final contact = ContactModel(

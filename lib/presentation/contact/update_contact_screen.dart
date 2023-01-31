@@ -11,15 +11,16 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../auth/firebase_user_provider.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
 
-class AddContactScreen extends StatefulWidget {
-   AddContactScreen({Key? key, this.group}) : super(key: key);
+class UpdateContactScreen extends StatefulWidget {
+   UpdateContactScreen({Key? key, this.group, this.contact}) : super(key: key);
    int? group = 0;
+   dynamic contact ;
   @override
-  State<AddContactScreen> createState() => _AddContactScreenState();
+  State<UpdateContactScreen> createState() => _UpdateContactScreenState();
 }
 
-class _AddContactScreenState extends State<AddContactScreen> {
-  // String? countrySelectedValue, phoneCountryCode = '254';
+class _UpdateContactScreenState extends State<UpdateContactScreen> {
+  String? countrySelectedValue, phoneCountryCode = '254';
   TextEditingController phoneController = TextEditingController();
   TextEditingController fullnameController = TextEditingController();
   TextEditingController jobCompanyController = TextEditingController();
@@ -37,8 +38,21 @@ class _AddContactScreenState extends State<AddContactScreen> {
   bool deletePhoneNumbers = false;
   bool addEmails = false;
   final _formKey = GlobalKey<FormState>();
+    void initState() {
+    super.initState();
+
+ phoneController = TextEditingController(text: widget.contact!['phoneNumbers']);
+  fullnameController = TextEditingController(text: widget.contact!['fullName']);
+  jobCompanyController = TextEditingController(text: widget.contact!['jobTitle']);
+  emailController = TextEditingController(text: widget.contact!['emails']);
+  websiteController = TextEditingController(text: widget.contact!['website']);
+  addressController = TextEditingController(text: widget.contact!['address']);
+
+    }
+
   @override
   Widget build(BuildContext context) {
+  
     return Scaffold(
       backgroundColor: context.canvasColor,
       body: SafeArea(
@@ -58,7 +72,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                               Navigator.pop(context);
                             },
                             icon: Icon(Icons.arrow_back_ios)),
-                        "Add Contact"
+                        "Update Contact"
                             .text
                             .textStyle(
                               FlutterFlowTheme.of(context).title2.override(
@@ -82,8 +96,11 @@ class _AddContactScreenState extends State<AddContactScreen> {
                         children: [
                           CupertinoFormRow(
                             child: CupertinoTextFormFieldRow(
+                              
                               controller: fullnameController,
+
                               placeholder: "Enter Full Name",
+                             
                             ),
                             prefix: Row(
                               children: [
@@ -124,7 +141,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                                 .make(),
                           )
                         ]),
-                    Container(
+                     Container(
                       child: CupertinoFormSection(
                           margin: EdgeInsets.all(10),
                           header: "Contact details".text.make(),
@@ -191,15 +208,12 @@ class _AddContactScreenState extends State<AddContactScreen> {
                           ]),
                     ),
                     
-                 CupertinoFormSection(
+                    CupertinoFormSection(
                         margin: EdgeInsets.all(10),
                         header: "Other Information".text.make(),
                         children: [
                           CupertinoFormRow(
-                            child: CupertinoTextFormFieldRow(
-                                controller: countryController,
-                                placeholder: "Enter Country",
-                              ),
+                            child: countryListWidget(context),
                             prefix: "Country:"
                                 .text
                                 .textStyle(
@@ -225,7 +239,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                               )),
                           CupertinoFormRow(
                               child: CupertinoTextFormFieldRow(
-                                controller: addressController,
+                                controller: websiteController,
                                 placeholder: "Enter Address",
                                 onChanged: ((value) {
                                 }),
@@ -283,73 +297,38 @@ class _AddContactScreenState extends State<AddContactScreen> {
     );
   }
 
-  // Container countryListWidget(BuildContext context) {
-  //   return Container(
-  //     width: MediaQuery.of(context).size.width,
-  //     child: CountryListPick(
-  //         appBar: AppBar(
-  //           elevation: 0,
-  //           toolbarHeight: 0,
-  //         ),
-  //         theme: CountryTheme(
-  //           isShowFlag: true,
-  //           isShowTitle: true,
-  //           isShowCode: false,
-  //           isDownIcon: true,
-  //           showEnglishName: true,
-  //         ),
-  //         initialSelection: '+254',
-  //         onChanged: (CountryCode? code) {
-  //           countrySelectedValue = code?.name;
-  //         },
-  //         useUiOverlay: true,
-  //         useSafeArea: false),
-  //   );
-  // }
+  Container countryListWidget(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: CountryListPick(
+          appBar: AppBar(
+            elevation: 0,
+            toolbarHeight: 0,
+          ),
+          theme: CountryTheme(
+            isShowFlag: true,
+            isShowTitle: true,
+            isShowCode: false,
+            isDownIcon: true,
+            showEnglishName: true,
+          ),
+          initialSelection: '+254',
+          onChanged: (CountryCode? code) {
+            countrySelectedValue = code?.name;
+          },
+          useUiOverlay: true,
+          useSafeArea: false),
+    );
+  }
 
-  // buildPhoneTextField() {
-  //   return ListTile(
-  //     horizontalTitleGap: 0,
-  //     leading: CountryListPick(
-  //         // To disable option set to false
-  //         theme: CountryTheme(
-  //           isShowFlag: true,
-  //           isShowTitle: false,
-  //           isShowCode: true,
-  //           isDownIcon: false,
-  //           showEnglishName: true,
-  //         ),
-  //         // Set default value
-  //         initialSelection: '+254',
-  //         // or
-  //         // initialSelection: 'US'
-  //         onChanged: (CountryCode? code) {
-  //           //senderCountryIso = code?.flagUri;
-  //           phoneCountryCode = code?.dialCode;
-  //         },
-  //         // Whether to allow the widget to set a custom UI overlay
-  //         useUiOverlay: true,
-  //         // Whether the country list should be wrapped in a SafeArea
-  //         useSafeArea: false),
-  //     title: CupertinoTextFormFieldRow(
-  //       controller: phoneController,
-  //       placeholder: "7*******",
-  //       onChanged: (value) {
-  //         setState(() {
-  //           //phoneNumbers.add(Item(value: phoneController.text));
-  //         });
-  //       },
-  //     ),
-  //     trailing: IconButton(onPressed: (){}, icon: Icon(Icons.add)),
-  //   );
-  // }
+
 
 
 void addEditContact() async {
     final isValid = _formKey.currentState!.validate();
 
     if (isValid) {
-      await addContact();
+      await updateContact();
       //final isUpdating = widget.note != null;
 
       // if (isUpdating) {
@@ -366,19 +345,20 @@ void addEditContact() async {
 
   
 
-  Future addContact() async {
+  Future updateContact() async {
     final contact = ContactModel(
+      id: widget.contact!['id'],
       fullName: fullnameController.text,
       userId: currentUserUid,
-      phoneNumbers: phoneController.text,
+      phoneNumbers: '$phoneCountryCode${phoneController.text}',
       emails: emailController.text,
       website: websiteController.text,
       jobTitle: jobCompanyController.text,
-      contactGroup: widget.group == 0 ? '':widget.group == 1? 'Lead':'Customer',
-      locationDetails: PostalAddress(street: addressController.text, country: countryController.text, city: locationController.text)
+      contactGroup: widget.contact!['contactGroup'],
+      locationDetails: PostalAddress(street: addressController.text, country: countrySelectedValue, city: locationController.text)
     );
 
-    await ContactDatabaseHelper().saveContact(contact);
+    await ContactDatabaseHelper().updateContactModel(contact);
   }
 
 }

@@ -5,16 +5,17 @@ import '../../flutter_flow/flutter_flow_theme.dart';
 import 'widget/contact_list.dart';
 
 class ContactsPage extends StatefulWidget {
+  ContactsPage(this.contacts);
+  List<Contact> contacts =[];
   @override
   _ContactsPageState createState() => _ContactsPageState();
 }
 
 class _ContactsPageState extends State<ContactsPage> {
-  List<Contact> _contacts = [];
   List<Contact> contactsFiltered = [];
   Map<String, Color> contactsColorMap = new Map();
   TextEditingController searchController = new TextEditingController();
-  bool contactsLoaded = false;
+  bool contactsLoaded = true;
   @override
   void initState() {
     getContacts();
@@ -25,22 +26,27 @@ String flattenPhoneNumber(String phoneStr) {
       return m[0] == "+" ? "+" : "";
     });
   }
-  Future<void> getContacts() async {
-    //We already have permissions for contact when we get to this page, so we
-    // are now just retrieving it
-    final List<Contact> contacts = await ContactsService.getContacts();
-    setState(() {
-      _contacts = contacts;
-      contactsLoaded = true;
-    });
+  getContacts() async {
+  List<Contact> _contacts = widget.contacts;
+
+    // //We already have permissions for contact when we get to this page, so we
+    // // are now just retrieving it
+    // final List<Contact> contacts = await ContactsService.getContacts();
+    //   _contacts = contacts;
+    //   contactsLoaded = true;
     searchController.addListener(() {
         filterContacts();
       });
+    
+    // setState(() {
+    //   _contacts = contacts;
+    //   contactsLoaded = true;
+    // });
   }
 
  filterContacts() {
     List<Contact> contacts = [];
-    contacts.addAll(_contacts);
+    contacts.addAll(widget.contacts);
     if (searchController.text.isNotEmpty) {
       contacts.retainWhere((contact) {
         String searchTerm = searchController.text.toLowerCase();
@@ -74,7 +80,7 @@ String flattenPhoneNumber(String phoneStr) {
     bool isSearching = searchController.text.isNotEmpty;
     bool listItemsExist = (
         (isSearching == true && contactsFiltered.length > 0) ||
-        (isSearching != true && _contacts.length > 0)
+        (isSearching != true &&   widget.contacts.length > 0)
     );
     return Scaffold(
       appBar: AppBar(
@@ -116,14 +122,15 @@ String flattenPhoneNumber(String phoneStr) {
                 reloadContacts: () {
                   getContacts();
                 },
-                contacts: isSearching == true ? contactsFiltered : _contacts,
+                contacts: isSearching == true ? contactsFiltered : widget.contacts,
               ) : Container(
                 padding: EdgeInsets.only(top: 40),
                 child: Text(
                   isSearching ?'No search results to show' : 'No contacts exist',
                   style: TextStyle(color: Colors.grey, fontSize: 20),
                 )
-              ) :
+               ) 
+              :
             Container(  // still loading contacts
               padding: EdgeInsets.only(top: 40),
               child: Center(

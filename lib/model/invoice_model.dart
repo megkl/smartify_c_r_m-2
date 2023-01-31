@@ -30,19 +30,45 @@ class InvoiceInfo {
 }
 
 class InvoiceItem {
-  final String description;
-  final DateTime date;
-  final int quantity;
-  final double vat;
-  final double unitPrice;
-  final double discount;
+  int? id;
+  String? description;
+  DateTime? date;
+  int? quantity;
+  double? vat;
+  double? unitPrice;
+  double? discount;
+  String? userId;
 
-  const InvoiceItem({
-    required this.description,
-    required this.date,
-    required this.quantity,
-    required this.vat,
-    required this.discount,
-    required this.unitPrice,
+   InvoiceItem({
+    this.description,
+    this.id,
+    this.date,
+    this.quantity,
+    this.vat,
+    this.discount,
+    this.unitPrice,
+    this.userId
   });
+
+  InvoiceItem.fromMap(Map m) {
+    description = m["description"];
+    id = m["id"];
+    date = m["date"];
+    quantity = m["quantity"];
+    vat = m["vat"];
+    discount = m["discount"];
+    unitPrice = m["unitPrice"];
+    userId = m["userId"];
+  }
+
+Map<String, dynamic> toMap() => {
+        "id": id,
+        "description": description,
+        "date": date,
+        "quantity": quantity,
+        "vat": vat,
+        "discount": discount,
+        "unitPrice": unitPrice,
+        "userId": userId
+      };
 }

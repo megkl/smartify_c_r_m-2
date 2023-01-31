@@ -8,9 +8,9 @@ final DocumentReference documentReference = mainCollection.doc('test');
 
 class Storage {
   Future<void> storeEventData(EventInfo eventInfo) async {
-    DocumentReference documentReferencer = documentReference.collection('events').doc(eventInfo.id);
+    DocumentReference documentReferencer = documentReference.collection('events').doc(eventInfo.id.toString());
 
-    Map<String, dynamic> data = eventInfo.toJson();
+    Map<String, dynamic> data = eventInfo.toMap();
 
     print('DATA:\n$data');
 
@@ -20,9 +20,9 @@ class Storage {
   }
 
   Future<void> updateEventData(EventInfo eventInfo) async {
-    DocumentReference documentReferencer = documentReference.collection('events').doc(eventInfo.id);
+    DocumentReference documentReferencer = documentReference.collection('events').doc(eventInfo.id.toString());
 
-    Map<String, dynamic> data = eventInfo.toJson();
+    Map<String, dynamic> data = eventInfo.toMap();
 
     print('DATA:\n$data');
 

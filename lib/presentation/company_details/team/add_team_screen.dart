@@ -1,25 +1,26 @@
 import 'package:country_list_pick/country_list_pick.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:smartify_c_r_m/auth/auth_util.dart';
-import 'package:smartify_c_r_m/database/contact_database_helper.dart';
-import 'package:smartify_c_r_m/model/contact_model.dart';
+import 'package:smartify_c_r_m/database/team_database_helper.dart';
+import 'package:smartify_c_r_m/presentation/company_details/company_details_screen.dart';
+import 'package:smartify_c_r_m/presentation/home/home_screen.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../../auth/firebase_user_provider.dart';
-import '../../flutter_flow/flutter_flow_theme.dart';
+import '../../../auth/auth_util.dart';
+import '../../../flutter_flow/flutter_flow_theme.dart';
+import '../../../model/contact_model.dart';
 
-class AddContactScreen extends StatefulWidget {
-   AddContactScreen({Key? key, this.group}) : super(key: key);
-   int? group = 0;
+class AddTeamScreen extends StatefulWidget {
+  const AddTeamScreen({Key? key}) : super(key: key);
+
   @override
-  State<AddContactScreen> createState() => _AddContactScreenState();
+  State<AddTeamScreen> createState() => _AddTeamScreenState();
 }
 
-class _AddContactScreenState extends State<AddContactScreen> {
-  // String? countrySelectedValue, phoneCountryCode = '254';
+class _AddTeamScreenState extends State<AddTeamScreen> {
+  String? countrySelectedValue, phoneCountryCode = '254';
   TextEditingController phoneController = TextEditingController();
   TextEditingController fullnameController = TextEditingController();
   TextEditingController jobCompanyController = TextEditingController();
@@ -58,7 +59,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                               Navigator.pop(context);
                             },
                             icon: Icon(Icons.arrow_back_ios)),
-                        "Add Contact"
+                        "Add Team Member"
                             .text
                             .textStyle(
                               FlutterFlowTheme.of(context).title2.override(
@@ -83,7 +84,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                           CupertinoFormRow(
                             child: CupertinoTextFormFieldRow(
                               controller: fullnameController,
-                              placeholder: "Enter Full Name",
+                              placeholder: "Enter team member Name",
                             ),
                             prefix: Row(
                               children: [
@@ -107,7 +108,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                           ),
                           CupertinoFormRow(
                             child: CupertinoTextFormFieldRow(
-                              placeholder: "Company Name or Job Title",
+                              placeholder: "Job Title",
                               controller: jobCompanyController,
                             ),
                             prefix: "Identification:"
@@ -129,77 +130,93 @@ class _AddContactScreenState extends State<AddContactScreen> {
                           margin: EdgeInsets.all(10),
                           header: "Contact details".text.make(),
                           children: [
-                                  CupertinoFormSection(margin: EdgeInsets.all(10), children: [
-                       CupertinoFormRow(
-                            child: CupertinoTextFormFieldRow(
-                                controller: phoneController,
-                                placeholder: "Enter Phone Number",
+                            CupertinoFormRow(
+                              child: CupertinoSwitch(
+                                value: addPhoneNumbers,
+                                onChanged: (value) {
+                                  value =
+                                      addPhoneNumbers == false ? true : false;
+                                  setState(() {
+                                    addPhoneNumbers =
+                                        addPhoneNumbers == false ? true : false;
+                                  });
+                                },
                               ),
-                            prefix: "Phone Number:"
-                                .text
-                                .textStyle(
-                                  FlutterFlowTheme.of(context).title2.override(
-                                        fontFamily: 'Outfit',
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryText,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                )
-                                .make(),
-                          ),
-                           CupertinoFormRow(
-                            child: CupertinoTextFormFieldRow(
-                                controller: emailController,
-                                placeholder: "Enter Email",
-                              ),
-                            prefix: "Email:"
-                                .text
-                                .textStyle(
-                                  FlutterFlowTheme.of(context).title2.override(
-                                        fontFamily: 'Outfit',
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryText,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                )
-                                .make(),
-                          ),
-                          
-                      // CupertinoFormRow(
-                      //     child: addEmails
-                      //         ? ListTile(
-                      //             leading: Icon(
-                      //               Icons.phone_android,
-                      //               color: FlutterFlowTheme.of(context)
-                      //                   .primaryColor,
-                      //             ),
-                      //             title: CupertinoTextFormFieldRow(
-                      //               controller: emailController,
-                      //               placeholder: "Enter Phone Number",
-                      //             ),
-                      //             trailing: IconButton(
-                      //                 onPressed: () {
-                      //                   emails.add(Item(value: emailController.text));
-                      //                 }, icon: Icon(Icons.add)),
-                      //           )
-                      //         : Container()),
-                    
-                    ]),
+                              //addPhoneNumbers?  buildPhoneTextField():Container()
 
+                              prefix: "Phone Numbers:"
+                                  .text
+                                  .textStyle(
+                                    FlutterFlowTheme.of(context)
+                                        .subtitle2
+                                        .override(
+                                          fontFamily: 'Outfit',
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryText,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                  )
+                                  .make(),
+                            ),
+                            addPhoneNumbers
+                                ?  buildPhoneTextField()
+                                    
+                                : Container(),
                           ]),
                     ),
-                    
-                 CupertinoFormSection(
+                    CupertinoFormSection(margin: EdgeInsets.all(10), children: [
+                      CupertinoFormRow(
+                        child: CupertinoSwitch(
+                          value: addEmails,
+                          onChanged: (value) {
+                            value = addEmails == false ? true : false;
+                            setState(() {
+                              addEmails = addEmails == false ? true : false;
+                            });
+                          },
+                        ),
+                        //addPhoneNumbers?  buildPhoneTextField():Container()
+
+                        prefix: "Emails:"
+                            .text
+                            .textStyle(
+                              FlutterFlowTheme.of(context).subtitle2.override(
+                                    fontFamily: 'Outfit',
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                            )
+                            .make(),
+                      ),
+                      CupertinoFormRow(
+                          child: addEmails
+                              ? ListTile(
+                                  leading: Icon(
+                                    Icons.email,
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryColor,
+                                  ),
+                                  title: CupertinoTextFormFieldRow(
+                                    controller: emailController,
+                                    placeholder: "Enter Email",
+                                  ),
+                                  trailing: IconButton(
+                                      onPressed: () {
+                                        emails.add(Item(value: emailController.text));
+                                      }, icon: Icon(Icons.add)),
+                                )
+                              : Container()),
+                    ]),
+
+                    CupertinoFormSection(
                         margin: EdgeInsets.all(10),
                         header: "Other Information".text.make(),
                         children: [
                           CupertinoFormRow(
-                            child: CupertinoTextFormFieldRow(
-                                controller: countryController,
-                                placeholder: "Enter Country",
-                              ),
+                            child: countryListWidget(context),
                             prefix: "Country:"
                                 .text
                                 .textStyle(
@@ -253,6 +270,8 @@ class _AddContactScreenState extends State<AddContactScreen> {
                       child: InkWell(
                         onTap: (){
                           addEditContact();
+                          context.pushNamed('home');
+
                         },
                         child: AnimatedContainer(
                           duration: Duration(seconds: 1),
@@ -283,67 +302,70 @@ class _AddContactScreenState extends State<AddContactScreen> {
     );
   }
 
-  // Container countryListWidget(BuildContext context) {
-  //   return Container(
-  //     width: MediaQuery.of(context).size.width,
-  //     child: CountryListPick(
-  //         appBar: AppBar(
-  //           elevation: 0,
-  //           toolbarHeight: 0,
-  //         ),
-  //         theme: CountryTheme(
-  //           isShowFlag: true,
-  //           isShowTitle: true,
-  //           isShowCode: false,
-  //           isDownIcon: true,
-  //           showEnglishName: true,
-  //         ),
-  //         initialSelection: '+254',
-  //         onChanged: (CountryCode? code) {
-  //           countrySelectedValue = code?.name;
-  //         },
-  //         useUiOverlay: true,
-  //         useSafeArea: false),
-  //   );
-  // }
+  Container countryListWidget(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: CountryListPick(
+          appBar: AppBar(
+            elevation: 0,
+            toolbarHeight: 0,
+          ),
+          theme: CountryTheme(
+            isShowFlag: true,
+            isShowTitle: true,
+            isShowCode: false,
+            isDownIcon: true,
+            showEnglishName: true,
+          ),
+          initialSelection: '+254',
+          onChanged: (CountryCode? code) {
+            countrySelectedValue = code?.name;
+          },
+          useUiOverlay: true,
+          useSafeArea: false),
+    );
+  }
 
-  // buildPhoneTextField() {
-  //   return ListTile(
-  //     horizontalTitleGap: 0,
-  //     leading: CountryListPick(
-  //         // To disable option set to false
-  //         theme: CountryTheme(
-  //           isShowFlag: true,
-  //           isShowTitle: false,
-  //           isShowCode: true,
-  //           isDownIcon: false,
-  //           showEnglishName: true,
-  //         ),
-  //         // Set default value
-  //         initialSelection: '+254',
-  //         // or
-  //         // initialSelection: 'US'
-  //         onChanged: (CountryCode? code) {
-  //           //senderCountryIso = code?.flagUri;
-  //           phoneCountryCode = code?.dialCode;
-  //         },
-  //         // Whether to allow the widget to set a custom UI overlay
-  //         useUiOverlay: true,
-  //         // Whether the country list should be wrapped in a SafeArea
-  //         useSafeArea: false),
-  //     title: CupertinoTextFormFieldRow(
-  //       controller: phoneController,
-  //       placeholder: "7*******",
-  //       onChanged: (value) {
-  //         setState(() {
-  //           //phoneNumbers.add(Item(value: phoneController.text));
-  //         });
-  //       },
-  //     ),
-  //     trailing: IconButton(onPressed: (){}, icon: Icon(Icons.add)),
-  //   );
-  // }
+  buildPhoneTextField() {
+    return ListTile(
+      horizontalTitleGap: 0,
+      leading: CountryListPick(
+          // To disable option set to false
+          theme: CountryTheme(
+            isShowFlag: true,
+            isShowTitle: false,
+            isShowCode: true,
+            isDownIcon: false,
+            showEnglishName: true,
+          ),
+          // Set default value
+          initialSelection: '+254',
+          // or
+          // initialSelection: 'US'
+          onChanged: (CountryCode? code) {
+            //senderCountryIso = code?.flagUri;
+            phoneCountryCode = code?.dialCode;
+          },
+          // Whether to allow the widget to set a custom UI overlay
+          useUiOverlay: true,
+          // Whether the country list should be wrapped in a SafeArea
+          useSafeArea: false),
+      title: CupertinoTextFormFieldRow(
+        controller: phoneController,
+        placeholder: "7*******",
+        onChanged: (value) {
+          setState(() {
+            //phoneNumbers.add(Item(value: phoneController.text));
+          });
+        },
+      ),
+      trailing: IconButton(onPressed: (){}, icon: Icon(Icons.add)),
+    );
+  }
 
+  addPhones() {
+    dynamicPhones.add(buildPhoneTextField());
+  }
 
 void addEditContact() async {
     final isValid = _formKey.currentState!.validate();
@@ -358,27 +380,25 @@ void addEditContact() async {
       //   await addNote();
       // }
 
- context.pushNamed(
-                    'Main_customerList');
 
     }
   }
-
-  
 
   Future addContact() async {
     final contact = ContactModel(
       fullName: fullnameController.text,
       userId: currentUserUid,
-      phoneNumbers: phoneController.text,
+      phoneNumbers: '$phoneCountryCode${phoneController.text}',
       emails: emailController.text,
       website: websiteController.text,
       jobTitle: jobCompanyController.text,
-      contactGroup: widget.group == 0 ? '':widget.group == 1? 'Lead':'Customer',
-      locationDetails: PostalAddress(street: addressController.text, country: countryController.text, city: locationController.text)
+      contactGroup: '',
+      companyName: companyProfile.isNotEmpty ?companyProfile['companyName'] : '',
+      locationDetails: PostalAddress(street: addressController.text, country: countrySelectedValue, city: locationController.text)
     );
 
-    await ContactDatabaseHelper().saveContact(contact);
+    await TeamDatabaseHelper().saveTeam(contact);
   }
 
 }
+

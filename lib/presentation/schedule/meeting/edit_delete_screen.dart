@@ -145,18 +145,18 @@ class _EditDeleteMeetingScreenState extends State<EditDeleteMeetingScreen> {
 
   @override
   void initState() {
-    DateTime startTime = DateTime.fromMillisecondsSinceEpoch(widget.event!.startTimeInEpoch);
-    DateTime endTime = DateTime.fromMillisecondsSinceEpoch(widget.event!.endTimeInEpoch);
+    DateTime startTime = DateTime.fromMillisecondsSinceEpoch(int.parse(widget.event!.startTimeInEpoch));
+    DateTime endTime = DateTime.fromMillisecondsSinceEpoch(int.parse(widget.event!.endTimeInEpoch));
 
     selectedStartTime = TimeOfDay.fromDateTime(startTime);
     selectedEndTime = TimeOfDay.fromDateTime(endTime);
     currentTitle = widget.event!.name;
     currentDesc = widget.event!.description;
     currentLocation = widget.event!.location;
-    eventId = widget.event!.id;
-    hasConferenceSupport = widget.event!.hasConfereningSupport;
+    eventId = widget.event!.id.toString();
+    hasConferenceSupport = widget.event!.hasConfereningSupport!;
 
-    widget.event!.attendeeEmails.forEach((element) {
+    widget.event!.attendeeEmails!.forEach((element) {
       calendar.EventAttendee eventAttendee = calendar.EventAttendee();
       eventAttendee.email = element;
 
@@ -995,7 +995,7 @@ class _EditDeleteMeetingScreenState extends State<EditDeleteMeetingScreen> {
                                           emails.add(attendeeEmails![i].email!);
 
                                         EventInfo eventInfo = EventInfo(
-                                          id: eventId!,
+                                          id: int.parse(eventId!),
                                           name: currentTitle!,
                                           description: currentDesc ?? '',
                                           location: currentLocation!,
@@ -1003,8 +1003,8 @@ class _EditDeleteMeetingScreenState extends State<EditDeleteMeetingScreen> {
                                           attendeeEmails: emails,
                                           shouldNotifyAttendees: shouldNofityAttendees,
                                           hasConfereningSupport: hasConferenceSupport,
-                                          startTimeInEpoch: startTimeInEpoch,
-                                          endTimeInEpoch: endTimeInEpoch,
+                                          startTimeInEpoch: startTimeInEpoch.toString(),
+                                          endTimeInEpoch: endTimeInEpoch.toString(),
                                         );
 
                                         await storage

@@ -350,7 +350,7 @@ void addEditContact() async {
       id: widget.contact!['id'],
       fullName: fullnameController.text,
       userId: currentUserUid,
-      phoneNumbers: '$phoneCountryCode${phoneController.text}',
+      phoneNumbers: phoneController.text,
       emails: emailController.text,
       website: websiteController.text,
       jobTitle: jobCompanyController.text,

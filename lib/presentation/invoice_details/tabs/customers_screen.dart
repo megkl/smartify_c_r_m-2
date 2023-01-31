@@ -31,6 +31,7 @@ class _CustomersScreenState extends State<CustomersScreen> {
   TextEditingController countryController = TextEditingController();
   bool isChecked = false;
   final db = ContactDatabaseHelper();
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -90,129 +91,179 @@ class _CustomersScreenState extends State<CustomersScreen> {
                                                                           8,
                                                                           16,
                                                                           0),
-                                                              child: InkWell(
-                                                                onTap: () async {
-                                                                  setState(() {
-                                                                    isChecked = true;
-                                                                  });
-                                                                },
-                                                                child: Container(
-                                                                  width: double
-                                                                      .infinity,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .secondaryBackground,
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        blurRadius:
-                                                                            3,
-                                                                        color: Color(
-                                                                            0x20000000),
-                                                                        offset:
-                                                                            Offset(
-                                                                                0,
-                                                                                1),
-                                                                      )
-                                                                    ],
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                                12),
-                                                                  ),
-                                                                  child: Padding(
-                                                                    padding: EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            8,
-                                                                            8,
-                                                                            12,
-                                                                            8),
-                                                                    child: Row(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .max,
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        ClipRRect(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(8),
-                                                                            child: Container(
-                                                                                height: 40,
-                                                                                width: 40,
-                                                                                decoration: BoxDecoration(
-                                                                                  color: FlutterFlowTheme.of(context).primaryColor,
-                                                                                ),
-                                                                                child: Center(
-                                                                                  child: IconButton(
-                     onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> UpdateContactScreen(contact: data[i],)));
-
-                     },
-                    icon: Icon(FontAwesomeIcons.penClip)),
-                                                                                ))),
-                                                                        Expanded(
-                                                                          child:
-                                                                              Column(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.max,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              Padding(
-                                                                                padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                                                                                child: Text(
-                                                                                  data[i]['fullName'].toString().toUpperCase(),
-                                                                                  style: FlutterFlowTheme.of(context).subtitle1,
-                                                                                ),
-                                                                              ),
-                                                                              Padding(
-                                                                                padding: EdgeInsetsDirectional.fromSTEB(16, 2, 0, 0),
-                                                                                child: Text(
-                                                                                  data[i]['jobTitle'].toString().toLowerCase(),
-                                                                                  style: FlutterFlowTheme.of(context).bodyText2,
-                                                                                ),
-                                                                              ),
-                                                                              Padding(
-                                                                                padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                                                                                child: data[i]['phoneNumbers'] == null || data[i]['phoneNumbers'] ==[]?Text(
-                                                                                  data[i]['phoneNumbers'].toString().toUpperCase(),
-                                                                                  style: FlutterFlowTheme.of(context).bodyText2.override(
-                                                                                        fontFamily: FlutterFlowTheme.of(context).bodyText2Family,
-                                                                                        color: FlutterFlowTheme.of(context).primaryColor,
-                                                                                        fontSize: 12,
-                                                                                        useGoogleFonts: GoogleFonts.asMap().containsKey(FlutterFlowTheme.of(context).bodyText2Family),
-                                                                                      ),
-                                                                                ):Text(''),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap: (){
-                                                                
-                                                                          },
-                                                                          child: Container(
-                                                                            width: 50,
-                                                                            child: Icon(
-                                                                              isChecked? Icons
-                                                                                  .check_box:Icons
-                                                                                  .check_box_outline_blank,
-                                                                              color: FlutterFlowTheme.of(context)
-                                                                                  .primaryColor,
-                                                                              size:
-                                                                                  24,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            ),
+                                                              
+                                                                 child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 5),
+                                  child: Stack(
+                                    children: [
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Container(
+                                          height: 130,
+                                          width: 350,
+                                          margin: EdgeInsets.only(
+                                              left: 60, top: 20, bottom: 20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                data[i]['fullName'],
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .title2
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                              ),
+                                              Text(
+                                                'Job Title: ${data[i]['jobTitle']??''}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle2
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                              Text(
+                                                'Company: ${data[i]['companyName']??''}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle2
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                              Text(
+                                                'Phone Number: ${data[i]['phoneNumbers']??''}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle2
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                              Text(
+                                                'Email: ${data[i]['emails']??''}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle2
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                              Text(
+                                                'website: ${data[i]['website']??''}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle2
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      
+                                       Positioned(
+                                          top: 0,
+                                          left: 0,
+                                          child: GestureDetector(
+                                            onTap: (){
+                                               Navigator.push(context, MaterialPageRoute(builder: ((context) => UpdateContactScreen(group: 2,contact: data[i]))));
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color:
+                                                      FlutterFlowTheme.of(context)
+                                                          .primaryColor),
+                                              child: IconButton(
+                                                  onPressed: () {
+                                               Navigator.push(context, MaterialPageRoute(builder: ((context) => UpdateContactScreen(group: 2,contact: data[i]))));
+                                                    
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.edit,
+                                                    color: Colors.white,
+                                                  )),
+                                            ),
+                                          ),
+                                        
+                                      ),
+                                      Positioned(
+                                          top: 0,
+                                          right: 0,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                       isChecked? isChecked =false:isChecked = true;
+                                                    currentIndex = i;
+                                                    });
+                                                },
+                                                icon: currentIndex == i && isChecked? Icon(
+                                                  Icons.check_box,
+                                                  color: Colors.white,
+                                                ):Icon(
+                                                  Icons.check_box_outline_blank,
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                        ),
+                                      
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
                                                           );
                                                   },
                                                 ),
@@ -220,43 +271,7 @@ class _CustomersScreenState extends State<CustomersScreen> {
                                             ),
         ),
                                           
-        
-//         Column(children: [
-//           Container(
-//             margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-//             child: Card(
-//               child: Container(
-//                 child: ListTile(
-//                   leading: IconButton(
-//                     onPressed: (){},
-//                     icon: Icon(FontAwesomeIcons.penClip)),
-//                   trailing: IconButton(
-//                     onPressed: (){
-//                       setState(() {
-// isChecked?isChecked = false: isChecked = true;
-                        
-//                       });
-//                     },
-//                     icon: isChecked? Icon(Icons.check_box) :Icon(Icons.check_box_outline_blank)),
-//                   title:  Text('Magdaline Luke', style: FlutterFlowTheme.of(context).title2.override(
-//                                         fontFamily: 'Outfit',
-//                                         color: FlutterFlowTheme.of(context).primaryText,
-//                                         fontSize: 20,
-//                                         fontWeight: FontWeight.w500,
-//                                       ),),subtitle:  Text('Design By Meg', style: FlutterFlowTheme.of(context).subtitle2.override(
-//                                         fontFamily: 'Outfit',
-//                                         color: FlutterFlowTheme.of(context).primaryColor,
-//                                         fontSize: 16,
-//                                         fontWeight: FontWeight.w500,
-//                                       ),),),
-//                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
-//                 ),
-//               ),
-//             ),
-//           )
-//         ]),
-      
-      ),
+   ),
     );
   }
 

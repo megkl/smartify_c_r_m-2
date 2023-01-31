@@ -102,6 +102,7 @@ class CompanyDatabaseHelper {
 
     return result[0];
   }
+  
   Future getCompanyByUserId(String userId) async {
     var dbClient = await db;
     List<Map> result = await dbClient.query(tableCompany,

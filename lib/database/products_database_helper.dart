@@ -51,7 +51,7 @@ class ProductDatabaseHelper {
 
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $tableProduct($columnId INTEGER PRIMARY KEY, $columnDescription TEXT, $columnQuantity TEXT,$columnVat, TEXT, $columnDiscount TEXT, $columnUnitPrice TEXT,$columnDate TEXT,$columnCreatedAt TEXT,$columnUpdatedAt TEXT)');
+        'CREATE TABLE $tableProduct($columnId INTEGER PRIMARY KEY, $columnDescription TEXT, $columnUserId TEXT, $columnQuantity TEXT,$columnVat, TEXT, $columnDiscount TEXT, $columnUnitPrice TEXT,$columnDate TEXT,$columnCreatedAt TEXT,$columnUpdatedAt TEXT)');
   }
 
   Future<InvoiceItem> saveProduct(InvoiceItem product) async {

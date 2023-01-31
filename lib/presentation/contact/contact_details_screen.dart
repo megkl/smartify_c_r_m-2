@@ -320,10 +320,10 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                       children: [
                         Align(
                           alignment: AlignmentDirectional(0, 0),
-                          child: Image.network(
-                            'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60',
-                            width: 600,
-                            height: 240,
+                          child: Image.asset(
+'assets/images/letter-s.png'    ,                        
+width: 100,
+                            height: 100,
                             fit: BoxFit.cover,
                           ).animateOnPageLoad(
                               animationsMap['imageOnPageLoadAnimation']!),
@@ -332,7 +332,7 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                           alignment: AlignmentDirectional(-0.95, -0.55),
                           child: InkWell(
                             onTap: () async {
-                              context.pop();
+                              context.pushNamed('main_customerlist');
                             },
                             child: Card(
                               clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -370,9 +370,7 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              FFLocalizations.of(context).getText(
-                                'obyrn1rb' /* Customer Name */,
-                              ),
+                              'Full Name',
                               style: FlutterFlowTheme.of(context).bodyText2,
                             ).animateOnPageLoad(
                                 animationsMap['textOnPageLoadAnimation1']!),
@@ -380,9 +378,7 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                               padding:
                                   EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
                               child: Text(
-                                FFLocalizations.of(context).getText(
-                                  '00sam6zz' /* Randy Alcorn */,
-                                ),
+                                widget.contact['fullName'],
                                 textAlign: TextAlign.start,
                                 style: FlutterFlowTheme.of(context).title2,
                               ).animateOnPageLoad(
@@ -423,39 +419,40 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(20, 12, 0, 0),
-                    child: Container(
-                      width: 120,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: Color(0x4D91D0E8),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      alignment: AlignmentDirectional(0, 0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 4, 0),
-                            child: Icon(
-                              Icons.stars_rounded,
-                              color: FlutterFlowTheme.of(context).primaryText,
-                              size: 24,
-                            ),
-                          ),
-                          Text(
-                            FFLocalizations.of(context).getText(
-                              'nxuoeukv' /* High Profile */,
-                            ),
-                            style: FlutterFlowTheme.of(context).bodyText1,
-                          ),
-                        ],
-                      ),
-                    ).animateOnPageLoad(
-                        animationsMap['containerOnPageLoadAnimation1']!),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsetsDirectional.fromSTEB(20, 12, 0, 0),
+                  //   child: Container(
+                  //     width: 120,
+                  //     height: 32,
+                  //     decoration: BoxDecoration(
+                  //       color: Color(0x4D91D0E8),
+                  //       borderRadius: BorderRadius.circular(8),
+                  //     ),
+                  //     alignment: AlignmentDirectional(0, 0),
+                  //     child: Row(
+                  //       mainAxisSize: MainAxisSize.max,
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       children: [
+                  //         Padding(
+                  //           padding: EdgeInsetsDirectional.fromSTEB(0, 0, 4, 0),
+                  //           child: Icon(
+                  //             Icons.stars_rounded,
+                  //             color: FlutterFlowTheme.of(context).primaryText,
+                  //             size: 24,
+                  //           ),
+                  //         ),
+                  //         // Text(
+                  //         //   FFLocalizations.of(context).getText(
+                  //         //     'nxuoeukv' /* High Profile */,
+                  //         //   ),
+                  //         //   style: FlutterFlowTheme.of(context).bodyText1,
+                  //         // ),
+                  //       ],
+                  //     ),
+                  //   ).animateOnPageLoad(
+                  //       animationsMap['containerOnPageLoadAnimation1']!),
+                  // ),
+                  
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(20, 12, 0, 0),
                     child: Column(
@@ -472,9 +469,7 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
                           child: Text(
-                            FFLocalizations.of(context).getText(
-                              'xf6clrz6' /* Head of Procurement */,
-                            ),
+                            widget.contact['jobTitle']??'',
                             textAlign: TextAlign.start,
                             style: FlutterFlowTheme.of(context).subtitle1,
                           ).animateOnPageLoad(
@@ -499,9 +494,7 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
                           child: Text(
-                            FFLocalizations.of(context).getText(
-                              'nh9bkr5i' /* ACME Co. */,
-                            ),
+                            widget.contact['companyName']??'',
                             textAlign: TextAlign.start,
                             style: FlutterFlowTheme.of(context)
                                 .subtitle1
@@ -529,9 +522,7 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(20, 8, 0, 0),
                     child: Text(
-                      FFLocalizations.of(context).getText(
-                        'dkyygm1d' /* Notes */,
-                      ),
+                      'Contact Info',
                       style: FlutterFlowTheme.of(context).bodyText2,
                     ).animateOnPageLoad(
                         animationsMap['textOnPageLoadAnimation7']!),
@@ -560,12 +551,7 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(40),
-                                    child: Image.network(
-                                      'https://images.unsplash.com/photo-1611590027211-b954fd027b51?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDd8fHByb2ZpbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=900&q=60',
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: Icon(Icons.mobile_friendly)
                                   ),
                                   Expanded(
                                     child: Padding(
@@ -577,19 +563,11 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            FFLocalizations.of(context).getText(
-                                              'p82rjlf3' /* Alexandria Smith */,
-                                            ),
+                                            widget.contact['phoneNumbers'],
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyText1,
                                           ),
-                                          Text(
-                                            FFLocalizations.of(context).getText(
-                                              '2s53b50t' /* 1m ago */,
-                                            ),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyText2,
-                                          ),
+                                          
                                         ],
                                       ),
                                     ),
@@ -603,192 +581,103 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                                     fillColor: FlutterFlowTheme.of(context)
                                         .primaryColor,
                                     icon: Icon(
-                                      Icons.add_rounded,
+                                      Icons.call,
                                       color: FlutterFlowTheme.of(context)
                                           .primaryBtnText,
                                       size: 24,
                                     ),
                                     onPressed: () async {
-                                      await showModalBottomSheet(
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        barrierColor: Color(0x9A000000),
-                                        context: context,
-                                        builder: (context) {
-                                          return Padding(
-                                            padding: MediaQuery.of(context)
-                                                .viewInsets,
-                                            child: Container(
-                                              height: 370,
-                                              child: CreateCommentWidget(),
-                                            ),
-                                          );
-                                        },
-                                      ).then((value) => setState(() {}));
+                                      // await showModalBottomSheet(
+                                      //   isScrollControlled: true,
+                                      //   backgroundColor: Colors.transparent,
+                                      //   barrierColor: Color(0x9A000000),
+                                      //   context: context,
+                                      //   builder: (context) {
+                                      //     return Padding(
+                                      //       padding: MediaQuery.of(context)
+                                      //           .viewInsets,
+                                      //       child: Container(
+                                      //         height: 370,
+                                      //         child: CreateCommentWidget(),
+                                      //       ),
+                                      //     );
+                                      //   },
+                                      // ).then((value) => setState(() {}));
+                                     
                                     },
                                   ),
+                                
                                 ],
                               ),
-                              Padding(
-                                padding:
-                                    EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-                                child: Text(
-                                  FFLocalizations.of(context).getText(
-                                    'rnaiavvh' /* Lorem ipsum dolor sit amet, co... */,
+                             ],
+                          ),
+                        ),
+                      ),
+                        Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+                        child: Container(
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context)
+                                .secondaryBackground,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(40),
+                                    child: Icon(Icons.mail)
                                   ),
-                                  style: FlutterFlowTheme.of(context).bodyText2,
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Icon(
-                                      Icons.mode_comment_outlined,
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      size: 24,
-                                    ),
-                                    Padding(
+                                  Expanded(
+                                    child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
-                                          4, 0, 0, 0),
-                                      child: Text(
-                                        FFLocalizations.of(context).getText(
-                                          'bujmmf46' /* 8 */,
-                                        ),
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyText1,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          4, 0, 0, 0),
-                                      child: Text(
-                                        FFLocalizations.of(context).getText(
-                                          'ntlrz0gk' /* Notes */,
-                                        ),
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyText2,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    0, 12, 0, 12),
-                                child: ListView(
-                                  padding: EdgeInsets.zero,
-                                  primary: false,
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0, 0, 0, 12),
-                                      child: Row(
+                                          12, 0, 0, 0),
+                                      child: Column(
                                         mainAxisSize: MainAxisSize.max,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(40),
-                                            child: Image.network(
-                                              'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDJ8fHByb2ZpbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=900&q=60',
-                                              width: 40,
-                                              height: 40,
-                                              fit: BoxFit.cover,
-                                            ),
+                                          Text(
+                                            widget.contact['emails'],
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyText1,
                                           ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(12, 0, 0, 0),
-                                                child: Container(
-                                                  constraints: BoxConstraints(
-                                                    maxWidth:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.75,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .lineColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .fromSTEB(
-                                                                12, 8, 12, 8),
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          FFLocalizations.of(
-                                                                  context)
-                                                              .getText(
-                                                            'rw21s3dk' /* Randy Alcorn */,
-                                                          ),
-                                                          style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .bodyText1,
-                                                        ),
-                                                        Text(
-                                                          FFLocalizations.of(
-                                                                  context)
-                                                              .getText(
-                                                            'mj096u71' /* I'm not really sure about this... */,
-                                                          ),
-                                                          style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .bodyText2,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(12, 4, 0, 0),
-                                                child: Text(
-                                                  FFLocalizations.of(context)
-                                                      .getText(
-                                                    '1n2y2xin' /* a min ago */,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyText2,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                          
                                         ],
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  FlutterFlowIconButton(
+                                    borderColor: FlutterFlowTheme.of(context)
+                                        .primaryBackground,
+                                    borderRadius: 30,
+                                    borderWidth: 2,
+                                    buttonSize: 50,
+                                    fillColor: FlutterFlowTheme.of(context)
+                                        .primaryColor,
+                                    icon: Icon(
+                                      Icons.email,
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBtnText,
+                                      size: 24,
+                                    ),
+                                    onPressed: () async {
+                                    
+                                    },
+                                  ),
+                                
+                                ],
                               ),
-                            ],
+                             ],
                           ),
                         ),
                       ),
+                    
                     ],
                   ).animateOnPageLoad(
                       animationsMap['listViewOnPageLoadAnimation']!),
@@ -826,25 +715,24 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                 children: [
                   FFButtonWidget(
                     onPressed: () async {
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        barrierColor: Colors.transparent,
-                        context: context,
-                        builder: (context) {
-                          return Padding(
-                            padding: MediaQuery.of(context).viewInsets,
-                            child: Container(
-                              height: double.infinity,
-                              child: ModalSuccessWidget(),
-                            ),
-                          );
-                        },
-                      ).then((value) => setState(() {}));
+                      // showModalBottomSheet(
+                      //   isScrollControlled: true,
+                      //   backgroundColor: Colors.transparent,
+                      //   barrierColor: Colors.transparent,
+                      //   context: context,
+                      //   builder: (context) {
+                      //     return Padding(
+                      //       padding: MediaQuery.of(context).viewInsets,
+                      //       child: Container(
+                      //         height: double.infinity,
+                      //         child: ModalSuccessWidget(),
+                      //       ),
+                      //     );
+                      //   },
+                      // ).then((value) => setState(() {}));
+                   
                     },
-                    text: FFLocalizations.of(context).getText(
-                      'ojneuoau' /* Generate Quote */,
-                    ),
+                    text:'Schedule Meeting',
                     options: FFButtonOptions(
                       width: 160,
                       height: 50,
@@ -869,9 +757,7 @@ class _ContactDetailsScreenState extends State<ContactDetailsScreen>
                     onPressed: () {
                       print('Button pressed ...');
                     },
-                    text: FFLocalizations.of(context).getText(
-                      'suvzdvvk' /* View Company */,
-                    ),
+                    text: 'Send Invoice',
                     options: FFButtonOptions(
                       width: 160,
                       height: 50,

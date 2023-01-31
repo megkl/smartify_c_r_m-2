@@ -24,6 +24,7 @@ class _TermsScreenState extends State<TermsScreen> {
   bool isChecked = false;
   bool isLoading = false;
   final db = TermsDatabaseHelper();
+  int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     var kPrimaryColor = FlutterFlowTheme.of(context).primaryColor;
@@ -68,60 +69,98 @@ class _TermsScreenState extends State<TermsScreen> {
                           itemBuilder: (context, i) => Padding(
                               padding:
                                   EdgeInsetsDirectional.fromSTEB(16, 8, 16, 0),
-                              child: InkWell(
-                                  onTap: () async {
-                                    setState(() {
-                                      isChecked = true;
-                                    });
-                                  },
+                              
+                                 
                                   child: Container(
                                     margin: EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 5),
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      child: Container(
-                                        height: 100,
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 20),
-                                        child: ListTile(
-                                          title: Text(data[i]['description'],
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .subtitle1
-                                                  .override(
-                                                    fontFamily: 'Outfit',
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .primaryText,
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w500,
+                                        horizontal: 0, vertical: 5),
+                                    child: Stack(
+                                      children: [
+                                        Card(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          child: Container(
+                                            height: 100,
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 30, vertical: 20),
+                                            child: ListTile(
+                                              title: Text(data[i]['description'],
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .subtitle1
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme.of(
+                                                                context)
+                                                            .primaryText,
+                                                        fontSize: 18,
+                                                        fontWeight: FontWeight.w500,
+                                                      )),
+                                              ),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                          ),
+                                        ),
+                                        
+                                       Positioned(
+                                          top: 0,
+                                          left: 0,
+                                          child: GestureDetector(
+                                            onTap: (){
+                                               showEditTermDialog(
+                                                        data[i]);
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color:
+                                                      FlutterFlowTheme.of(context)
+                                                          .primaryColor),
+                                              child: IconButton(
+                                                  onPressed: () {
+                                                    showEditTermDialog(
+                                                        data[i]);
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.edit,
+                                                    color: Colors.white,
                                                   )),
-                                          trailing: isChecked
-                                              ? IconButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      isChecked = false;
-                                                    });
-                                                  },
-                                                  icon: Icon(Icons.check_box))
-                                              : IconButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      isChecked = true;
-                                                    });
-                                                  },
-                                                  icon: Icon(Icons
-                                                      .check_box_outline_blank)),
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
+                                            ),
+                                          ),
+                                        
                                       ),
+                                      Positioned(
+                                          top: 0,
+                                          right: 0,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                   setState(() {
+                                                       isChecked? isChecked =false:isChecked = true;
+                                                    currentIndex = i;
+                                                    });
+                                                },
+                                                icon: currentIndex == i && isChecked? Icon(
+                                                  Icons.check_box,
+                                                  color: Colors.white,
+                                                ):Icon(
+                                                  Icons.check_box_outline_blank,
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                        ),
+                                      
+                                      ],
                                     ),
-                                  ))),
+                                  )),
                         );
                 },
               ),
@@ -236,6 +275,112 @@ class _TermsScreenState extends State<TermsScreen> {
           return Container();
         });
   }
+  
+  showEditTermDialog(dynamic term) {
+    descController = TextEditingController(text: term['description']);
+    StateSetter _setState;
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: Opacity(
+              opacity: a1.value,
+              child: AlertDialog(
+                  shape: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16.0)),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Edit Term',
+                        style: FlutterFlowTheme.of(context).title2.override(
+                              fontFamily: 'Outfit',
+                              color: FlutterFlowTheme.of(context).primaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      ),
+                      Container(
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: FlutterFlowTheme.of(context).primaryColor),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              descController.clear();
+                            },
+                          ))
+                    ],
+                  ),
+                  content: StatefulBuilder(
+                      builder: (BuildContext context, StateSetter setState) {
+                    _setState = setState;
+                    return SingleChildScrollView(
+                        child: Column(
+                      children: [
+                        textFormFields(
+                            text: 'description',
+                            controller: descController,
+                            textInputType: TextInputType.multiline,
+                            hintText: 'Enter Terms & Condition'),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        isLoading
+                            ? CircularProgressIndicator()
+                            : Material(
+                                color:
+                                    FlutterFlowTheme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(15),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    editTerm(term);
+                                    Navigator.pop(context);
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: Duration(seconds: 1),
+                                    width: 300,
+                                    height: 50,
+                                    alignment: Alignment.center,
+                                    child: "Edit Term"
+                                        .text
+                                        .textStyle(
+                                          FlutterFlowTheme.of(context)
+                                              .title2
+                                              .override(
+                                                fontFamily: 'Outfit',
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                        )
+                                        .make(),
+                                  ),
+                                ),
+                              ).centered(),
+                      ],
+                    ));
+                  })),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {
+          return Container();
+        });
+  }
 
   Widget textFormFields(
       {controller, hintText, onChanged, textInputType, text}) {
@@ -282,6 +427,15 @@ class _TermsScreenState extends State<TermsScreen> {
         Terms(description: descController.text, userId: currentUser!.user!.uid);
 
     await db.saveTerms(term);
+    setState(() {
+      isLoading = false;
+    });
+  }
+  Future editTerm(dynamic terms) async {
+    final term =
+        Terms(id: terms['id'], description: descController.text, userId: currentUser!.user!.uid);
+
+    await db.updateTermsModel(term);
     setState(() {
       isLoading = false;
     });

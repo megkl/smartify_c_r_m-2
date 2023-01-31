@@ -9,6 +9,7 @@ import 'package:smartify_c_r_m/database/team_database_helper.dart';
 import 'package:smartify_c_r_m/presentation/company_details/team/update_team_screen.dart';
 
 import '../../../flutter_flow/flutter_flow_theme.dart';
+import '../../contact/contact_details_screen.dart';
 import '../../contact/widget/button_widget.dart';
 
 class TeamListScreen extends StatefulWidget {
@@ -80,8 +81,10 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                                                         0),
                                                             child: InkWell(
                                                               onTap: () async {
-                                                                context.pushNamed(
-                                                                    'userDetails');
+                                                                // context.pushNamed(
+                                                                //     'userDetails');
+                                                                 Navigator.push(context, MaterialPageRoute(builder: (context)=> ContactDetailsScreen(contact: data[i])));
+
                                                               },
                                                               child: Container(
                                                                 width: double

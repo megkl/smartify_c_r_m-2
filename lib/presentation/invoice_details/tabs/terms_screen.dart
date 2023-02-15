@@ -219,7 +219,7 @@ class _TermsScreenState extends State<TermsScreen> {
                         child: Column(
                       children: [
                         textFormFields(
-                            text: 'description',
+                            context: context,
                             controller: descController,
                             textInputType: TextInputType.multiline,
                             hintText: 'Enter Terms & Condition'),
@@ -325,7 +325,7 @@ class _TermsScreenState extends State<TermsScreen> {
                         child: Column(
                       children: [
                         textFormFields(
-                            text: 'description',
+                            context: context,
                             controller: descController,
                             textInputType: TextInputType.multiline,
                             hintText: 'Enter Terms & Condition'),
@@ -382,45 +382,74 @@ class _TermsScreenState extends State<TermsScreen> {
         });
   }
 
-  Widget textFormFields(
-      {controller, hintText, onChanged, textInputType, text}) {
-    return TextFormField(
-      controller: controller,
-      validator: (val) {
-        if (val!.isEmpty) {
-          return "Enter your $hintText first";
-        }
-        return null;
-      },
-      style: FlutterFlowTheme.of(context).bodyText1.override(
-            fontFamily: 'Outfit',
-            color: Colors.black,
-            fontSize: 14,
-            fontWeight: FontWeight.w300,
-          ),
-      onChanged: onChanged,
-      keyboardType: textInputType,
-      maxLines: 5,
-      decoration: InputDecoration(
-        fillColor: Colors.grey,
-        hintText: hintText,
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(
-            color: Colors.red,
-            width: 2,
-          ),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
-            color: Colors.grey,
-            width: 2,
-          ),
-        ),
-      ),
+  Widget textFormFields({controller, hintText, onChanged, textInputType, icon, BuildContext? context}) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      child: TextFormField(
+        controller: controller,
+        validator: (val) {
+          if (val!.isEmpty) {
+            return "Enter your $hintText";
+          }
+          return null;
+        },
+        onChanged: onChanged,
+        keyboardType: textInputType,
+        maxLines: null,
+        style: FlutterFlowTheme.of(context!).bodyText1
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme.of(
+                                                                context)
+                                                            .secondaryText,
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w300,
+                                                      ),
+        decoration: new InputDecoration(
+                        disabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: Colors.grey, width: 1),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: kPrimaryColor, width: 1),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: kPrimaryColor, width: 2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: Colors.redAccent, width: 2),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        ),
+                        contentPadding: EdgeInsets.only(
+                          left: 16,
+                          bottom: 16,
+                          top: 16,
+                          right: 16,
+                        ),
+                        hintText: hintText,
+                        hintStyle: FlutterFlowTheme.of(context).bodyText2
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme.of(
+                                                                context)
+                                                            .secondaryText,
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w300,
+                                                      ),
+                        errorStyle: TextStyle(
+                          fontSize: 12,
+                          color: Colors.redAccent,
+                        ),
+                      ),
+                    ),
     );
   }
+
 
   Future addTerm() async {
     final term =

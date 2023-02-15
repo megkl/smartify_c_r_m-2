@@ -108,59 +108,68 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                             height: 30,
                           ),
                           textFormFields(
-                              icon: Icon(Icons.group),
+                              context: context,
+                              icon: Icon(Icons.group,color: kPrimaryColor,),
                               controller: companyNameController,
                               textInputType: TextInputType.text,
                               hintText: 'Company name'),
-                          10.heightBox,
+                          15.heightBox,
                           textFormFields(
-                              icon: Icon(Icons.person),
+                              context: context,
+                              icon: Icon(Icons.person,color: kPrimaryColor,),
                               controller: contactNameController,
                               textInputType: TextInputType.text,
                               hintText: 'Person name'),
-                          10.heightBox,
+                          15.heightBox,
                           textFormFields(
-                              icon: Icon(Icons.phone_android),
+                              icon: Icon(Icons.phone_android,color: kPrimaryColor,),
+                              context: context,
                               controller: phoneController,
                               textInputType: TextInputType.text,
                               hintText: 'Contact No *'),
-                          10.heightBox,
+                          15.heightBox,
                           textFormFields(
-                              icon: Icon(Icons.mail),
+                              icon: Icon(Icons.mail,color: kPrimaryColor,),
+                              context: context,
                               controller: emailController,
                               textInputType: TextInputType.text,
                               hintText: 'Email Address'),
-                          10.heightBox,
+                          15.heightBox,
                           textFormFields(
-                              icon: Icon(FontAwesomeIcons.locationArrow),
+                              icon: Icon(FontAwesomeIcons.locationArrow,color: kPrimaryColor,),
+                              context: context,
                               controller: addressController,
                               textInputType: TextInputType.text,
                               hintText: 'Address'),
-                          10.heightBox,
+                          15.heightBox,
                           textFormFields(
-                              icon: Icon(Icons.location_city),
+                              context: context,
+                              icon: Icon(Icons.location_city,color: kPrimaryColor,),
                               controller: locationController,
                               textInputType: TextInputType.text,
                               hintText: 'City'),
-                          10.heightBox,
+                          15.heightBox,
                           textFormFields(
-                              icon: Icon(FontAwesomeIcons.locationCrosshairs),
+                              icon: Icon(FontAwesomeIcons.locationCrosshairs,color: kPrimaryColor,),
+                              context: context,
                               controller: countryController,
                               textInputType: TextInputType.text,
                               hintText: 'Country'),
-                          10.heightBox,
+                          15.heightBox,
                           textFormFields(
-                              icon: Icon(FontAwesomeIcons.mapPin),
+                              icon: Icon(FontAwesomeIcons.mapPin,color: kPrimaryColor,),
+                              context: context,
                               controller: zipController,
                               textInputType: TextInputType.text,
                               hintText: 'Zip Code'),
-                          10.heightBox,
+                          15.heightBox,
                           textFormFields(
-                              icon: Icon(FontAwesomeIcons.chrome),
+                              icon: Icon(FontAwesomeIcons.chrome,color: kPrimaryColor,),
+                              context: context,
                               controller: websiteController,
                               textInputType: TextInputType.text,
                               hintText: 'Website'),
-                          10.heightBox,
+                          15.heightBox,
                           Material(
                             color: FlutterFlowTheme.of(context).primaryColor,
                             borderRadius: BorderRadius.circular(15),
@@ -192,7 +201,9 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                               ),
                             ),
                           ).centered(),
-                        ],
+                          15.heightBox,
+                          
+                         ],
                       ),
                     ),
                   ),
@@ -634,7 +645,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
     );
   }
 
-  Widget textFormFields({controller, hintText, onSaved, textInputType, icon}) {
+  Widget textFormFields({controller, hintText, onSaved, textInputType, icon, BuildContext? context}) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5),
       child: TextFormField(
@@ -648,33 +659,61 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
         onSaved: onSaved,
         keyboardType: textInputType,
         maxLines: null,
-        decoration: InputDecoration(
+        
+        style: FlutterFlowTheme.of(context!).bodyText1
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme.of(
+                                                                context)
+                                                            .primaryText,
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w300,
+                                                      ),
+        decoration: new InputDecoration(
           prefixIcon: icon,
-          prefixIconColor: Colors.black38,
-          hintText: hintText,
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(
-              color: Colors.grey,
-              width: 2,
-            ),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(
-              color: Colors.red,
-              width: 2,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(
-              color: Colors.grey,
-              width: 0,
-            ),
-          ),
-        ),
-      ),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          iconColor: kPrimaryColor,
+                        disabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: Colors.grey, width: 1),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: kPrimaryColor, width: 1),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: kPrimaryColor, width: 2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: Colors.redAccent, width: 2),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        ),
+                        contentPadding: EdgeInsets.only(
+                          left: 16,
+                          bottom: 16,
+                          top: 16,
+                          right: 16,
+                        ),
+                        hintText: hintText,
+                        hintStyle: FlutterFlowTheme.of(context).bodyText2
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme.of(
+                                                                context)
+                                                            .secondaryText,
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w300,
+                                                      ),
+                        errorStyle: TextStyle(
+                          fontSize: 12,
+                          color: Colors.redAccent,
+                        ),
+                      ),
+                    ),
     );
   }
 

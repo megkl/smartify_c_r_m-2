@@ -16,7 +16,7 @@ import '../../auth/firebase_user_provider.dart';
 import '../../database/profile_database_helper.dart';
 import '../../database/team_database_helper.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
-import '../schedule/meeting/meetings_screen.dart';
+import '../schedule/schedule_screen.dart';
 
 var companyProfile;
 var teamList;
@@ -247,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
     Menu(
        title: "SCHEDULE",
-        subTitle: "schedule meetings on your calendar",
+        subTitle: "create & schedule projects and tasks",
         iconBgColor:Color.fromARGB(255, 3, 50, 120),
         icon: Icons.calendar_month),
     Menu(

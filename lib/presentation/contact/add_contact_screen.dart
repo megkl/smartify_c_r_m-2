@@ -107,10 +107,10 @@ class _AddContactScreenState extends State<AddContactScreen> {
                           ),
                           CupertinoFormRow(
                             child: CupertinoTextFormFieldRow(
-                              placeholder: "Company Name or Job Title",
+                              placeholder: "Job Title",
                               controller: jobCompanyController,
                             ),
-                            prefix: "Identification:"
+                            prefix: "Job Title:"
                                 .text
                                 .textStyle(
                                   FlutterFlowTheme.of(context).title2.override(

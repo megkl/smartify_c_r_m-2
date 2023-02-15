@@ -92,6 +92,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'addCompanyDetails',
               path: 'addCompanyDetails',
               builder: (context, params) => AddCompanyDetailsScreen(),
+            ), 
+            FFRoute(
+              name: 'addInvoice',
+              path: 'addInvoice',
+              builder: (context, params) => AddInvoiceScreen(),
             ),
             FFRoute(
               name: 'addTeamMembers',

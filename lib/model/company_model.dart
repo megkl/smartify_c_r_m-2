@@ -35,6 +35,7 @@ class CompanyModel {
 
     factory CompanyModel.fromMap(Map<String, dynamic> json) => CompanyModel(
         id: json["id"],
+        userId: json["userId"],
         companyName: json["companyName"],
         contactName: json["contactName"],
         photoUrl: json["photoUrl"],
@@ -49,6 +50,7 @@ class CompanyModel {
 
     Map<String, dynamic> toMap() => {
         "id": id,
+        "userId": userId,
         "companyName": companyName,
         "contactName": contactName,
         "photoUrl": photoUrl,

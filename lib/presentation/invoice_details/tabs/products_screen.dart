@@ -320,15 +320,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         child: Column(
                       children: [
                         textFormFields(
-                            text: 'product',
                             controller: productNameController,
+                            context: context,
                             textInputType: TextInputType.text,
                             hintText: 'Product name *'),
                         SizedBox(
                           height: 20,
                         ),
                         textFormFields(
-                            text: 'Price',
+                            context: context,
                             controller: priceController,
                             textInputType: TextInputType.number,
                             onChanged: (val) {
@@ -341,7 +341,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           height: 20,
                         ),
                         textFormFields(
-                            text: 'Quantity',
+                            context: context,
                             controller: qtyController,
                             textInputType: TextInputType.text,
                             onChanged: (val) {
@@ -360,6 +360,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 Container(
                                   width: 120,
                                   child: textFormFields(
+                            context: context,
                                       controller: discountController,
                                       textInputType: TextInputType.text,
                                       onChanged: (val) {
@@ -403,7 +404,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 Container(
                                   width: 120,
                                   child: textFormFields(
-                                      text: 'Tax',
+                            context: context,
                                       controller: taxController,
                                       textInputType: TextInputType.text,
                                       onChanged: (val) {
@@ -584,7 +585,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         child: Column(
                       children: [
                         textFormFields(
-                            text: 'product',
+                            context: context,
                             controller: productNameController,
                             textInputType: TextInputType.text,
                             hintText: 'Product name *'),
@@ -592,7 +593,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           height: 20,
                         ),
                         textFormFields(
-                            text: 'Price',
+                            context: context,
                             controller: priceController,
                             textInputType: TextInputType.number,
                             onChanged: (val) {
@@ -605,7 +606,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           height: 20,
                         ),
                         textFormFields(
-                            text: 'Quantity',
+                            context: context,
                             controller: qtyController,
                             textInputType: TextInputType.text,
                             onChanged: (val) {
@@ -624,6 +625,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 Container(
                                   width: 120,
                                   child: textFormFields(
+                            context: context,
                                       controller: discountController,
                                       textInputType: TextInputType.text,
                                       onChanged: (val) {
@@ -667,7 +669,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 Container(
                                   width: 120,
                                   child: textFormFields(
-                                      text: 'Tax',
+                            context: context,
                                       controller: taxController,
                                       textInputType: TextInputType.text,
                                       onChanged: (val) {
@@ -791,39 +793,74 @@ class _ProductsScreenState extends State<ProductsScreen> {
         });
   }
 
-  Widget textFormFields(
-      {controller, hintText, onChanged, textInputType, text}) {
-    return TextFormField(
-      controller: controller,
-      validator: (val) {
-        if (val!.isEmpty) {
-          return "Enter your $hintText first";
-        }
-        return null;
-      },
-      onChanged: onChanged,
-      keyboardType: textInputType,
-      maxLines: null,
-      decoration: InputDecoration(
-        fillColor: Colors.grey,
-        hintText: hintText,
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(
-            color: Colors.red,
-            width: 2,
-          ),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
-            color: Colors.grey,
-            width: 2,
-          ),
-        ),
-      ),
+    Widget textFormFields({controller, hintText, onChanged, textInputType, icon, BuildContext? context}) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      child: TextFormField(
+        controller: controller,
+        validator: (val) {
+          if (val!.isEmpty) {
+            return "Enter your $hintText";
+          }
+          return null;
+        },
+        onChanged: onChanged,
+        keyboardType: textInputType,
+        maxLines: null,
+        style: FlutterFlowTheme.of(context!).bodyText1
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme.of(
+                                                                context)
+                                                            .secondaryText,
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w300,
+                                                      ),
+        decoration: new InputDecoration(
+                        disabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: Colors.grey, width: 1),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: kPrimaryColor, width: 1),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: kPrimaryColor, width: 2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: Colors.redAccent, width: 2),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        ),
+                        contentPadding: EdgeInsets.only(
+                          left: 16,
+                          bottom: 16,
+                          top: 16,
+                          right: 16,
+                        ),
+                        hintText: hintText,
+                        hintStyle: FlutterFlowTheme.of(context).bodyText2
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme.of(
+                                                                context)
+                                                            .secondaryText,
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w300,
+                                                      ),
+                        errorStyle: TextStyle(
+                          fontSize: 12,
+                          color: Colors.redAccent,
+                        ),
+                      ),
+                    ),
     );
   }
+
 
   Future addProduct() async {
     final product = InvoiceItem(

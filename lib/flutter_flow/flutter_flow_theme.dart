@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const kThemeModeKey = '__theme_mode__';
+const kPrimaryColor = const Color(0xFF296D98);
+const kWhiteColor = const Color(0xFFFFFFFF);
 SharedPreferences? _prefs;
 
 enum DeviceSize {

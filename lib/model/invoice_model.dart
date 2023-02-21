@@ -1,18 +1,68 @@
+
 import 'package:smartify_c_r_m/model/company_model.dart';
-import 'package:smartify_c_r_m/model/contact_model.dart';
+
+import 'contact_model.dart';
 
 class Invoice {
-  final InvoiceInfo info;
-  final CompanyModel company;
-  final ContactModel customer;
-  final List<InvoiceItem> items;
+   int? id;
+   String? name;
+   String? userId;
+   int? customerId;
+   int? termId;
+   String? description;
+   String? number;
+   String? status;
+   DateTime? date;
+   DateTime? dueDate;
+   CompanyModel? company;
+   ContactModel? customer;
+   InvoiceInfo? info;
+   List<InvoiceItem>? items;
 
-  const Invoice({
-    required this.info,
-    required this.company,
-    required this.customer,
-    required this.items,
+   Invoice({
+    this.id,
+    this.name,
+    this.userId,
+    this.customerId,
+    this.termId,
+    this.description,
+    this.number,
+    this.date,
+    this.dueDate,
+    this.company,
+    this.customer,
+    this.info,
+    this.items,
+    this.status
   });
+
+
+  Invoice.fromMap(Map m) {
+    description = m["description"];
+    id = m["id"];
+    name = m["name"];
+    userId = m["userId"];
+    customerId = m["customerId"];
+    termId = m["termId"];
+    number = m["number"];
+    date = m["date"];
+    dueDate = m["dueDate"];
+    status = m["status"];
+  }
+
+Map<String, dynamic> toMap() => {
+        "id": id,
+        "description": description,
+        "date": date,
+        "dueDate": dueDate,
+        "userId": userId,
+        "customerId": customerId,
+        "termId": termId,
+        "number": number,
+        "name": name,
+        "status": status,
+      };
+
 }
 
 class InvoiceInfo {
@@ -38,6 +88,7 @@ class InvoiceItem {
   double? unitPrice;
   double? discount;
   String? userId;
+  int? invoiceId;
 
    InvoiceItem({
     this.description,
@@ -47,7 +98,8 @@ class InvoiceItem {
     this.vat,
     this.discount,
     this.unitPrice,
-    this.userId
+    this.userId,
+    this.invoiceId
   });
 
   InvoiceItem.fromMap(Map m) {
@@ -59,6 +111,7 @@ class InvoiceItem {
     discount = m["discount"];
     unitPrice = m["unitPrice"];
     userId = m["userId"];
+    invoiceId = m["invoiceId"];
   }
 
 Map<String, dynamic> toMap() => {
@@ -69,6 +122,14 @@ Map<String, dynamic> toMap() => {
         "vat": vat,
         "discount": discount,
         "unitPrice": unitPrice,
-        "userId": userId
+        "userId": userId,
+        "invoiceId": invoiceId,
       };
+}
+
+enum InvoiceStatus {
+  draft,
+  fullyPaid,
+  partiallyPaid,
+  overdue
 }

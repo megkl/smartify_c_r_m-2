@@ -393,7 +393,7 @@ void addEditContact() async {
       website: websiteController.text,
       jobTitle: jobCompanyController.text,
       contactGroup: '',
-      companyName: companyProfile.isNotEmpty ?companyProfile['companyName'] : '',
+      companyName: companyProfile!.companyName,
       locationDetails: PostalAddress(street: addressController.text, country: countrySelectedValue, city: locationController.text)
     );
 

@@ -47,6 +47,9 @@ class CompanyDatabaseHelper {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'companys.db');
 
+    // String path1 = join(databasesPath, 'products.db');
+    // await deleteDatabase(path1); // just for testing
+    
     //await deleteDatabase(path); // just for testing
 
     var db = await openDatabase(path, version: 1, onCreate: _onCreate);
@@ -103,18 +106,18 @@ class CompanyDatabaseHelper {
     return result[0];
   }
   
-  Future getCompanyByUserId(String userId) async {
+  Future<CompanyModel> getCompanyByUserId(String userId) async {
     var dbClient = await db;
-    List<Map> result = await dbClient.query(tableCompany,
+    var result = await dbClient.query(tableCompany,
         columns: [columnId,columnUserId, columnCompanyName, columnPhoneNumber,columnEmail,columnContactName, columnAddress,columnLocation,columnOtherInformation,columnWebsite],
         where: '$columnUserId = ?',
         whereArgs: [userId]);
-
+    List<CompanyModel> list = result.map((c) => CompanyModel.fromMap(c)).toList().reversed.toList();
+    
     if (result.isEmpty) {
-      return [];
     }
 
-    return result[0];
+    return list[0];
   }
 
   Future<int> deleteCompanyModel(int id) async {

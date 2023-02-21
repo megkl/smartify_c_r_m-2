@@ -8,6 +8,7 @@ import 'package:smartify_c_r_m/presentation/company_details/company_details_scre
 import 'package:smartify_c_r_m/presentation/contact/contact_details_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/add_invoice_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/invoice_details_screen.dart';
+import 'package:smartify_c_r_m/presentation/schedule/notes/notes_edit_screen.dart';
 import '../../presentation/home/home_screen.dart';
 import '../../presentation/presentation.dart';
 import '../flutter_flow_theme.dart';
@@ -30,6 +31,7 @@ class AppStateNotifier extends ChangeNotifier {
   SmartifyCRMFirebaseUser? user;
   bool showSplashImage = true;
   String? _redirectLocation;
+  RouteSettings? settings;
 
   /// Determines whether the app will refresh and build again when a sign
   /// in or sign out happens. This is useful when the app is launched or
@@ -137,6 +139,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               path: 'mainCustomerList',
               builder: (context, params) => MainCustomerListWidget(),
             ),
+            
             FFRoute(
               name: 'Home',
               path: 'home',

@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:smartify_c_r_m/backend/service_account_json.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -97,6 +98,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return MaterialApp.router(
       title: 'Smartify CRM',
       localizationsDelegates: [
@@ -111,7 +113,9 @@ class _MyAppState extends State<MyApp> {
         Locale('id'),
         Locale('ms'),
       ],
-      theme: ThemeData(brightness: Brightness.light),
+      theme: ThemeData(brightness: Brightness.light,textTheme: GoogleFonts.outfitTextTheme(textTheme).copyWith(
+      bodyText2: GoogleFonts.outfit(textStyle: textTheme.bodyText2),
+    ),),
       darkTheme: ThemeData(brightness: Brightness.dark, fontFamily: 'Outfit'),
       themeMode: _themeMode,
       routeInformationParser: _router.routeInformationParser,

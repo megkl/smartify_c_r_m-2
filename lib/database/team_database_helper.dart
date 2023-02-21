@@ -63,19 +63,19 @@ class TeamDatabaseHelper {
     return contact;
   }
 
-  Future<List> getAllTeam() async {
+  Future<List<ContactModel>> getAllTeam() async {
      var dbClient = await db;
-    var result = await dbClient
+    var res = await dbClient
         .query(tableTeam);
-
-   List<ContactModel> team = [];
+    List<ContactModel> result = res.map((c) => ContactModel.fromMap(c)).toList().reversed.toList();
+ 
 
     // result.forEach((currentTeam) {
     //   TeamModel contact = TeamModel.fromMap(currentTeam);
 
     //  contacts.add(contact);
     // });
-    return result.toList();
+    return result;
   }
 
    getCount() async {

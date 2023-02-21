@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smartify_c_r_m/database/team_database_helper.dart';
+import 'package:smartify_c_r_m/model/contact_model.dart';
 import 'package:smartify_c_r_m/presentation/company_details/team/update_team_screen.dart';
 
 import '../../../flutter_flow/flutter_flow_theme.dart';
@@ -37,8 +38,6 @@ class _TeamListScreenState extends State<TeamListScreen> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-      
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: 
       !isLoading? GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -52,15 +51,15 @@ class _TeamListScreenState extends State<TeamListScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                      child:  FutureBuilder(
+                      child:  FutureBuilder<List<ContactModel>>(
                                                 future: db.getAllTeam(),
                                                 initialData: const [],
                                                 builder: (BuildContext context,
-                                                    AsyncSnapshot<List>
+                                                    AsyncSnapshot
                                                         snapshot) {
-                                                  var data = snapshot
+                                                  List<ContactModel> data = snapshot
                                                       .data; // this is the data we have to show. (list of todo)
-                                                  var datalength = data!.length;
+                                                  var datalength = data.length;
 
                                                   return datalength == 0
                                                       ? const Center(
@@ -137,7 +136,7 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                                                               ),
                                                                               child: Center(
                                                                                 child: Text(
-                                                                                  data[i]['fullName'][0].toString().toUpperCase(),
+                                                                                  data[i].fullName![0].toString().toUpperCase(),
                                                                                   textAlign: TextAlign.center,
                                                                                   style: TextStyle(color: Colors.white),
                                                                                 ),
@@ -153,21 +152,21 @@ class _TeamListScreenState extends State<TeamListScreen> {
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
                                                                               child: Text(
-                                                                                data[i]['fullName'].toString().toUpperCase(),
+                                                                                data[i].fullName.toString().toUpperCase(),
                                                                                 style: FlutterFlowTheme.of(context).subtitle1,
                                                                               ),
                                                                             ),
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 2, 0, 0),
                                                                               child: Text(
-                                                                                data[i]['phoneNumbers'].toString().toLowerCase(),
+                                                                                data[i].phoneNumbers.toString().toLowerCase(),
                                                                                 style: FlutterFlowTheme.of(context).bodyText2,
                                                                               ),
                                                                             ),
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                                                                              child: data[i]['phoneNumbers'] == null || data[i]['phoneNumbers'] ==[]?Text(
-                                                                                data[i]['phoneNumbers'].toString().toUpperCase(),
+                                                                              child: data[i].phoneNumbers == null ?Text(
+                                                                                data[i].phoneNumbers.toString().toUpperCase(),
                                                                                 style: FlutterFlowTheme.of(context).bodyText2.override(
                                                                                       fontFamily: FlutterFlowTheme.of(context).bodyText2Family,
                                                                                       color: FlutterFlowTheme.of(context).primaryColor,

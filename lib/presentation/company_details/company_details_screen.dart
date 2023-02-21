@@ -24,7 +24,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../model/contact_model.dart';
 import '../invoice_details/tabs/company_profile_screen.dart';
 
-
 class CompanyDetailsScreen extends StatefulWidget {
   const CompanyDetailsScreen({Key? key}) : super(key: key);
 
@@ -257,7 +256,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
     ),
   };
   final scaffoldKey = GlobalKey<ScaffoldState>();
- 
+
   String? contactGroup;
   int currentIndex = 0;
 
@@ -301,7 +300,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
       //   child: currentIndex==0? Container() :builSpeedDial(),
       // ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      
+
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Row(
@@ -384,8 +383,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       16, 16, 0, 0),
-                                  child: Text(
-                                      'Company Details',
+                                  child: Text('Company Details',
                                       style: FlutterFlowTheme.of(context)
                                           .title3
                                           .override(
@@ -396,43 +394,12 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
                                             fontWeight: FontWeight.w500,
                                           )),
                                 ),
-                                
                                 if (responsiveVisibility(
                                   context: context,
                                   tabletLandscape: false,
                                   desktop: false,
                                 ))
-                                currentIndex != 0?
-                                  FlutterFlowIconButton(
-                                    borderColor: Colors.transparent,
-                                    borderRadius: 30,
-                                    borderWidth: 1,
-                                    buttonSize: 60,
-                                    icon: Icon(
-                                      Icons.search_rounded,
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      size: 30,
-                                    ),
-                                    onPressed: () async {
-                                      await showModalBottomSheet(
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        barrierColor: Color(0x1A000000),
-                                        context: context,
-                                        builder: (context) {
-                                          return Padding(
-                                            padding: MediaQuery.of(context)
-                                                .viewInsets,
-                                            child: Container(
-                                              height: double.infinity,
-                                              child: CommandPaletteWidget(),
-                                            ),
-                                          );
-                                        },
-                                      ).then((value) => setState(() {}));
-                                    },
-                                  ):Container(),
+                                  Container(),
                               ],
                             ),
                           ),
@@ -443,15 +410,14 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
                               height: MediaQuery.of(context).size.height * 0.94,
                               decoration: BoxDecoration(),
                               child: DefaultTabController(
-                                length: 3,
+                                length: 2,
                                 initialIndex: 0,
                                 child: Column(
                                   children: [
                                     TabBar(
-                                      onTap: (index){
+                                      onTap: (index) {
                                         setState(() {
                                           currentIndex = index;
-                                        
                                         });
                                       },
                                       labelColor: FlutterFlowTheme.of(context)
@@ -466,48 +432,88 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
                                               .primaryColor,
                                       indicatorWeight: 3,
                                       tabs: [
+                                        Tab(text: 'Profile'),
                                         Tab(
-                                          text: 'Profile'
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text('Team'),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    context.pushNamed(
+                                                        'addTeamMembers');
+                                                  },
+                                                  child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                      ),
+                                                      child: Icon(
+                                                        Icons.add,
+                                                        color: kWhiteColor,
+                                                      )),
+                                                )
+                                              ]),
                                         ),
-                                        Tab(
-                                          text: 'Team'
-                                        ),
-                                        Tab(
-                                          text: 'Products'
-                                        ),
+                                        // Tab(
+                                        //   text: 'Products'
+                                        // ),
                                       ],
                                     ),
                                     Expanded(
                                       child: TabBarView(
                                         children: [
-                                    companyProfile.isEmpty? 
-                                          Center(
-                                           child: Container(
-                                            height: 50,
-                                            width: 200,
-                                            child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(primary: FlutterFlowTheme.of(context).primaryColor),
-                                            onPressed: (){
-                                            context.pushNamed('addCompanyDetails');
-                                           }, child: Text('Add Company Profile')),)
-                                          ):
-                                          EditCompanyProfileScreen(),
-                                         teamList.isEmpty? Center(
-                                           child: Container(
-                                            height: 50,
-                                            width: 200,
-                                            child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(primary: FlutterFlowTheme.of(context).primaryColor),
-                                            onPressed: (){
-                                            context.pushNamed('addTeamMembers');
-                                           }, child: Text('Add Team Member')),)
-                                          ):TeamListScreen(),
-                                          ProductsScreen()
-                                          
+                                          companyProfile == null
+                                              ? Center(
+                                                  child: Container(
+                                                  height: 50,
+                                                  width: 200,
+                                                  child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                          primary:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .primaryColor),
+                                                      onPressed: () {
+                                                        context.pushNamed(
+                                                            'addCompanyDetails');
+                                                      },
+                                                      child: Text(
+                                                          'Add Company Profile')),
+                                                ))
+                                              : EditCompanyProfileScreen(),
+                                          teamList.isEmpty
+                                              ? Center(
+                                                  child: Container(
+                                                  height: 50,
+                                                  width: 200,
+                                                  child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                          primary:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .primaryColor),
+                                                      onPressed: () {
+                                                        context.pushNamed(
+                                                            'addTeamMembers');
+                                                      },
+                                                      child: Text(
+                                                          'Add Team Member')),
+                                                ))
+                                              : TeamListScreen(),
+                                          //ProductsScreen()
                                         ],
                                       ),
                                     ),
-                                  
                                   ],
                                 ),
                               ),
@@ -526,33 +532,30 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
     );
   }
 
-  showGroupDialog(String? group, dynamic contact){
-      return showDialog(
-          context: context,
+  showGroupDialog(String? group, dynamic contact) {
+    return showDialog(
+        context: context,
         builder: (context) {
           return CupertinoAlertDialog(
-                        title: Text('Move to $group'),
-                        content: Text('Do you want to move this contact to $group'),
-                        actions: [
-                          CupertinoDialogAction(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text('No'),
-                          ),
-                          CupertinoDialogAction(
-                            onPressed: () async{
-                              await updateContact(contact,group);
-                               context.pushNamed(
-                    'Main_customerList');
-                            },
-                            child: Text('Yes'),
-                          ),
-                        ],
-                      );
-        }
-      );
-                
+            title: Text('Move to $group'),
+            content: Text('Do you want to move this contact to $group'),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('No'),
+              ),
+              CupertinoDialogAction(
+                onPressed: () async {
+                  await updateContact(contact, group);
+                  context.pushNamed('Main_customerList');
+                },
+                child: Text('Yes'),
+              ),
+            ],
+          );
+        });
   }
 
   Future<PermissionStatus> _getPermission() async {
@@ -582,8 +585,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
     }
   }
 
-   builSpeedDial() {
-   
+  builSpeedDial() {
     return SpeedDial(
       icon: Icons.add,
       activeIcon: Icons.close,
@@ -597,9 +599,12 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
           backgroundColor: FlutterFlowTheme.of(context).primaryColor,
           onTap: () async {
             context.pushNamed('addCompanyDetails');
-
           },
-         label: currentIndex ==0 ?'Add Company Profile': currentIndex == 1? 'Add Team':'Add Product',
+          label: currentIndex == 0
+              ? 'Add Company Profile'
+              : currentIndex == 1
+                  ? 'Add Team'
+                  : 'Add Product',
           labelStyle:
               TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
           labelBackgroundColor: Colors.black,
@@ -607,8 +612,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
       ],
     );
   }
-  
- 
+
   Future updateContact(dynamic contactModel, String? group) async {
     final contact = ContactModel(
       id: contactModel['id'],
@@ -622,7 +626,6 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen>
       //locationDetails: contactModel['locationDetails']
     );
 
-  await ContactDatabaseHelper().updateContactModel(contact);
-   }
-
+    await ContactDatabaseHelper().updateContactModel(contact);
+  }
 }

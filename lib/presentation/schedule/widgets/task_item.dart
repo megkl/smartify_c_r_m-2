@@ -29,7 +29,7 @@ class TaskItem extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         tileColor: Colors.white,
         leading: Icon(
-          task.isDone == 1 ? Icons.check_box : Icons.check_box_outline_blank,
+          task.status == ProjectStatus.completed.name ? Icons.check_box : Icons.check_box_outline_blank,
           color: kPrimaryColor,
         ),
         title: Text(
@@ -37,7 +37,7 @@ class TaskItem extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             color: Colors.black,
-            decoration: task.isDone == 1 ? TextDecoration.lineThrough : null,
+            decoration: task.status == ProjectStatus.completed.name ? TextDecoration.lineThrough : null,
           ),
         ),
         trailing: Container(
@@ -54,7 +54,7 @@ class TaskItem extends StatelessWidget {
             iconSize: 18,
             icon: Icon(Icons.delete),
             onPressed: () {
-              onDeleteItem(task.id);
+              //onDeleteItem(task.id);
             },
           ),
         ),

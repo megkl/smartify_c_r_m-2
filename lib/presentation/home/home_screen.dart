@@ -3,9 +3,13 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:smartify_c_r_m/database/contact_database_helper.dart';
 import 'package:smartify_c_r_m/database/meet_database_helper.dart';
 import 'package:smartify_c_r_m/database/products_database_helper.dart';
+import 'package:smartify_c_r_m/database/task_db_helper.dart';
+import 'package:smartify_c_r_m/model/company_model.dart';
+import 'package:smartify_c_r_m/model/task_model.dart';
 import 'package:smartify_c_r_m/presentation/company_details/company_details_screen.dart';
 import 'package:smartify_c_r_m/presentation/contact/main_customer_list_widget.dart';
 import 'package:smartify_c_r_m/presentation/company_details/add_company_details_screen.dart';
@@ -18,9 +22,10 @@ import '../../database/team_database_helper.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
 import '../schedule/schedule_screen.dart';
 
-var companyProfile;
+CompanyModel? companyProfile;
 var teamList;
 var eventsList;
+List<TaskModel> tasksList =[];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -35,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final productsDb = ProductDatabaseHelper();
   final customersDb = ContactDatabaseHelper();
   final eventsDb = MeetingsDatabaseHelper();
+  final tasksDb = TaskDatabaseHelper();
   
   void initState(){
     super.initState();
@@ -42,11 +48,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getProfile() async {
-  companyProfile = await profileDb.getCompanyById(1);
-  //companyProfile = await profileDb.getCompanyByUserId(currentUser!.user!.uid);
-
+  //companyProfile = await profileDb.getCompanyById(1);
+  companyProfile = await profileDb.getCompanyByUserId(currentUser!.user!.uid);
   teamList = await teamDb.getAllTeam();
   eventsList = await eventsDb.getAllMeetings();
+  tasksList = await tasksDb.getTasksByDay('${DateFormat('EEE, MMM d, ' 'yy').format(DateTime.now())}');
+
   }
   @override
   Widget build(BuildContext context) {

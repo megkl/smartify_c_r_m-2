@@ -6,9 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smartify_c_r_m/auth/firebase_user_provider.dart';
 import 'package:smartify_c_r_m/database/products_database_helper.dart';
 import 'package:smartify_c_r_m/model/invoice_model.dart';
+import 'package:smartify_c_r_m/presentation/invoice_details/add_invoice_screen.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../../flutter_flow/flutter_flow_theme.dart';
+import 'customers_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({Key? key}) : super(key: key);
@@ -29,6 +31,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
   bool isLoading = false;
   int currentIndex = 0;
   final db = ProductDatabaseHelper();
+
+  @override
+  void initState() {
+    if (customerInvoice == null) {
+      Future.delayed(Duration.zero, () {
+        showAlertDialog();
+      });
+    }
+    super.initState();
+  }
+ 
   @override
   Widget build(BuildContext context) {
     var kPrimaryColor = FlutterFlowTheme.of(context).primaryColor;
@@ -56,11 +69,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
               decoration: BoxDecoration(
                 color: FlutterFlowTheme.of(context).primaryBackground,
               ),
-              child: FutureBuilder(
+              child: FutureBuilder<List<InvoiceItem>>(
                 future: db.getAllProduct(),
                 initialData: const [],
-                builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-                  var data = snapshot
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  List<InvoiceItem> data = snapshot
                       .data!; // this is the data we have to show. (list of todo)
                   var datalength = data.length;
 
@@ -93,7 +106,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                data[i]['description'],
+                                                data[i].description!,
                                                 style:
                                                     FlutterFlowTheme.of(context)
                                                         .title2
@@ -108,7 +121,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                         ),
                                               ),
                                               Text(
-                                                'Qty: ${data[i]['quantity']}',
+                                                'Qty: ${data[i].quantity}',
                                                 style:
                                                     FlutterFlowTheme.of(context)
                                                         .subtitle2
@@ -123,7 +136,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                         ),
                                               ),
                                               Text(
-                                                'Unit Price: KES ${data[i]['unitPrice']}',
+                                                'Unit Price: KES ${data[i].unitPrice}',
                                                 style:
                                                     FlutterFlowTheme.of(context)
                                                         .subtitle2
@@ -138,7 +151,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                         ),
                                               ),
                                               Text(
-                                                'Vat: KES ${data[i]['vat']}',
+                                                'Vat: KES ${data[i].vat}',
                                                 style:
                                                     FlutterFlowTheme.of(context)
                                                         .subtitle2
@@ -153,7 +166,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                         ),
                                               ),
                                               Text(
-                                                'Discount: KES ${data[i]['discount']}',
+                                                'Discount: KES ${data[i].discount}',
                                                 style:
                                                     FlutterFlowTheme.of(context)
                                                         .subtitle2
@@ -168,7 +181,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                         ),
                                               ),
                                               Text(
-                                                'Total Amount: KES ${double.parse(data[i]['unitPrice']) * int.parse(data[i]['quantity']) + data[i]['vat'] - double.parse(data[i]['discount'])}',
+                                                'Total Amount: KES ${data[i].unitPrice! * data[i].quantity! + data[i].vat! - data[i].discount!}',
                                                 style:
                                                     FlutterFlowTheme.of(context)
                                                         .title1
@@ -222,6 +235,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                               setState(() {
                                                        isChecked? isChecked =false:isChecked = true;
                                                     currentIndex = i;
+                                                    productsListInvoice.add(data[i]);
                                                     });
                                             },
                                             child: Container(
@@ -235,6 +249,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                                     setState(() {
                                                        isChecked? isChecked =false:isChecked = true;
                                                     currentIndex = i;
+                                                    productsListInvoice.add(data[i]);
                                                     });
                                                    
                                                   },
@@ -264,6 +279,22 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ),
       ),
     );
+  }
+  
+    showAlertDialog(){
+    return showDialog(context: context, builder: (_) =>
+       AlertDialog(
+        title: const Text("Info"),
+        content: Text('Select a customer to proceed'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: ((context) => AddInvoiceScreen())));
+            },
+          )
+        ],
+      ));
   }
 
   showAddProductDialog() {
@@ -528,10 +559,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
         });
   }
 
-  showEditProductDialog(dynamic product) {
-    productNameController = TextEditingController(text: product['description']);
-    priceController = TextEditingController(text: product['unitPrice']);
-    qtyController = TextEditingController(text: product['quantity']);
+  showEditProductDialog(InvoiceItem product) {
+    productNameController = TextEditingController(text: product.description);
+    priceController = TextEditingController(text: product.unitPrice.toString());
+    qtyController = TextEditingController(text: product.quantity.toString());
     StateSetter _setState;
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.5),
@@ -870,6 +901,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       quantity: int.parse(qtyController.text),
       discount: discountAmount,
       vat: taxAmount,
+      invoiceId: 0
     );
 
     await ProductDatabaseHelper().saveProduct(product);
@@ -878,15 +910,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
     });
   }
 
-  Future editProduct(dynamic prdct) async {
+  Future editProduct(InvoiceItem prdct) async {
     final product = InvoiceItem(
-      id: prdct['id'],
+      id: prdct.id,
       description: productNameController.text,
       userId: currentUser!.user!.uid,
       unitPrice: double.parse(priceController.text),
       quantity: int.parse(qtyController.text),
       discount: discountAmount,
       vat: taxAmount,
+      
     );
 
     await ProductDatabaseHelper().updateInvoiceItem(product);

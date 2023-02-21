@@ -12,10 +12,11 @@ import '../../flutter_flow/flutter_flow_icon_button.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
 import '../../flutter_flow/flutter_flow_widgets.dart';
 import '../../flutter_flow/internationalization.dart';
+import '../../model/contact_model.dart';
 
 class ContactDetailsScreen extends StatefulWidget {
    ContactDetailsScreen({Key? key, this.contact}) : super(key: key);
-  dynamic contact;
+  ContactModel? contact;
   @override
   _ContactDetailsScreenState createState() => _ContactDetailsScreenState();
 }
@@ -378,7 +379,7 @@ width: 100,
                               padding:
                                   EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
                               child: Text(
-                                widget.contact['fullName'],
+                                widget.contact!.fullName!,
                                 textAlign: TextAlign.start,
                                 style: FlutterFlowTheme.of(context).title2,
                               ).animateOnPageLoad(
@@ -469,7 +470,7 @@ width: 100,
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
                           child: Text(
-                            widget.contact['jobTitle']??'',
+                            widget.contact!.jobTitle??'',
                             textAlign: TextAlign.start,
                             style: FlutterFlowTheme.of(context).subtitle1,
                           ).animateOnPageLoad(
@@ -494,7 +495,7 @@ width: 100,
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
                           child: Text(
-                            widget.contact['companyName']??'',
+                            widget.contact!.companyName??'',
                             textAlign: TextAlign.start,
                             style: FlutterFlowTheme.of(context)
                                 .subtitle1
@@ -563,7 +564,7 @@ width: 100,
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            widget.contact['phoneNumbers'],
+                                            widget.contact!.phoneNumbers!,
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyText1,
                                           ),
@@ -643,7 +644,7 @@ width: 100,
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            widget.contact['emails'],
+                                            widget.contact!.emails!,
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyText1,
                                           ),

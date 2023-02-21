@@ -11,6 +11,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../../flutter_flow/flutter_flow_theme.dart';
 import '../../../model/terms_model.dart';
+import '../add_invoice_screen.dart';
 
 class TermsScreen extends StatefulWidget {
   const TermsScreen({Key? key}) : super(key: key);
@@ -25,6 +26,13 @@ class _TermsScreenState extends State<TermsScreen> {
   bool isLoading = false;
   final db = TermsDatabaseHelper();
   int currentIndex = 0;
+
+  void initState() {
+    if(productsListInvoice.isEmpty){Future.delayed(Duration.zero, () {
+      showAlertDialog(); });}
+      super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var kPrimaryColor = FlutterFlowTheme.of(context).primaryColor;
@@ -52,11 +60,11 @@ class _TermsScreenState extends State<TermsScreen> {
               decoration: BoxDecoration(
                 color: FlutterFlowTheme.of(context).primaryBackground,
               ),
-              child: FutureBuilder(
+              child: FutureBuilder<List<Terms>>(
                 future: db.getAllTerms(),
                 initialData: const [],
-                builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-                  var data = snapshot
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  List<Terms> data = snapshot
                       .data!; // this is the data we have to show. (list of todo)
                   var datalength = data.length;
 
@@ -85,7 +93,7 @@ class _TermsScreenState extends State<TermsScreen> {
                                             margin: EdgeInsets.symmetric(
                                                 horizontal: 30, vertical: 20),
                                             child: ListTile(
-                                              title: Text(data[i]['description'],
+                                              title: Text(data[i].description!,
                                                   style: FlutterFlowTheme.of(
                                                           context)
                                                       .subtitle1
@@ -146,6 +154,7 @@ class _TermsScreenState extends State<TermsScreen> {
                                                    setState(() {
                                                        isChecked? isChecked =false:isChecked = true;
                                                     currentIndex = i;
+                                                    termsInvoice = data[i];
                                                     });
                                                 },
                                                 icon: currentIndex == i && isChecked? Icon(
@@ -169,6 +178,21 @@ class _TermsScreenState extends State<TermsScreen> {
         ),
  ),
     );
+  }
+   showAlertDialog(){
+    return showDialog(context: context, builder: (_) =>
+       AlertDialog(
+        title: const Text("Info"),
+        content: Text('Select products to proceed'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: ((context) => AddInvoiceScreen())));
+            },
+          )
+        ],
+      ));
   }
 
   showAddTermsDialog() {
@@ -276,8 +300,8 @@ class _TermsScreenState extends State<TermsScreen> {
         });
   }
   
-  showEditTermDialog(dynamic term) {
-    descController = TextEditingController(text: term['description']);
+  showEditTermDialog(Terms term) {
+    descController = TextEditingController(text: term.description);
     StateSetter _setState;
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.5),
@@ -460,9 +484,9 @@ class _TermsScreenState extends State<TermsScreen> {
       isLoading = false;
     });
   }
-  Future editTerm(dynamic terms) async {
+  Future editTerm(Terms terms) async {
     final term =
-        Terms(id: terms['id'], description: descController.text, userId: currentUser!.user!.uid);
+        Terms(id: terms.id, description: descController.text, userId: currentUser!.user!.uid);
 
     await db.updateTermsModel(term);
     setState(() {

@@ -4,17 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:smartify_c_r_m/presentation/home/home_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/add_invoice_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/company_profile_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/customers_screen.dart';
+import 'package:smartify_c_r_m/presentation/invoice_details/tabs/invoice_review_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/products_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/review_invoice.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/terms_screen.dart';
 import '../../database/profile_database_helper.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
+import '../../model/company_model.dart';
+import '../../model/contact_model.dart';
 import '../../model/invoice_model.dart';
+import '../../model/terms_model.dart';
+
+dynamic customerId;
+dynamic userId;
+dynamic termId;
+List<InvoiceItem> productsListInvoice =[];
+ContactModel? customerInvoice;
+Terms? termsInvoice;
+dynamic  invoiceDate = '${DateFormat.yMd().format(DateTime.now())}';
+var  dueDate = '${DateFormat.yMd().format(DateTime.now().add(Duration(days: 7)))}';
+var invoiceNumber = '${DateFormat.y().format(DateTime.now())} - ${DateFormat('HH:mm:ss').format(DateTime.now())}';
 
 class AddInvoiceScreen extends StatefulWidget {
   const AddInvoiceScreen({Key? key}) : super(key: key);
@@ -26,7 +42,13 @@ class AddInvoiceScreen extends StatefulWidget {
 class _AddInvoiceScreenState extends State<AddInvoiceScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
-  
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
   @override
   void initState() {
     tabController = TabController(length: 5, vsync: this);
@@ -102,6 +124,7 @@ class _AddInvoiceScreenState extends State<AddInvoiceScreen>
                       ProductsScreen(),
                       TermsScreen(),
                       ReviewInvoiceScreen()
+                      //InvoiceReviewScreen()
                     ],
                   ),
                 )

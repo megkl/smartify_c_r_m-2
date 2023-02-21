@@ -51,7 +51,7 @@ class ContactModel {
         companyName: json["companyName"],
         phoneNumbers: json["phoneNumbers"],
         emails: json["emails"],
-        locationDetails: PostalAddress.fromMap(json["locationDetails"]),
+        //locationDetails: json["locationDetails"] == null ?null:PostalAddress.fromMap(json["locationDetails"]),
         website: json["website"],
         contactGroup: json["contactGroup"],
         userId: json["userId"],

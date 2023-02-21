@@ -2,15 +2,26 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:googleapis/tasks/v1.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smartify_c_r_m/database/project_db_helper.dart';
+import 'package:smartify_c_r_m/database/task_db_helper.dart';
+import 'package:smartify_c_r_m/model/task_model.dart';
+import 'package:smartify_c_r_m/presentation/home/home_screen.dart';
+import 'package:smartify_c_r_m/presentation/schedule/project/add_project_screen.dart';
+import 'package:smartify_c_r_m/presentation/schedule/schedule_screen.dart';
+import 'package:smartify_c_r_m/presentation/schedule/widgets/project_card.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:velocity_x/velocity_x.dart';
 
+import '../../auth/firebase_user_provider.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
 import 'widgets/event.dart';
 
 class CalendarViewScreen extends StatefulWidget {
   const CalendarViewScreen({Key? key}) : super(key: key);
-
+  
   @override
   State<CalendarViewScreen> createState() => _CalendarViewScreenState();
 }
@@ -24,19 +35,81 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
   DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
-
+  TextEditingController taskNameController = TextEditingController();
+  TextEditingController taskDescController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  TextEditingController startTimeController = TextEditingController();
+  TextEditingController endTimeController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
+  String? selectedStatus;
+  String? project = "None";
+  final projectDb = ProjectDatabaseHelper();
+  final taskDb = TaskDatabaseHelper();
+List<TaskModel> tasksByDay =[];
+  var projects;
   @override
   void initState() {
     super.initState();
-
+    getProjects();
+    dateController = new TextEditingController(
+        text: '${DateFormat('EEE, MMM d, ' 'yy').format(this.selectedDate)}');
+    startTimeController = new TextEditingController(
+        text: '${DateFormat.jm().format(DateTime.now())}');
+    endTimeController = new TextEditingController(
+        text: '${DateFormat.jm().format(DateTime.now().add(
+      Duration(hours: 1),
+    ))}');
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    
   }
+  
+  void getProjects()async{
+    projects = await projectDb.getAllProject();
+  tasksList = await taskDb.getTasksByDay('${DateFormat('EEE, MMM d, ' 'yy').format(this.selectedDate)}');
+  } 
 
   @override
   void dispose() {
     _selectedEvents.dispose();
     super.dispose();
+  }
+
+    _selectDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2005),
+      lastDate: DateTime(2030),
+    );
+    if (selected != null && selected != selectedDate) {
+      setState(() {
+        selectedDate = selected;
+        dateController.text =
+            '${DateFormat('EEE, MMM d, ' 'yy').format(selected)}';
+        
+      });
+    }
+  }
+
+  _selectTime(BuildContext context, String Timetype) async {
+    final TimeOfDay? result =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    if (result != null) {
+      setState(() {
+        if (Timetype == "StartTime") {
+          startTimeController.text = result.format(context);
+        } else {
+          endTimeController.text = result.format(context);
+        }
+      });
+    }
+  }
+
+  _SetCategory(String project) {
+    this.setState(() {
+      this.project = project;
+    });
   }
 
   List<Event> _getEventsForDay(DateTime day) {
@@ -53,17 +126,19 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
     ];
   }
 
-  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+  Future<void> _onDaySelected(DateTime selectedDay, DateTime focusedDay) async {
     if (!isSameDay(_selectedDay, selectedDay)) {
-      setState(() {
+      setState(()  {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
         _rangeStart = null; // Important to clean those
         _rangeEnd = null;
         _rangeSelectionMode = RangeSelectionMode.toggledOff;
-      });
 
+      });
+        tasksList = await taskDb.getTasksByDay('${DateFormat('EEE, MMM d, ' 'yy').format(selectedDay)}');
       _selectedEvents.value = _getEventsForDay(selectedDay);
+     
     }
   }
 
@@ -89,13 +164,14 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   backgroundColor: kPrimaryColor,
-      //   title: Text(
-      //     'Schedule',
-      //   ),
-      // ),
+      appBar: AppBar(
+        elevation: 0,
+        foregroundColor: kPrimaryColor,
+        backgroundColor: kWhiteColor,
+        title: Text(
+          'Schedule',
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: kPrimaryColor,
         child: builSpeedDial(),
@@ -104,10 +180,9 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
 
       body: Column(
         children: [
-          const SizedBox(height: 50.0),
           Card(
             margin: const EdgeInsets.all(10.0),
-            elevation: 5.0,
+            elevation: 1.0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
@@ -186,7 +261,7 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                 todayDecoration:
-                    BoxDecoration(color: kPrimaryColor, shape: BoxShape.circle),
+                    BoxDecoration(color: Colors.grey.withOpacity(0.5), shape: BoxShape.circle),
                 selectedDecoration:
                     BoxDecoration(color: kPrimaryColor, shape: BoxShape.circle),
                 markerDecoration:
@@ -219,12 +294,10 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
           ),
           const SizedBox(height: 15.0),
           Expanded(
-            child: ValueListenableBuilder<List<Event>>(
-              valueListenable: _selectedEvents,
-              builder: (context, value, _) {
-                return ListView.builder(
-                  itemCount: value.length,
-                  itemBuilder: (context, index) {
+            
+                child: ListView.builder(
+                  itemCount: tasksList.length,
+                  itemBuilder: (context, i) {
                     return Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       width: MediaQuery.of(context).size.width,
@@ -242,7 +315,7 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Finish up on Schedule",
+                                  tasksList[i].taskName!,
                                   style: GoogleFonts.lato(
                                     textStyle: TextStyle(
                                         fontSize: 16,
@@ -263,7 +336,16 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
                                     ),
                                     SizedBox(width: 4),
                                     Text(
-                                      "9:30 am - 10:50 am",
+                                       tasksList[i].startTime == null ?'':'${ tasksList[i].startTime} - ${tasksList[i].endTime}',
+                                      style: GoogleFonts.lato(
+                                        textStyle: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.grey[100]),
+                                      ),
+                                    ),
+                                    SizedBox(width: 4),
+                                    Text(
+                                       tasksList[i].date== null?'': tasksList[i].date!,
                                       style: GoogleFonts.lato(
                                         textStyle: TextStyle(
                                             fontSize: 13,
@@ -274,7 +356,7 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
                                 ),
                                 SizedBox(height: 12),
                                 Text(
-                                  'Hi there',
+                                   tasksList[i].taskDescription!,
                                   style: GoogleFonts.lato(
                                     textStyle: TextStyle(
                                         fontSize: 15, color: Colors.grey[100]),
@@ -292,7 +374,7 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
                           RotatedBox(
                             quarterTurns: 3,
                             child: Text(
-                              "COMPLETED",
+                               tasksList[i].status! == ProjectStatus.todo.name ? 'To Do':tasksList[i].status! == ProjectStatus.inProgress.name ? 'In Progress': 'Completed',
                               style: GoogleFonts.lato(
                                 textStyle: TextStyle(
                                     fontSize: 10,
@@ -305,9 +387,8 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
                       ),
                     );
                   },
-                );
-              },
-            ),
+                )
+             
           ),
         ],
       ),
@@ -327,7 +408,7 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
           child: Icon(Icons.work_history, color: Colors.white),
           backgroundColor: FlutterFlowTheme.of(context).primaryColor,
           onTap: () async {
-            //context.pushNamed('addCompanyDetails');
+            Navigator.push(context, MaterialPageRoute(builder: ((context) => AddProjectScreen())));
           },
           label: 'Add Project',
           labelStyle:
@@ -338,6 +419,7 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
           child: Icon(Icons.check_circle_outline, color: Colors.white),
           backgroundColor: FlutterFlowTheme.of(context).primaryColor,
           onTap: () async {
+            showAddTaskDialog();
             //context.pushNamed('addCompanyDetails');
           },
           label: 'Add Task',
@@ -359,4 +441,293 @@ class _CalendarViewScreenState extends State<CalendarViewScreen> {
       ],
     );
   }
+  
+  showAddTaskDialog() {
+    StateSetter _setState;
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: Opacity(
+              opacity: a1.value,
+              child: AlertDialog(
+                  shape: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16.0)),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Create Task',
+                        style: FlutterFlowTheme.of(context).title2.override(
+                              fontFamily: 'Outfit',
+                              color: FlutterFlowTheme.of(context).primaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      ),
+                      Container(
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: FlutterFlowTheme.of(context).primaryColor),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              taskNameController.clear();
+                              
+                            },
+                          ))
+                    ],
+                  ),
+                  content: StatefulBuilder(
+                      builder: (BuildContext context, StateSetter setState) {
+                    _setState = setState;
+                    return SingleChildScrollView(
+                        child: Column(
+                      children: [
+                         Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10, bottom: 10),
+                  child: textFormFields(context: context, controller: taskNameController, hintText: 'e.g Define project scope', labelText:'Task Name')),
+                Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        child:textFormFields(context: context, controller: taskDescController,hintText: 'Describe your task.', labelText:'Description', maxLines: 5) ),
+                     
+                Padding(
+                  padding: const EdgeInsets.only(
+                     top: 10, bottom: 10),
+                  child: textFormFields(context: context, controller: dateController,labelText: 'Date', suffixIcon:  GestureDetector(
+                                    onTap: () {
+                                      _selectDate(context);
+                                    },
+                                    child: Icon(
+                                      Icons.calendar_month_outlined,
+                                      color: kPrimaryColor,
+                                    ),
+                                  ),) ),
+                                  
+                Container(
+                  padding:
+                      EdgeInsets.only( top: 10, bottom: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      )),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.33,
+                              child: textFormFields(context: context,controller: startTimeController, labelText: 'Start Time', suffixIcon: GestureDetector(
+                                    onTap: () {
+                                      _selectTime(context, "StartTime");
+                                    },
+                                    child: Icon(
+                                      Icons.alarm,
+                                      color: kPrimaryColor,
+                                    ),
+                                  ),) ),
+                                  SizedBox(width: 5,),
+                          Container(
+                              width: MediaQuery.of(context).size.width * 0.33,
+                              child: textFormFields(context: context,controller: endTimeController, labelText: 'End Time', suffixIcon: GestureDetector(
+                                    onTap: () {
+                                      _selectTime(context, "EndTimeTime");
+                                    },
+                                    child: Icon(
+                                      Icons.alarm,
+                                      color: kPrimaryColor,
+                                    ),
+                                  ),) ),],
+                        ),
+                      ),
+                      
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Select Project",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.montserrat(
+                                color: Colors.black,
+                                fontSize: 20,
+                                decoration: TextDecoration.none,
+                              ),
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.spaceEvenly,
+                              crossAxisAlignment: WrapCrossAlignment.start,
+                              children: [
+                                for (var i in projects)
+                                GestureDetector(
+                                  onTap: () {
+                                    this.setState(() {
+      this.project = project;
+    });
+                                    this._SetCategory(i['projectName']);
+
+                                  },
+                                  child: Projectcard(
+                                    projectText: i['projectName'],
+                                    isActive: this.project == i['projectName'],
+                                  ),
+                                ),
+                                 ],
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          addTask();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: kPrimaryColor,
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Create Task",
+                            style: GoogleFonts.montserrat(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                      ]));
+                  })),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {
+          return Container();
+        });
+  }
+  
+    Widget textFormFields({controller, hintText,labelText, onChanged, textInputType, icon, BuildContext? context, Widget? suffixIcon, maxLines}) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 0),
+      child: TextFormField(
+        controller: controller,
+        validator: (val) {
+          if (val!.isEmpty) {
+            return "Enter your $hintText";
+          }
+          return null;
+        },
+        onChanged: onChanged,
+        keyboardType: textInputType,
+        maxLines: maxLines,
+        style: FlutterFlowTheme.of(context!).bodyText1
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme.of(
+                                                                context)
+                                                            .secondaryText,
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w300,
+                                                      ),
+        decoration: new InputDecoration(
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          labelText: labelText,
+          suffixIcon: suffixIcon,
+                        disabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: Colors.grey, width: 1),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: kPrimaryColor, width: 1),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: kPrimaryColor, width: 2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(color: Colors.redAccent, width: 2),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        ),
+                        contentPadding: EdgeInsets.only(
+                          left: 16,
+                          bottom: 16,
+                          top: 16,
+                          right: 16,
+                        ),
+                        hintText: hintText,
+                        hintStyle: FlutterFlowTheme.of(context).bodyText2
+                                                      .override(
+                                                        fontFamily: 'Outfit',
+                                                        color: FlutterFlowTheme.of(
+                                                                context)
+                                                            .secondaryText,
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w300,
+                                                      ),
+                        errorStyle: TextStyle(
+                          fontSize: 12,
+                          color: Colors.redAccent,
+                        ),
+                      ),
+                    ),
+    );
+  }
+   
+   addTask() async {
+    TaskModel taskObj = TaskModel(
+				taskName: taskNameController.text, 
+				taskDescription: taskDescController.text, 
+				status: ProjectStatus.todo.name,
+        userId: currentUser!.user!.uid,
+        color: '',
+        endTime: endTimeController.text,
+        startTime: startTimeController.text,
+        date: dateController.text,
+        projectId: ''
+			);
+			try {
+				await _insertTask(taskObj);
+			} catch (e) {
+
+			} finally {
+				Navigator.push(context, MaterialPageRoute(builder: ((context) => CalendarScheduleScreen())));
+				return;
+			}
+  }
+  	Future<void> _insertTask(TaskModel task) async {
+	  TaskDatabaseHelper taskDb = TaskDatabaseHelper();
+	  await taskDb.initDatabase();
+	  int result = await taskDb.insertTask(task);
+	  //await projectsDb.closeDatabase();
+	}
 }

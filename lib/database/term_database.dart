@@ -53,10 +53,12 @@ class TermsDatabaseHelper {
     return terms;
   }
 
-  Future<List> getAllTerms() async {
+  Future<List<Terms>> getAllTerms() async {
      var dbClient = await db;
-    var result = await dbClient
+    var res = await dbClient
         .query(tableTerms);
+    List<Terms> result = res.map((c) => Terms.fromMap(c)).toList().reversed.toList();
+    
 
 
     // result.forEach((currentTerms) {
@@ -64,7 +66,7 @@ class TermsDatabaseHelper {
 
     //  contacts.add(contact);
     // });
-    return result.toList();
+    return result;
   }
 
    getCount() async {

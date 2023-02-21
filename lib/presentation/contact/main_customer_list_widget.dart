@@ -406,37 +406,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                   tabletLandscape: false,
                                   desktop: false,
                                 ))
-                                  FlutterFlowIconButton(
-                                    borderColor: Colors.transparent,
-                                    borderRadius: 30,
-                                    borderWidth: 1,
-                                    buttonSize: 60,
-                                    icon: Icon(
-                                      Icons.search_rounded,
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      size: 30,
-                                    ),
-                                    onPressed: () async {
-                                      await showModalBottomSheet(
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        barrierColor: Color(0x1A000000),
-                                        context: context,
-                                        builder: (context) {
-                                          return Padding(
-                                            padding: MediaQuery.of(context)
-                                                .viewInsets,
-                                            child: Container(
-                                              height: double.infinity,
-                                              child: CommandPaletteWidget(),
-                                            ),
-                                          );
-                                        },
-                                      ).then((value) => setState(() {}));
-                                    },
-                                  ),
-                              ],
+                                  Container()  ],
                             ),
                           ),
                           Padding(
@@ -503,15 +473,15 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                     FlutterFlowTheme.of(context)
                                                         .primaryBackground,
                                               ),
-                                              child: FutureBuilder(
+                                              child: FutureBuilder<List<ContactModel>>(
                                                 future: db.getAllContact(),
                                                 initialData: const [],
                                                 builder: (BuildContext context,
-                                                    AsyncSnapshot<List>
+                                                    AsyncSnapshot
                                                         snapshot) {
-                                                  var data = snapshot
+                                                  List<ContactModel> data = snapshot
                                                       .data; // this is the data we have to show. (list of todo)
-                                                  var datalength = data!.length;
+                                                  var datalength = data.length;
 
                                                   return datalength == 0
                                                       ? const Center(
@@ -585,7 +555,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                               ),
                                                                               child: Center(
                                                                                 child: Text(
-                                                                                  data[i]['fullName'][0].toString().toUpperCase(),
+                                                                                  data[i].fullName![0].toString().toUpperCase(),
                                                                                   textAlign: TextAlign.center,
                                                                                   style: TextStyle(color: Colors.white),
                                                                                 ),
@@ -601,21 +571,21 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
                                                                               child: Text(
-                                                                                data[i]['fullName'].toString().toUpperCase(),
+                                                                                data[i].fullName.toString().toUpperCase(),
                                                                                 style: FlutterFlowTheme.of(context).subtitle1,
                                                                               ),
                                                                             ),
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 2, 0, 0),
                                                                               child: Text(
-                                                                                data[i]['phoneNumbers'].toString().toLowerCase(),
+                                                                                data[i].phoneNumbers.toString().toLowerCase(),
                                                                                 style: FlutterFlowTheme.of(context).bodyText2,
                                                                               ),
                                                                             ),
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                                                                              child: data[i]['phoneNumbers'] == null || data[i]['phoneNumbers'] ==[]?Text(
-                                                                                data[i]['phoneNumbers'].toString().toUpperCase(),
+                                                                              child: data[i].phoneNumbers == null || data[i].phoneNumbers ==[]?Text(
+                                                                                data[i].phoneNumbers.toString().toUpperCase(),
                                                                                 style: FlutterFlowTheme.of(context).bodyText2.override(
                                                                                       fontFamily: FlutterFlowTheme.of(context).bodyText2Family,
                                                                                       color: FlutterFlowTheme.of(context).primaryColor,
@@ -634,6 +604,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                         },
                                                                         child: Container(
                                                                           width: 50,
+                                                                          height: 50,
                                                                           child: Icon(
                                                                             FontAwesomeIcons
                                                                                 .ellipsisVertical,
@@ -668,14 +639,14 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                     FlutterFlowTheme.of(context)
                                                         .primaryBackground,
                                               ),
-                                              child: FutureBuilder(
+                                              child: FutureBuilder<List<ContactModel>>(
                                                 future: db.getAllContact(),
                                                 initialData: const [],
                                                 builder: (BuildContext context,
-                                                    AsyncSnapshot<List>
+                                                    AsyncSnapshot
                                                         snapshot) {
-                                                  var data = snapshot
-                                                      .data!.where((element) => element['contactGroup'] == 'Lead').toList(); // this is the data we have to show. (list of todo)
+                                                  List<ContactModel> data = snapshot
+                                                      .data.where((element) => element.contactGroup == 'Lead').toList();
                                                   var datalength = data.length;
 
                                                   return datalength == 0
@@ -750,7 +721,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                               ),
                                                                               child: Center(
                                                                                 child: Text(
-                                                                                  data[i]['fullName'][0].toString().toUpperCase(),
+                                                                                  data[i].fullName![0].toString().toUpperCase(),
                                                                                   textAlign: TextAlign.center,
                                                                                   style: TextStyle(color: Colors.white),
                                                                                 ),
@@ -766,21 +737,21 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
                                                                               child: Text(
-                                                                                data[i]['fullName'].toString().toUpperCase(),
+                                                                                data[i].fullName.toString().toUpperCase(),
                                                                                 style: FlutterFlowTheme.of(context).subtitle1,
                                                                               ),
                                                                             ),
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 2, 0, 0),
                                                                               child: Text(
-                                                                                data[i]['jobTitle'].toString().toLowerCase(),
+                                                                                data[i].jobTitle.toString().toLowerCase(),
                                                                                 style: FlutterFlowTheme.of(context).bodyText2,
                                                                               ),
                                                                             ),
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                                                                              child: data[i]['phoneNumbers'] == null || data[i]['phoneNumbers'] ==[]?Text(
-                                                                                data[i]['phoneNumbers'].toString().toUpperCase(),
+                                                                              child: data[i].phoneNumbers == null ?Text(
+                                                                                data[i].phoneNumbers.toString().toUpperCase(),
                                                                                 style: FlutterFlowTheme.of(context).bodyText2.override(
                                                                                       fontFamily: FlutterFlowTheme.of(context).bodyText2Family,
                                                                                       color: FlutterFlowTheme.of(context).primaryColor,
@@ -833,14 +804,14 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                     FlutterFlowTheme.of(context)
                                                         .primaryBackground,
                                               ),
-                                              child: FutureBuilder(
+                                              child: FutureBuilder<List<ContactModel>>(
                                                 future: db.getAllContact(),
                                                 initialData: const [],
                                                 builder: (BuildContext context,
-                                                    AsyncSnapshot<List>
+                                                    AsyncSnapshot
                                                         snapshot) {
-                                                  var data = snapshot
-                                                      .data!.where((element) => element['contactGroup'] == 'Customer').toList(); // this is the data we have to show. (list of todo)
+                                                  List<ContactModel> data = snapshot
+                                                      .data!.where((element) => element.contactGroup == 'Customer').toList(); // this is the data we have to show. (list of todo)
                                                   var datalength = data.length;
 
                                                   return datalength == 0
@@ -916,7 +887,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                               ),
                                                                               child: Center(
                                                                                 child: Text(
-                                                                                  data[i]['fullName'][0].toString().toUpperCase(),
+                                                                                  data[i].fullName![0].toString().toUpperCase(),
                                                                                   textAlign: TextAlign.center,
                                                                                   style: TextStyle(color: Colors.white),
                                                                                 ),
@@ -932,21 +903,21 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
                                                                               child: Text(
-                                                                                data[i]['fullName'].toString().toUpperCase(),
+                                                                                data[i].fullName.toString().toUpperCase(),
                                                                                 style: FlutterFlowTheme.of(context).subtitle1,
                                                                               ),
                                                                             ),
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 2, 0, 0),
                                                                               child: Text(
-                                                                                data[i]['jobTitle'].toString().toLowerCase(),
+                                                                                data[i].jobTitle.toString().toLowerCase(),
                                                                                 style: FlutterFlowTheme.of(context).bodyText2,
                                                                               ),
                                                                             ),
                                                                             Padding(
                                                                               padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-                                                                              child: data[i]['phoneNumbers'] == null || data[i]['phoneNumbers'] ==[]?Text(
-                                                                                data[i]['phoneNumbers'].toString().toUpperCase(),
+                                                                              child: data[i].phoneNumbers == null ?Text(
+                                                                                data[i].phoneNumbers.toString().toUpperCase(),
                                                                                 style: FlutterFlowTheme.of(context).bodyText2.override(
                                                                                       fontFamily: FlutterFlowTheme.of(context).bodyText2Family,
                                                                                       color: FlutterFlowTheme.of(context).primaryColor,
@@ -1010,7 +981,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
     );
   }
 
-  showGroupDialog(String? group, dynamic contact){
+  showGroupDialog(String? group, ContactModel contact){
       return showDialog(
           context: context,
         builder: (context) {
@@ -1144,7 +1115,7 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
   }
   
     Future<dynamic> showActionsBottomSheet(
-      BuildContext context,dynamic data, int index) {
+      BuildContext context,List<ContactModel> data, int index) {
     return showModalBottomSheet(
         context: context,
         builder: (_) {
@@ -1219,15 +1190,15 @@ class _MainCustomerListWidgetState extends State<MainCustomerListWidget>
     return contacts;
     
   }
-  Future updateContact(dynamic contactModel, String? group) async {
+  Future updateContact(ContactModel contactModel, String? group) async {
     final contact = ContactModel(
-      id: contactModel['id'],
-      fullName: contactModel['fullName'],
+      id: contactModel.id,
+      fullName: contactModel.fullName,
       userId: currentUserUid,
-      phoneNumbers: contactModel['phoneNumbers'],
-      emails: contactModel['emails'],
-      website: contactModel['website'],
-      jobTitle: contactModel['jobTitle'],
+      phoneNumbers: contactModel.phoneNumbers,
+      emails: contactModel.emails,
+      website: contactModel.website,
+      jobTitle: contactModel.jobTitle,
       contactGroup: group,
       //locationDetails: contactModel['locationDetails']
     );

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:smartify_c_r_m/database/task_db_helper.dart';
 import 'package:smartify_c_r_m/flutter_flow/flutter_flow_theme.dart';
 import 'package:smartify_c_r_m/model/task_model.dart';
 
+import '../../../auth/firebase_user_provider.dart';
 import '../widgets/task_item.dart';
 
 class TasksScreen extends StatefulWidget {
@@ -14,14 +16,20 @@ class TasksScreen extends StatefulWidget {
 }
 
 class _TasksScreenState extends State<TasksScreen> {
-  final tasksList = TaskModel.todoList();
+    final taskDb = TaskDatabaseHelper();
+  //final tasksList = TaskModel.todoList();
+  List<TaskModel> tasksList = [];
   List<TaskModel> _foundTask = [];
   final _taskController = TextEditingController();
 
   @override
   void initState() {
+    getTasks();
     _foundTask = tasksList;
     super.initState();
+  }
+   void getTasks() async {
+    tasksList = await taskDb.getAllTask();
   }
 
   @override
@@ -39,31 +47,45 @@ class _TasksScreenState extends State<TasksScreen> {
       body: Stack(
         children: [
           Container(
-            height: 450,
             padding: EdgeInsets.symmetric(
               horizontal: 20,
               vertical: 15,
             ),
-            child: Column(
-              children: [
-                searchBox(),
+            child: searchBox()),
                 SizedBox(height: 20,),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      
-                      for (TaskModel tasko in _foundTask.reversed)
-                        TaskItem(
-                          task: tasko,
+          Container(
+            height: 450,
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 30,
+              top: 80
+            ),
+            child: 
+                FutureBuilder(
+                future: taskDb.getAllTask(),
+                initialData: const [],
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  var data = snapshot
+                      .data!; // this is the data we have to show. (list of todo)
+                  var datalength = data.length;
+                  return datalength == 0
+                      ? const Center(
+                          child: Text('no data found'),
+                        )
+                      : 
+                       ListView.builder(
+                    itemCount: datalength,
+                          itemBuilder: (context, i) =>
+                          TaskItem(
+                          task: data[i],
                           onTaskChanged: _handleTaskChange,
                           onDeleteItem: _deleteTaskItem,
-                        ),
-                    ],
+            ));
+  },
                   ),
-                )
-              ],
-            ),
-          ),
+                ),
+            
+           
           Align(
             alignment: Alignment.bottomCenter,
             child: Row(children: [
@@ -129,7 +151,7 @@ class _TasksScreenState extends State<TasksScreen> {
 
   void _handleTaskChange(TaskModel task) {
     setState(() {
-      task.isDone = 0;
+      task.status = ProjectStatus.completed.name;
     });
   }
 
@@ -139,15 +161,29 @@ class _TasksScreenState extends State<TasksScreen> {
     });
   }
 
-  void _addTaskItem(String toDo) {
-    setState(() {
-      tasksList.add(TaskModel(
-        id: 1,
-        taskName: toDo,
-      ));
-    });
-    _taskController.clear();
+  Future<void> _addTaskItem(String toDo) async {
+    TaskModel taskObj = TaskModel(
+				taskName: toDo, 
+				taskDescription: '', 
+				status: ProjectStatus.todo.name,
+        userId: currentUser!.user!.uid
+			);
+			try {
+				await _insertTask(taskObj);
+        //(context as Element).reassemble();
+			} catch (e) {
+
+			} finally {
+				return;
+			}
   }
+  	Future<void> _insertTask(TaskModel task) async {
+	  TaskDatabaseHelper tasksDb = TaskDatabaseHelper();
+	  await tasksDb.initDatabase();
+	  int result = await tasksDb.insertTask(task);
+	  //await tasksDb.closeDatabase();
+	}
+
 
   void _runFilter(String enteredKeyword) {
     List<TaskModel> results = [];

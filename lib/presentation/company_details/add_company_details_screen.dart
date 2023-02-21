@@ -702,7 +702,7 @@ class _AddCompanyDetailsScreenState extends State<AddCompanyDetailsScreen> {
         country: countrySelectedValue,
         userId: currentUser!.user!.uid,
         paypal: '',
-        photoUrl: _image!.path);
+        photoUrl: _image == null? '':_image!.path);
 
     await CompanyDatabaseHelper().saveCompany(companyDetails);
   }

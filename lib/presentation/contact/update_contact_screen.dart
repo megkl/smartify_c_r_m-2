@@ -14,7 +14,7 @@ import '../../flutter_flow/flutter_flow_theme.dart';
 class UpdateContactScreen extends StatefulWidget {
    UpdateContactScreen({Key? key, this.group, this.contact}) : super(key: key);
    int? group = 0;
-   dynamic contact ;
+   ContactModel? contact ;
   @override
   State<UpdateContactScreen> createState() => _UpdateContactScreenState();
 }
@@ -41,12 +41,12 @@ class _UpdateContactScreenState extends State<UpdateContactScreen> {
     void initState() {
     super.initState();
 
- phoneController = TextEditingController(text: widget.contact!['phoneNumbers']);
-  fullnameController = TextEditingController(text: widget.contact!['fullName']);
-  jobCompanyController = TextEditingController(text: widget.contact!['jobTitle']);
-  emailController = TextEditingController(text: widget.contact!['emails']);
-  websiteController = TextEditingController(text: widget.contact!['website']);
-  addressController = TextEditingController(text: widget.contact!['address']);
+ phoneController = TextEditingController(text: widget.contact!.phoneNumbers);
+  fullnameController = TextEditingController(text: widget.contact!.fullName);
+  jobCompanyController = TextEditingController(text: widget.contact!.jobTitle);
+  emailController = TextEditingController(text: widget.contact!.emails);
+  websiteController = TextEditingController(text: widget.contact!.website);
+  addressController = TextEditingController(text: widget.contact!.address);
 
     }
 
@@ -239,7 +239,7 @@ class _UpdateContactScreenState extends State<UpdateContactScreen> {
                               )),
                           CupertinoFormRow(
                               child: CupertinoTextFormFieldRow(
-                                controller: websiteController,
+                                controller: addressController,
                                 placeholder: "Enter Address",
                                 onChanged: ((value) {
                                 }),
@@ -251,6 +251,8 @@ class _UpdateContactScreenState extends State<UpdateContactScreen> {
                               )),
                           CupertinoFormRow(
                               child: CupertinoTextFormFieldRow(
+                                                                controller: websiteController,
+
                                 placeholder: "Enter website",
                               ),
                               prefix: Icon(
@@ -347,14 +349,15 @@ void addEditContact() async {
 
   Future updateContact() async {
     final contact = ContactModel(
-      id: widget.contact!['id'],
+      id: widget.contact!.id,
       fullName: fullnameController.text,
       userId: currentUserUid,
       phoneNumbers: phoneController.text,
       emails: emailController.text,
       website: websiteController.text,
       jobTitle: jobCompanyController.text,
-      contactGroup: widget.contact!['contactGroup'],
+      contactGroup: widget.contact!.contactGroup,
+      otherInfo: addressController.text,
       locationDetails: PostalAddress(street: addressController.text, country: countrySelectedValue, city: locationController.text)
     );
 

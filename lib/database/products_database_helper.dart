@@ -25,6 +25,7 @@ class ProductDatabaseHelper {
    final String columnUnitPrice = 'unitPrice';
    final String? columnCreatedAt = 'createdAt';
    final String? columnUpdatedAt = 'updatedAt';
+   final String columnInvoiceId = 'invoiceId';
 
   static Database? _db;
 
@@ -51,7 +52,7 @@ class ProductDatabaseHelper {
 
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $tableProduct($columnId INTEGER PRIMARY KEY, $columnDescription TEXT, $columnUserId TEXT, $columnQuantity TEXT,$columnVat, TEXT, $columnDiscount TEXT, $columnUnitPrice TEXT,$columnDate TEXT,$columnCreatedAt TEXT,$columnUpdatedAt TEXT)');
+        'CREATE TABLE $tableProduct($columnId INTEGER PRIMARY KEY, $columnDescription TEXT, $columnUserId TEXT,$columnInvoiceId INTEGER, $columnQuantity INTEGER,$columnVat REAL, $columnDiscount REAL, $columnUnitPrice REAL,$columnDate TEXT,$columnCreatedAt TEXT,$columnUpdatedAt TEXT)');
   }
 
   Future<InvoiceItem> saveProduct(InvoiceItem product) async {
@@ -62,19 +63,19 @@ class ProductDatabaseHelper {
     return product;
   }
 
-  Future<List> getAllProduct() async {
+  Future<List<InvoiceItem>> getAllProduct() async {
      var dbClient = await db;
-    var result = await dbClient
+    var res = await dbClient
         .query(tableProduct);
 
-   List<InvoiceItem> products = [];
-
+    List<InvoiceItem> result = res.map((c) => InvoiceItem.fromMap(c)).toList().reversed.toList();
+    
     // result.forEach((currentProduct) {
     //   InvoiceItem product = InvoiceItem.fromMap(currentProduct);
 
     //  products.add(product);
     // });
-    return result.toList();
+    return result;
   }
 
    getCount() async {
@@ -86,7 +87,7 @@ class ProductDatabaseHelper {
   Future<InvoiceItem?> getProduct(int id) async {
     var dbClient = await db;
     List<Map> result = await dbClient.query(tableProduct,
-        columns: [columnId, columnUserId, columnDescription, columnQuantity,columnVat,columnDiscount,columnUnitPrice],
+        columns: [columnId, columnUserId,columnInvoiceId, columnDescription, columnQuantity,columnVat,columnDiscount,columnUnitPrice],
         where: '$columnId = ?',
         whereArgs: [id]);
 

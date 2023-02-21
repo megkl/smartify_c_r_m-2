@@ -93,6 +93,7 @@ dependencies:
   pdf: ^3.8.4
   table_calendar: ^3.0.8
   syncfusion_flutter_calendar: ^20.4.50
+  flutter_slidable: ^2.0.0
 
 dev_dependencies:
   build_runner: 2.2.0

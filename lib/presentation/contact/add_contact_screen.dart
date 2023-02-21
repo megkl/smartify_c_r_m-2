@@ -374,6 +374,7 @@ void addEditContact() async {
       emails: emailController.text,
       website: websiteController.text,
       jobTitle: jobCompanyController.text,
+      otherInfo: addressController.text,
       contactGroup: widget.group == 0 ? '':widget.group == 1? 'Lead':'Customer',
       locationDetails: PostalAddress(street: addressController.text, country: countryController.text, city: locationController.text)
     );

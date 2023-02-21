@@ -7,6 +7,7 @@ import 'package:smartify_c_r_m/flutter_flow/flutter_flow_theme.dart';
 import 'package:smartify_c_r_m/presentation/schedule/calendar_view_screen.dart';
 import 'package:smartify_c_r_m/presentation/schedule/meeting/add_meeting_screen.dart';
 import 'package:smartify_c_r_m/presentation/schedule/meeting/edit_delete_screen.dart';
+import 'package:smartify_c_r_m/presentation/schedule/notes/notes_screen.dart';
 import 'package:smartify_c_r_m/presentation/schedule/project/projects_screen.dart';
 
 import '../../backend/firebase_storage/calendar_api.dart';
@@ -34,7 +35,7 @@ class _CalendarScheduleScreenState extends State<CalendarScheduleScreen> {
     CalendarViewScreen(),
     ProjectsScreen(),
     TasksScreen(),
-    TasksScreen()
+    NotesScreen()
     // ProjectsPage(),
     // TasksPage(
     //   Goback: (int index) {

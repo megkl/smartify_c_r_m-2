@@ -49,26 +49,21 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
   void initState() {
     super.initState();
     phoneController = TextEditingController(
-        text: companyProfile.isNotEmpty
-            ? companyProfile['companyPhoneNumber']
-            : '');
+        text: companyProfile!.companyPhoneNumber
+    );
     companyNameController = TextEditingController(
-        text: companyProfile.isNotEmpty ? companyProfile['companyName'] : '');
-    contactNameController = TextEditingController(
-        text: companyProfile.isNotEmpty ? companyProfile['contactName'] : '');
+        text:  companyProfile!.companyName!);
+    contactNameController = TextEditingController( text: companyProfile!.contactName!);
     emailController = TextEditingController(
-        text: companyProfile.isNotEmpty ? companyProfile['companyEmail'] : '');
+        text:companyProfile!.companyEmail);
     websiteController = TextEditingController(
-        text:
-            companyProfile.isNotEmpty ? companyProfile['companyWebsite'] : '');
+        text:companyProfile!.companyWebsite);
     addressController = TextEditingController(
-        text:
-            companyProfile.isNotEmpty ? companyProfile['companyAddress'] : '');
+        text: companyProfile!.companyAddress);
     locationController = TextEditingController(
-        text:
-            companyProfile.isNotEmpty ? companyProfile['companyLocation'] : '');
+        text:companyProfile!.companyLocation);
     countryController = TextEditingController(
-        text: companyProfile.isNotEmpty ? companyProfile['country'] : '');
+        text: companyProfile!.country);
   }
 
   @override
@@ -76,7 +71,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
     var kPrimaryColor = FlutterFlowTheme.of(context).primaryColor;
     return Scaffold(
         backgroundColor: context.canvasColor,
-        floatingActionButton: companyProfile.isEmpty
+        floatingActionButton: companyProfile == null
             ? FloatingActionButton(
                 onPressed: () {
                   context.pushNamed('addCompanyDetails');
@@ -88,7 +83,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                 ),
               )
             : Container(),
-        body: companyProfile.isNotEmpty
+        body: companyProfile != null
             ? SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -269,7 +264,7 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
   Widget companyLogoImage(BuildContext context) {
     return Center(
       child: Stack(children: <Widget>[
-        _imageFile != null || companyProfile['photoUrl'] != null
+        _imageFile != null || companyProfile!.photoUrl != null
             ? ClipRect(
                 child: Container(
                     height: 100,
@@ -279,8 +274,8 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                             fit: BoxFit.contain,
-                            image: companyProfile['photoUrl'] != null
-                                ? FileImage(File(companyProfile['photoUrl']))
+                            image: companyProfile!.photoUrl != null
+                                ? FileImage(File(companyProfile!.photoUrl!))
                                 : FileImage(File(_imageFile!.path))))),
               )
             : InkWell(
@@ -757,12 +752,12 @@ class _EditCompanyProfileScreenState extends State<EditCompanyProfileScreen> {
         companyLocation: locationController.text,
         country: countrySelectedValue,
         userId: currentUser!.user!.uid,
-        id: companyProfile['id'],
+        id: companyProfile!.id,
         paypal: '',
         photoUrl: _image == null
-            ? companyProfile['photoUrl'] == null
+            ? companyProfile!.photoUrl == null
                 ? ''
-                : companyProfile['photoUrl']
+                : companyProfile!.photoUrl
             : _image!.path);
 
     await CompanyDatabaseHelper().updateCompanyModel(companyDetails);

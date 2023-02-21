@@ -13,6 +13,7 @@ import 'package:smartify_c_r_m/presentation/invoice_details/tabs/customers_scree
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/products_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/review_invoice.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/terms_screen.dart';
+import '../../database/invoice_database_helper.dart';
 import '../../database/profile_database_helper.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
 import '../../model/invoice_model.dart';
@@ -28,6 +29,7 @@ class InvoicedetailsScreen extends StatefulWidget {
 class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
+  final db = InvoiceDatabaseHelper();
 
   @override
   void initState() {
@@ -79,7 +81,7 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
           indicatorColor: Color.fromARGB(255, 226, 136, 26),
           indicatorWeight: 4,
           isScrollable: true,
-                labelPadding: EdgeInsets.symmetric(horizontal: 20.0),
+          labelPadding: EdgeInsets.symmetric(horizontal: 20.0),
           controller: tabController,
           tabs: [
             Tab(
@@ -103,196 +105,108 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
             child: TabBarView(
               controller: tabController,
               children: [
-                ListView(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 0, vertical: 5),
-                                    child: Stack(
-                                      children: [
-                                        Card(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: Container(
-                                            height: 30,
-                                            width: 350,
-                                            margin: EdgeInsets.only(
-                                                left: 60, top: 20, bottom: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'meg_07 feb 2023.pdf',
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .title2
-                                                          .override(
-                                                            fontFamily: 'Outfit',
-                                                            color: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .primaryText,
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                          ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        
-                                         Positioned(
-                                            top: 10,
-                                            left: 0,
+                FutureBuilder<List<Invoice>>(
+                    future: db.getAllInvoice(),
+                    initialData: const [],
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      List<Invoice> data = snapshot.data
+                          .where((element) => element.contactGroup == 'Lead')
+                          .toList();
+                      var datalength = data.length;
 
-                                            child: GestureDetector(
-                                              onTap: (){
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color:
-                                                        FlutterFlowTheme.of(context)
-                                                            .primaryColor),
-                                                child: IconButton(
-                                                    onPressed: () {
-                                                      
-                                                    },
-                                                    icon: Icon(
-                                                      Icons.chevron_right,
-                                                      color: Colors.white,
-                                                    )),
+                      return datalength == 0
+                          ? const Center(
+                              child: Text('no data found'),
+                            )
+                          : ListView.builder(
+                              itemCount: datalength,
+                              itemBuilder: (context, i) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 5),
+                                  child: Stack(
+                                    children: [
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Container(
+                                          height: 30,
+                                          width: 350,
+                                          margin: EdgeInsets.only(
+                                              left: 60, top: 20, bottom: 20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                data[i].description!,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
                                               ),
-                                            ),
-                                          
-                                        ),
-                                        Positioned(
-                                            top: 10,
-                                            right: 0,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color:
-                                                      FlutterFlowTheme.of(context)
-                                                          .primaryColor),
-                                              child: IconButton(
-                                                  onPressed: () {
-                                                    showActionsBottomSheet(context, 'data', 0);
-                                              },
-                                                  icon: Icon(
-                                                    FontAwesomeIcons.ellipsis,
-                                                    color: Colors.white,
-                                                  ))
-                                            ),
+                                            ],
                                           ),
-                                        
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                  ),
-                    ),
-                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 0, vertical: 5),
-                                    child: Stack(
-                                      children: [
-                                        Card(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        left: 0,
+                                        child: GestureDetector(
+                                          onTap: () {},
                                           child: Container(
-                                            height: 30,
-                                            width: 350,
-                                            margin: EdgeInsets.only(
-                                                left: 60, top: 20, bottom: 20),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'INV-Laptops feb 5th 2023.pdf',
-                                                  style:
-                                                      FlutterFlowTheme.of(context)
-                                                          .subtitle1
-                                                          .override(
-                                                            fontFamily: 'Outfit',
-                                                            color: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .primaryText,
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                          ),
-                                                ),
-                                              ],
-                                            ),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {},
+                                                icon: Icon(
+                                                  Icons.chevron_right,
+                                                  color: Colors.white,
+                                                )),
                                           ),
                                         ),
-                                        
-                                         Positioned(
-                                            top: 10,
-                                            left: 0,
-
-                                            child: GestureDetector(
-                                              onTap: (){
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color:
-                                                        FlutterFlowTheme.of(context)
-                                                            .primaryColor),
-                                                child: IconButton(
-                                                    onPressed: () {
-                                                      
-                                                    },
-                                                    icon: Icon(
-                                                      Icons.chevron_right,
-                                                      color: Colors.white,
-                                                    )),
-                                              ),
-                                            ),
-                                          
-                                        ),
-                                        Positioned(
-                                            top: 10,
-                                            right: 0,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color:
-                                                      FlutterFlowTheme.of(context)
-                                                          .primaryColor),
-                                              child: IconButton(
-                                                  onPressed: () {
-                                                    showActionsBottomSheet(context, 'data', 0);
-                                                    
-                                              },
-                                                  icon: Icon(
-                                                                                                        FontAwesomeIcons.ellipsis,
-                                                    color: Colors.white,
-                                                  ))
-                                            ),
-                                          ),
-                                        
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        right: 0,
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  showActionsBottomSheet(
+                                                      context, 'data', 0);
+                                                },
+                                                icon: Icon(
+                                                  FontAwesomeIcons.ellipsis,
+                                                  color: Colors.white,
+                                                ))),
+                                      ),
+                                    ],
                                   ),
-                    ),
-                              
-                  ],
-                ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                            );
+                    }),
                 Column(),
                 Column(),
                 Column(),
@@ -315,8 +229,9 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
           ),
     );
   }
-   Future<dynamic> showActionsBottomSheet(
-      BuildContext context,dynamic data, int index) {
+
+  Future<dynamic> showActionsBottomSheet(
+      BuildContext context, dynamic data, int index) {
     return showModalBottomSheet(
         context: context,
         builder: (_) {
@@ -335,19 +250,18 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
                     "Actions",
                     style: FlutterFlowTheme.of(context).subtitle1,
                   ),
-                  
                   Container(
                     height: 300,
                     child: GridView(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-        ),
-        primary: false,
-        padding: const EdgeInsets.all(20),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                      ),
+                      primary: false,
+                      padding: const EdgeInsets.all(20),
                       children: [
                         GestureDetector(
-                          onTap: () {
-                           },
+                          onTap: () {},
                           child: ActionsButtonWidget(
                             text: "Share",
                             textColor: Colors.white,
@@ -368,30 +282,30 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
                             //showGroupDialog("Customer",data[index]);
                           },
                           child: ActionsButtonWidget(
-                              text: "Partially Paid",
-                              textColor: Colors.white,
-                              icon: FontAwesomeIcons.personCircleCheck,),
+                            text: "Partially Paid",
+                            textColor: Colors.white,
+                            icon: FontAwesomeIcons.personCircleCheck,
+                          ),
                         ),
-                         GestureDetector(
+                        GestureDetector(
                           onTap: () {
                             //showGroupDialog("Customer",data[index]);
                           },
                           child: ActionsButtonWidget(
-                              text: "Overdue",
-                              textColor: Colors.white,
-                              icon: FontAwesomeIcons.personCircleCheck,),
+                            text: "Overdue",
+                            textColor: Colors.white,
+                            icon: FontAwesomeIcons.personCircleCheck,
+                          ),
                         ),
                         GestureDetector(
-                          onTap: () {
-                          },
+                          onTap: () {},
                           child: ActionsButtonWidget(
                               text: "Edit",
                               textColor: Colors.white,
                               icon: Icons.edit),
                         ),
                         GestureDetector(
-                          onTap: () {
-                          },
+                          onTap: () {},
                           child: ActionsButtonWidget(
                               text: "Delete",
                               textColor: Colors.white,

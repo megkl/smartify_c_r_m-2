@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 import 'package:smartify_c_r_m/components/pdf_invoice/pdf_api.dart';
 import 'package:smartify_c_r_m/model/company_model.dart';
 import 'package:smartify_c_r_m/model/contact_model.dart';
+import 'package:smartify_c_r_m/presentation/invoice_details/add_invoice_screen.dart';
 
 import '../../components/utils.dart';
 import '../../model/invoice_model.dart';
@@ -25,7 +27,7 @@ class PdfInvoiceApi {
       footer: (context) => buildFooter(invoice),
     ));
 
-    return PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
+    return PdfApi.saveDocument(name: '${DateFormat.y().format(DateTime.now())} - ${DateFormat('HH:mm:ss').format(DateTime.now())}.pdf', pdf: pdf);
   }
 
   static Widget buildHeader(Invoice invoice) => Column(
@@ -35,14 +37,14 @@ class PdfInvoiceApi {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              buildSupplierAddress(invoice.company),
+              buildSupplierAddress(invoice.company!),
               Container(
                 height: 50,
                 width: 50,
                 child: 
                 BarcodeWidget(
                   barcode: Barcode.qrCode(),
-                  data: invoice.info.number,
+                  data: invoice.info!.number,
                 ),
               ),
             ],
@@ -52,8 +54,8 @@ class PdfInvoiceApi {
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              buildCustomerAddress(invoice.customer),
-              buildInvoiceInfo(invoice.info),
+              buildCustomerAddress(invoice.customer!),
+              buildInvoiceInfo(invoice.info!),
             ],
           ),
         ],
@@ -64,6 +66,8 @@ class PdfInvoiceApi {
         children: [
           Text(customer.fullName!, style: TextStyle(fontWeight: FontWeight.bold)),
           Text(customer.address!),
+          Text(customer.emails!),
+          Text(customer.phoneNumbers!),
         ],
       );
 
@@ -110,7 +114,7 @@ class PdfInvoiceApi {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 0.8 * PdfPageFormat.cm),
-          Text(invoice.info.description),
+          Text(invoice.info!.description),
           SizedBox(height: 0.8 * PdfPageFormat.cm),
         ],
       );
@@ -124,8 +128,8 @@ class PdfInvoiceApi {
       'VAT',
       'Total'
     ];
-    final data = invoice.items.map((item) {
-      final total = item.unitPrice! * item.quantity! * (1 + item.vat!);
+    final data = invoice.items!.map((item) {
+            final total = item.unitPrice! * item.quantity! +(item.vat!/100*item.unitPrice!*item.quantity!) - (item.discount!/100*item.unitPrice!*item.quantity!);
 
       return [
         item.description,
@@ -156,13 +160,14 @@ class PdfInvoiceApi {
   }
 
   static Widget buildTotal(Invoice invoice) {
-    final netTotal = invoice.items
+    final netTotal = invoice.items!
         .map((item) => item.unitPrice! * item.quantity!)
         .reduce((item1, item2) => item1 + item2);
-    final vatPercent = invoice.items.first.vat;
-    final discountPercent = invoice.items.first.discount;
+    final vatPercent = invoice.items!.first.vat;
+    final discountPercent = invoice.items!.first.discount;
     final vat = netTotal * vatPercent!;
-    final total = netTotal + vat;
+    final discount = netTotal * discountPercent!;
+    final total = netTotal + vat/100 - discount/100;
 
     return Container(
       alignment: Alignment.centerRight,
@@ -180,13 +185,13 @@ class PdfInvoiceApi {
                   unite: true,
                 ),
                 buildText(
-                  title: 'Vat ${vatPercent * 100} %',
-                  value: Utils.formatPrice(vat),
+                  title: 'Vat(${vatPercent.toStringAsFixed(0)}%',
+                  value: Utils.formatPrice(vat/100),
                   unite: true,
                 ),
                 buildText(
-                  title: 'Discount ${discountPercent! * 100} %',
-                  value: Utils.formatPrice(vat),
+                  title: 'Discount (${discountPercent.toStringAsFixed(0)} %',
+                  value: Utils.formatPrice(discount/100),
                   unite: true,
                 ),
                 Divider(),
@@ -216,9 +221,9 @@ class PdfInvoiceApi {
         children: [
           Divider(),
           SizedBox(height: 2 * PdfPageFormat.mm),
-          buildSimpleText(title: 'Address', value: invoice.company.companyAddress!),
+          buildSimpleText(title: 'Address', value: invoice.company!.companyAddress!),
           SizedBox(height: 1 * PdfPageFormat.mm),
-          buildSimpleText(title: 'Paypal', value: invoice.company.paypal!),
+          buildSimpleText(title: 'Terms and Conditions', value: termsInvoice!.description!),
         ],
       );
 

@@ -11,7 +11,6 @@ import 'package:smartify_c_r_m/presentation/home/home_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/add_invoice_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/company_profile_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/customers_screen.dart';
-import 'package:smartify_c_r_m/presentation/invoice_details/tabs/invoice_review_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/products_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/review_invoice.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/terms_screen.dart';

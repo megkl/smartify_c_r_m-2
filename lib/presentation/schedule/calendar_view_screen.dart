@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:googleapis/tasks/v1.dart';
 import 'package:intl/intl.dart';
@@ -15,8 +16,11 @@ import 'package:smartify_c_r_m/presentation/schedule/widgets/project_card.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../auth/auth_util.dart';
 import '../../auth/firebase_user_provider.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
+import '../contact/widget/button_widget.dart';
+import 'notes/notes_edit_screen.dart';
 import 'widgets/event.dart';
 
 class CalendarViewScreen extends StatefulWidget {
@@ -383,6 +387,22 @@ List<TaskModel> tasksByDay =[];
                               ),
                             ),
                           ),
+                            Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            height: 60,
+                            width: 0.5,
+                            color: Colors.grey[200]!.withOpacity(0.7),
+                          ),
+                          RotatedBox(
+                            quarterTurns: 3,
+                            child: GestureDetector(
+                              onTap: (){
+                                showActionsBottomSheet(context, tasksList[i], i);
+                              },
+                              child: Icon(FontAwesomeIcons.ellipsis, color: kWhiteColor,)
+                            ),
+                          ),
+                       
                         ]),
                       ),
                     );
@@ -431,7 +451,9 @@ List<TaskModel> tasksByDay =[];
           child: Icon(Icons.note, color: Colors.white),
           backgroundColor: FlutterFlowTheme.of(context).primaryColor,
           onTap: () async {
-            //context.pushNamed('addCompanyDetails');
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return AddTodoScreen();
+    }));
           },
           label: 'Add Notes',
           labelStyle:
@@ -730,4 +752,102 @@ List<TaskModel> tasksByDay =[];
 	  int result = await taskDb.insertTask(task);
 	  //await projectsDb.closeDatabase();
 	}
+
+  Future<dynamic> showActionsBottomSheet(
+      BuildContext context, TaskModel data, int index) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return Container(
+            height: 330,
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20))),
+            child: Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Select Status",
+                    style: FlutterFlowTheme.of(context).subtitle1,
+                  ),
+                  Container(
+                    height: 300,
+                    child: GridView(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                      ),
+                      primary: false,
+                      padding: const EdgeInsets.all(20),
+                      children: [
+                        
+                        GestureDetector(
+                          onTap: () {
+                            data.status = ProjectStatus.todo.name;
+                            showAlertDialog(data, 'To Do');
+                          },
+                          child: ActionsButtonWidget(
+                              text: "To Do",
+                              icon: FontAwesomeIcons.paypal,
+                              textColor: Colors.white),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                             data.status = ProjectStatus.inProgress.name;
+                            showAlertDialog(data, 'In Progress');
+                          },
+                          child: ActionsButtonWidget(
+                            text: "In Progress",
+                            textColor: Colors.white,
+                            icon: FontAwesomeIcons.moneyBill,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                             data.status = ProjectStatus.completed.name;
+                            showAlertDialog(data, 'Completed');
+                          },
+                          child: ActionsButtonWidget(
+                            text: "Completed",
+                            textColor: Colors.white,
+                            icon: FontAwesomeIcons.personCircleCheck,
+                          ),
+                        ),
+                       ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+     showAlertDialog(TaskModel data, String txt){
+    return showDialog(context: context, builder: (_) =>
+       AlertDialog(
+        // title: const Text("Info"),
+        content: Text('Do you want to change status to $txt'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              updateInvoice(data);
+            },
+          )
+        ],
+      ));
+  }
+
+   Future updateInvoice(TaskModel task) async {
+    final taskData = task;
+
+    await TaskDatabaseHelper().updateTask(taskData);
+          Navigator.push(context, MaterialPageRoute(builder: ((context) => CalendarScheduleScreen(index: 0,))));
+
+ 
+  }
+
 }

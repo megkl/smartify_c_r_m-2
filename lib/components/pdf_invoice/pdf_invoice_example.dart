@@ -133,7 +133,7 @@ class PdfInvoiceApi {
 
       return [
         item.description,
-        Utils.formatDate(item.date!),
+        Utils.formatDate(DateTime.parse(item.date!)),
         '${item.quantity}',
         '\$ ${item.unitPrice}',
         '${item.vat} %',

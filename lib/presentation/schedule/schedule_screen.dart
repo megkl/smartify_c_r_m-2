@@ -16,8 +16,8 @@ import '../../model/event_info_model.dart';
 import 'task/tasks_list_screen.dart';
 
 class CalendarScheduleScreen extends StatefulWidget {
-  const CalendarScheduleScreen({Key? key}) : super(key: key);
-
+   CalendarScheduleScreen({Key? key, this.index}) : super(key: key);
+  int? index =0;
   @override
   State<CalendarScheduleScreen> createState() => _CalendarScheduleScreenState();
 } 
@@ -30,6 +30,11 @@ class _CalendarScheduleScreenState extends State<CalendarScheduleScreen> {
     setState(() {
       this._selectedIndex = index;
     });
+  }
+  @override
+  void initState() {
+    _selectedIndex = widget.index == null ? 0:widget.index!;
+    super.initState();
   }
   final List<Widget> _Pages = [
     CalendarViewScreen(),

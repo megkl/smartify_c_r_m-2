@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:smartify_c_r_m/auth/auth_util.dart';
 import 'package:smartify_c_r_m/database/invoice_database_helper.dart';
@@ -54,7 +55,7 @@ class _ReviewInvoiceScreenState extends State<ReviewInvoiceScreen> {
       productList.add(
         new InvoiceItem(
           description: productsListInvoice[i].description,
-          date: DateTime.now(),
+          date: DateTime.now().toString(),
           quantity: productsListInvoice[i].quantity,
           vat: double.parse((((productsListInvoice[i].vat!) /
                       (productsListInvoice[i].unitPrice! *
@@ -124,43 +125,25 @@ addInvoice(invoice);
             final dueDate = date.add(Duration(days: 7));
 
             final invoice = Invoice(
-              company: CompanyModel(
-                companyName: companyProfile!.companyName,
-                companyAddress: companyProfile!.companyAddress,
-                paypal: '',
-              ),
-              customer: ContactModel(
-                fullName: customerInvoice!.fullName,
-                address: customerInvoice!.otherInfo,
-                emails: customerInvoice!.phoneNumbers,
-                phoneNumbers: customerInvoice!.phoneNumbers,
-              ),
-              info: InvoiceInfo(
-                date: date,
-                dueDate: dueDate,
-                description:
-                    '${customerInvoice!.fullName} - ${companyProfile!.companyName}',
-                number: invoiceNumber,
-              ),
-              items: [
-                InvoiceItem(
-                  description: 'Macbook LAPTOPS',
-                  date: DateTime.now(),
-                  quantity: 2,
-                  vat: 0.19,
-                  discount: 0,
-                  unitPrice: 599,
-                ),
-                InvoiceItem(
-                  description: '20 Earpods',
-                  date: DateTime.now(),
-                  quantity: 8,
-                  vat: 0.16,
-                  discount: 0,
-                  unitPrice: 99,
-                ),
-              ],
-            );
+        company: CompanyModel(
+          companyName: companyProfile!.companyName,
+          companyAddress: companyProfile!.companyAddress,
+          paypal: '',
+        ),
+        customer: ContactModel(
+          fullName: customerInvoice!.fullName ?? '',
+          address: customerInvoice!.address ?? '',
+          emails: customerInvoice!.emails ?? '',
+          phoneNumbers: customerInvoice!.phoneNumbers ?? '',
+        ),
+        info: InvoiceInfo(
+          date: date,
+          dueDate: dueDate,
+          description:
+              '${customerInvoice!.fullName ?? ''} - ${companyProfile!.companyName}',
+          number: invoiceNumber,
+        ),
+        items: productList);
 
             final pdfFile = await PdfInvoiceApi.generate(invoice);
 
@@ -337,7 +320,7 @@ addInvoice(invoice);
 
       return DataRow(cells: [
         DataCell(Text(item.description!)),
-        DataCell(Text(Utils.formatDate(item.date!))),
+        DataCell(Text(Utils.formatDate(DateTime.parse(item.date!)))),
         DataCell(Text('${item.quantity}')),
         DataCell(Text('${item.unitPrice}')),
         DataCell(Text('${item.vat!} %')),
@@ -490,13 +473,14 @@ addInvoice(invoice);
               ],
             ));
   }
-   Future addInvoice(Invoice invoice) async {
+   
+  Future addInvoice(Invoice invoice) async {
     final invoiceData = Invoice(
       name: '',
       description: invoice.info!.description,
       number: invoice.info!.number,
-      date: invoice.info!.date,
-      dueDate: invoice.info!.dueDate,
+      date: DateFormat.yMd().format(invoice.info!.date),
+      dueDate: DateFormat.yMd().format(invoice.info!.dueDate),
       termId: termsInvoice!.id,
       customerId: invoice.customer!.id,
       userId: currentUserUid,
@@ -508,10 +492,6 @@ addInvoice(invoice);
    object.invoiceId = invoiceId;
   await ProductDatabaseHelper().updateInvoiceItem(object);
 }   
-  }
-
-  Future editProduct(Invoice invoice) async {
-    
   }
 
 }

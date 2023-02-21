@@ -12,8 +12,8 @@ class Invoice {
    String? description;
    String? number;
    String? status;
-   DateTime? date;
-   DateTime? dueDate;
+   String? date;
+   String? dueDate;
    CompanyModel? company;
    ContactModel? customer;
    InvoiceInfo? info;
@@ -82,7 +82,7 @@ class InvoiceInfo {
 class InvoiceItem {
   int? id;
   String? description;
-  DateTime? date;
+  String? date;
   int? quantity;
   double? vat;
   double? unitPrice;

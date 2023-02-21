@@ -5,6 +5,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/add_invoice_screen.dart';
@@ -13,6 +14,7 @@ import 'package:smartify_c_r_m/presentation/invoice_details/tabs/customers_scree
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/products_screen.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/review_invoice.dart';
 import 'package:smartify_c_r_m/presentation/invoice_details/tabs/terms_screen.dart';
+import '../../auth/auth_util.dart';
 import '../../database/invoice_database_helper.dart';
 import '../../database/profile_database_helper.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
@@ -33,7 +35,7 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
 
   @override
   void initState() {
-    tabController = TabController(length: 4, vsync: this);
+    tabController = TabController(length: 5, vsync: this);
     super.initState();
   }
 
@@ -79,7 +81,7 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
           //unselectedLabelColor: Colors.white60,
           labelColor: Colors.white,
           indicatorColor: Color.fromARGB(255, 226, 136, 26),
-          indicatorWeight: 4,
+          indicatorWeight: 5,
           isScrollable: true,
           labelPadding: EdgeInsets.symmetric(horizontal: 20.0),
           controller: tabController,
@@ -88,6 +90,9 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
               child: tabsStyle('All', context),
             ),
             Tab(
+              child: tabsStyle('Draft', context),
+            ),
+             Tab(
               child: tabsStyle('Fully Paid', context),
             ),
             Tab(
@@ -109,11 +114,8 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
                     future: db.getAllInvoice(),
                     initialData: const [],
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      List<Invoice> data = snapshot.data
-                          .where((element) => element.contactGroup == 'Lead')
-                          .toList();
+                      List<Invoice> data = snapshot.data;
                       var datalength = data.length;
-
                       return datalength == 0
                           ? const Center(
                               child: Text('no data found'),
@@ -132,7 +134,7 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
                                             borderRadius:
                                                 BorderRadius.circular(20)),
                                         child: Container(
-                                          height: 30,
+                                          height: 80,
                                           width: 350,
                                           margin: EdgeInsets.only(
                                               left: 60, top: 20, bottom: 20),
@@ -155,6 +157,37 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
                                                               FontWeight.w300,
                                                         ),
                                               ),
+                                               Text(
+                                                'Invoice Number: ${data[i].number!}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                                Text(
+                                                'Invoice Status: ${data[i].status!}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                            
                                             ],
                                           ),
                                         ),
@@ -191,7 +224,7 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
                                             child: IconButton(
                                                 onPressed: () {
                                                   showActionsBottomSheet(
-                                                      context, 'data', 0);
+                                                      context, data[i], i);
                                                 },
                                                 icon: Icon(
                                                   FontAwesomeIcons.ellipsis,
@@ -207,9 +240,527 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
                               ),
                             );
                     }),
-                Column(),
-                Column(),
-                Column(),
+                FutureBuilder<List<Invoice>>(
+                    future: db.getAllInvoice(),
+                    initialData: const [],
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      List<Invoice> data = snapshot.data.where((element)=> element.status == InvoiceStatus.draft.name).toList();
+                      var datalength = data.length;
+                      return datalength == 0
+                          ? const Center(
+                              child: Text('no data found'),
+                            )
+                          : ListView.builder(
+                              itemCount: datalength,
+                              itemBuilder: (context, i) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 5),
+                                  child: Stack(
+                                    children: [
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Container(
+                                          height: 80,
+                                          width: 350,
+                                          margin: EdgeInsets.only(
+                                              left: 60, top: 20, bottom: 20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                data[i].description!,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                               Text(
+                                                'Invoice number: ${data[i].number!}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                             Text(
+                                                'Invoice Status: ${data[i].status!}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                            
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        left: 0,
+                                        child: GestureDetector(
+                                          onTap: () {},
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {},
+                                                icon: Icon(
+                                                  Icons.chevron_right,
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        right: 0,
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  showActionsBottomSheet(
+                                                      context, data[i], i);
+                                                },
+                                                icon: Icon(
+                                                  FontAwesomeIcons.ellipsis,
+                                                  color: Colors.white,
+                                                ))),
+                                      ),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                            );
+                    }),
+                FutureBuilder<List<Invoice>>(
+                    future: db.getAllInvoice(),
+                    initialData: const [],
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      List<Invoice> data = snapshot.data.where((element)=> element.status == InvoiceStatus.fullyPaid.name).toList();
+                      var datalength = data.length;
+                      return datalength == 0
+                          ? const Center(
+                              child: Text('no data found'),
+                            )
+                          : ListView.builder(
+                              itemCount: datalength,
+                              itemBuilder: (context, i) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 5),
+                                  child: Stack(
+                                    children: [
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Container(
+                                          height: 80,
+                                          width: 350,
+                                          margin: EdgeInsets.only(
+                                              left: 60, top: 20, bottom: 20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                data[i].description!,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                               Text(
+                                                'Invoice number: ${data[i].number!}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                             Text(
+                                                'Invoice Status: ${data[i].status!}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                            
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        left: 0,
+                                        child: GestureDetector(
+                                          onTap: () {},
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {},
+                                                icon: Icon(
+                                                  Icons.chevron_right,
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        right: 0,
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  showActionsBottomSheet(
+                                                      context, data[i], i);
+                                                },
+                                                icon: Icon(
+                                                  FontAwesomeIcons.ellipsis,
+                                                  color: Colors.white,
+                                                ))),
+                                      ),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                            );
+                    }),
+                FutureBuilder<List<Invoice>>(
+                    future: db.getAllInvoice(),
+                    initialData: const [],
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      List<Invoice> data = snapshot.data.where((element)=> element.status == InvoiceStatus.partiallyPaid.name).toList();
+                      var datalength = data.length;
+                      return datalength == 0
+                          ? const Center(
+                              child: Text('no data found'),
+                            )
+                          : ListView.builder(
+                              itemCount: datalength,
+                              itemBuilder: (context, i) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 5),
+                                  child: Stack(
+                                    children: [
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Container(
+                                          height: 80,
+                                          width: 350,
+                                          margin: EdgeInsets.only(
+                                              left: 60, top: 20, bottom: 20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                data[i].description!,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                               Text(
+                                                'Invoice number: ${data[i].number!}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                             Text(
+                                                'Invoice Status: ${data[i].status!}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                            
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        left: 0,
+                                        child: GestureDetector(
+                                          onTap: () {},
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {},
+                                                icon: Icon(
+                                                  Icons.chevron_right,
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        right: 0,
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  showActionsBottomSheet(
+                                                      context, data[i], i);
+                                                },
+                                                icon: Icon(
+                                                  FontAwesomeIcons.ellipsis,
+                                                  color: Colors.white,
+                                                ))),
+                                      ),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                            );
+                    }),
+                FutureBuilder<List<Invoice>>(
+                    future: db.getAllInvoice(),
+                    initialData: const [],
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      List<Invoice> data = snapshot.data.where((element)=> element.status == InvoiceStatus.overdue.name).toList();
+                      var datalength = data.length;
+                      return datalength == 0
+                          ? const Center(
+                              child: Text('no data found'),
+                            )
+                          : ListView.builder(
+                              itemCount: datalength,
+                              itemBuilder: (context, i) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 5),
+                                  child: Stack(
+                                    children: [
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Container(
+                                          height: 80,
+                                          width: 350,
+                                          margin: EdgeInsets.only(
+                                              left: 60, top: 20, bottom: 20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                data[i].description!,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                               Text(
+                                                'Invoice number: ${data[i].number!}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                             Text(
+                                                'Invoice Status: ${data[i].status!}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .subtitle1
+                                                        .override(
+                                                          fontFamily: 'Outfit',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryText,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                              ),
+                                            
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        left: 0,
+                                        child: GestureDetector(
+                                          onTap: () {},
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {},
+                                                icon: Icon(
+                                                  Icons.chevron_right,
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        right: 0,
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryColor),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  showActionsBottomSheet(
+                                                      context, data[i], i);
+                                                },
+                                                icon: Icon(
+                                                  FontAwesomeIcons.ellipsis,
+                                                  color: Colors.white,
+                                                ))),
+                                      ),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                            );
+                    }),
+                
               ],
             ),
           )
@@ -231,7 +782,7 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
   }
 
   Future<dynamic> showActionsBottomSheet(
-      BuildContext context, dynamic data, int index) {
+      BuildContext context, Invoice data, int index) {
     return showModalBottomSheet(
         context: context,
         builder: (_) {
@@ -265,31 +816,34 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
                           child: ActionsButtonWidget(
                             text: "Share",
                             textColor: Colors.white,
-                            icon: FontAwesomeIcons.penClip,
+                            icon: FontAwesomeIcons.share,
                           ),
                         ),
                         GestureDetector(
                           onTap: () {
-                            //showGroupDialog("Lead",data[index]);
+                            data.status = InvoiceStatus.fullyPaid.name;
+                            showAlertDialog(data, 'Fully Paid');
                           },
                           child: ActionsButtonWidget(
                               text: "Fully Paid",
-                              icon: FontAwesomeIcons.person,
+                              icon: FontAwesomeIcons.paypal,
                               textColor: Colors.white),
                         ),
                         GestureDetector(
                           onTap: () {
-                            //showGroupDialog("Customer",data[index]);
+                             data.status = InvoiceStatus.partiallyPaid.name;
+                            showAlertDialog(data, 'Partially Paid');
                           },
                           child: ActionsButtonWidget(
                             text: "Partially Paid",
                             textColor: Colors.white,
-                            icon: FontAwesomeIcons.personCircleCheck,
+                            icon: FontAwesomeIcons.moneyBill,
                           ),
                         ),
                         GestureDetector(
                           onTap: () {
-                            //showGroupDialog("Customer",data[index]);
+                             data.status = InvoiceStatus.overdue.name;
+                            showAlertDialog(data, 'Overdue');
                           },
                           child: ActionsButtonWidget(
                             text: "Overdue",
@@ -319,5 +873,39 @@ class _InvoicedetailsScreenState extends State<InvoicedetailsScreen>
             ),
           );
         });
+  }
+     showAlertDialog(Invoice data, String txt){
+    return showDialog(context: context, builder: (_) =>
+       AlertDialog(
+        // title: const Text("Info"),
+        content: Text('Do you want to change status to $txt'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              updateInvoice(data);
+            },
+          )
+        ],
+      ));
+  }
+
+   Future updateInvoice(Invoice invoice) async {
+    final invoiceData = Invoice(
+      id: invoice.id,
+      name: '',
+      description: invoice.description,
+      number: invoice.number,
+      date: invoice.date,
+      dueDate: invoice.dueDate,
+      termId: invoice.termId,
+      customerId: invoice.customerId,
+      userId: currentUserUid,
+      status: invoice.status
+    );
+
+    await InvoiceDatabaseHelper().updateInvoice(invoiceData);
+    Navigator.pop(context);
+ 
   }
 }

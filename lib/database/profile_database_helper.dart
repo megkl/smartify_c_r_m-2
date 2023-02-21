@@ -47,7 +47,7 @@ class CompanyDatabaseHelper {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'companys.db');
 
-    // String path1 = join(databasesPath, 'products.db');
+    // String path1 = join(databasesPath, 'invoices.db');
     // await deleteDatabase(path1); // just for testing
     
     //await deleteDatabase(path); // just for testing

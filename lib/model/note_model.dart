@@ -1,33 +1,28 @@
-class Note {
-    int? id;
-    String? title;
-    String? content;
-    String? noteColor;
+class ToDoModel {
+  final int? id;
+  final bool isImportant;
+  final String title;
+  final String describtion;
+  ToDoModel(
+      {required this.title,
+      this.id,
+      required this.describtion,
+      required this.isImportant});
 
-    Note({
-        this.id = null, 
-        this.title = "Note", 
-        this.content = "Text", 
-        this.noteColor = 'red'
-    });
-
-    Map<String, dynamic> toMap() {
-        Map<String, dynamic> data = Map<String, dynamic>();
-        if (id != null) {
-            data['id'] = id;
-        }
-        data['title'] = title;
-        data['content'] = content;
-        data['noteColor'] = noteColor;
-        return data;
-    }
-
-    @override toString() {
-        return {
-            'id': id,
-            'title': title,
-            'content': content,
-            'noteColor': noteColor,
-        }.toString();
-    }
+  factory ToDoModel.fromJson(Map<String, dynamic> map) {
+    return ToDoModel(
+      title: map['title'],
+      id: map['id'],
+      describtion: map['describtion'],
+      isImportant: map['isImportant'] == 1,
+    );
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'id': id,
+      'describtion': describtion,
+      'isImportant': isImportant == true ? 1 : 0,
+    };
+  }
 }
